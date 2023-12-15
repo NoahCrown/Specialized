@@ -2,9 +2,13 @@
 import Sidebar from "./components/Sidebar";
 import Output from './components/Output'
 import Prompt from "./components/Prompt";
+import { useEffect, useState } from "react";
+import axios from 'axios'
 
 
 function App() {
+
+
   return (
     <div className="App flex bg-white items-center flex-row box-border overflow-auto">
       <Sidebar/>
