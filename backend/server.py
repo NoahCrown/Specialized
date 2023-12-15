@@ -9,7 +9,7 @@ def webhook():
             received_data = request.json  # Get the JSON data from the request
             if 'id' in received_data:
                 data_id = received_data["id"]
-                return jsonify({"id": data_id})  # Return 'id' field in JSON format
+                return jsonify(received_data)  # Return 'id' field in JSON format
             else:
                 return jsonify({"error": "No 'id' field found in the received JSON data"}), 400
         except Exception as e:
