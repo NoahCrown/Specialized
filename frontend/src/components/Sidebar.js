@@ -3,7 +3,7 @@ import PDFInfo from './PDFInfo'
 
 const Sidebar = () => {
   return (
-    <div className='flex justify-center items-center w-1/4 flex-col h-[99vh]'>
+    <div className='flex justify-center items-center w-1/4 flex-col h-[100vh]'>
     {/* Specialized Nav */}
         <div className='border-solid border-b-2 border-[#E7E7E7] w-full px-2 py-2'>
             <img src={require('../img/specialized_icon.png')} alt='specialized-icon' className='w-1/2 '/>
