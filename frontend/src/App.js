@@ -8,27 +8,41 @@ import axios from 'axios'
 
 function App() {
 
-  const [responseData, setResponseData] = useState(null);
+  const [data, setData] = useState([])
+
+  // useEffect(() => {
+  //   // Sample data to send in the POST request
+  //   const postData = { id: 123, name: 'John' };
+
+  //   // Make an Axios POST request to the Flask webhook
+  //   axios.post('/webhook', postData)
+  //     .then(response => {
+  //       setResponseData(response.data);
+  //       console.log(responseData)
+  //     })
+  //     .catch(error => {
+  //       console.error('Error sending POST request:', error);
+  //     });
+  // }, []);
 
   useEffect(() => {
-    // Sample data to send in the POST request
-    const postData = { id: 123, name: 'John' };
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/process_data');
+        setData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
 
-    // Make an Axios POST request to the Flask webhook
-    axios.post('/webhook', postData)
-      .then(response => {
-        setResponseData(response.data);
-        console.log(responseData)
-      })
-      .catch(error => {
-        console.error('Error sending POST request:', error);
-      });
+    fetchData();
   }, []);
 
 
   return (
     <div className="App flex bg-white items-center flex-row box-border overflow-auto">
-      <Sidebar/>
+      <Sidebar data={data}/>
       <Output/>
       <Prompt/>
     </div>
