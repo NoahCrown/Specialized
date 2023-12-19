@@ -17,6 +17,6 @@ To run the `server.py` stored in `Specialized/backend`
 ```bash
 python -m venv venv
 source venv/Scripts/activate
-pip install flask
+pip install requirements.txt
 python server.py
 ```
