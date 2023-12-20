@@ -36,9 +36,6 @@ const Sidebar = ({data}) => {
             {data.map((val) => (    
                 <PDFInfo name={val.response.fullname} position='Software Engineer'/>
             ))}
-            {/* <PDFInfo name='Noah De Rama' position='Associate Software Engineer' active={false} />
-            <PDFInfo name='John Doe' position='Data Scientist' active={false}/>
-            <PDFInfo name='John Cena' position='Actor' active={false}/> */}
         </div>
         
 

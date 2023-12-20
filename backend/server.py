@@ -19,7 +19,7 @@ def webhook():
                 return jsonify({"error": "No 'id' field found in the received JSON data"}), 400
         except Exception as e:
             return jsonify({"error": str(e)}), 500  # Return any exception as a JSON response with 500 status code
-api_endpoint = 'https://fakerapi.it/api/v1/persons?_quantity=1'
+# api_endpoint = 'https://fakerapi.it/api/v1/persons?_quantity=1'
 
 def process_api_response(response):
     if response.status_code == 200:
@@ -27,7 +27,7 @@ def process_api_response(response):
         candidate_data = extract_data(json_data)
         # response = summarize_data(candidate_data)
 
-        return {"response":candidate_data}
+        return {candidate_data}
     else:
         return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
 
