@@ -7,6 +7,8 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
+api_endpoint = 'https://fakerapi.it/api/v1/custom?_quantity=1&firstName=firstName&lastName=lastName&street=streetAddress&city=city&country=country&phone=phone&company=company_name&dateEntered=dateTime&dateRetired=dateTime&school=state&dateEntered=dateTime&dateGraduated=dateTime&certification=website'
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
@@ -19,15 +21,14 @@ def webhook():
                 return jsonify({"error": "No 'id' field found in the received JSON data"}), 400
         except Exception as e:
             return jsonify({"error": str(e)}), 500  # Return any exception as a JSON response with 500 status code
-# api_endpoint = 'https://fakerapi.it/api/v1/persons?_quantity=1'
-
+        
 def process_api_response(response):
     if response.status_code == 200:
         json_data = response.json()
         candidate_data = extract_data(json_data)
         # response = summarize_data(candidate_data)
 
-        return {candidate_data}
+        return candidate_data
     else:
         return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
 
