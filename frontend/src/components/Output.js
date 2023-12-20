@@ -3,7 +3,7 @@ import WorkDescription from './WorkDescription'
 
 const Output = () => {
   return (
-    <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 mb-4 overflow-scroll h-[100vh] border-r-2 border-solid border-[#D1D5DB]'>
+    <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 overflow-scroll h-[105vh] border-r-2 border-solid border-[#D1D5DB]'>
         <h1 className='text-3xl font-bold'>Output</h1>
         <p className='text-[#919191]'>Resume information</p>
         {/* Personal Information  */}

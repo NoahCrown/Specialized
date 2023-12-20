@@ -3,7 +3,7 @@ import PDFInfo from './PDFInfo'
 
 const Sidebar = ({data}) => {
   return (
-    <div className='flex justify-center items-center w-1/4 flex-col h-[100vh]'>
+    <div className='flex justify-center items-center w-1/4 flex-col h-[105vh]'>
     {/* Specialized Nav */}
         <div className='border-solid border-b-2 border-[#E7E7E7] w-full px-2 py-2'>
             <img src={require('../img/specialized_icon.png')} alt='specialized-icon' className='w-1/2 '/>
@@ -33,8 +33,8 @@ const Sidebar = ({data}) => {
     {/* Results  */}
         <div className='w-full '>
             <p className='px-10'>Results</p>
-            {data.map((val) => (    
-                <PDFInfo name={val.response.fullname} position='Software Engineer'/>
+            {data.slice(0, 3).map((val) => (    
+                <PDFInfo name={val.fullname} position={val.job_history['job position']} />
             ))}
         </div>
         
