@@ -16,7 +16,7 @@ function PromptInput({ promptNumber, active, onClick }) {
 
     // Make a POST request to your Flask backend using Axios
     axios
-      .post('/your-flask-endpoint', data, {
+      .post('/prompt_input', data, {
         headers: {
           'Content-Type': 'application/json',
         },

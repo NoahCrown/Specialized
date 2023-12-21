@@ -9,18 +9,16 @@ CORS(app)
 
 api_endpoint = 'https://fakerapi.it/api/v1/custom?_quantity=1&firstName=firstName&lastName=lastName&street=streetAddress&city=city&country=country&phone=phone&company=company_name&dateEntered=dateTime&dateRetired=dateTime&school=state&dateEntered=dateTime&dateGraduated=dateTime&certification=website'
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    if request.method == 'POST':
-        try:
-            received_data = request.json  # Get the JSON data from the request
-            if 'id' in received_data:
-                data_id = received_data["id"]
-                return jsonify(received_data)  # Return 'id' field in JSON format
-            else:
-                return jsonify({"error": "No 'id' field found in the received JSON data"}), 400
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500  # Return any exception as a JSON response with 500 status code
+@app.route('/prompt_input', methods=['POST'])
+def get_custom_prompt():
+    try:
+        received_data = request.json
+        #call/search the active candidate
+        custom_prompt = received_data["response"]
+        # response = summarize_data(candidate_data, id, custom prompt)
+        return custom_prompt
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500  # Return any exception as a JSON response with 500 status code
         
 def process_api_response(response):
     if response.status_code == 200:

@@ -3,6 +3,8 @@ import random
 
 job_positions = ["Software Engineer", "Data Analyst", "Project Manager", "Marketing Specialist", "UI/UX Designer"]
 
+id_counter = 0
+
 def generate_random_position(positions):
     if not positions:
         return "No positions available"
@@ -10,10 +12,13 @@ def generate_random_position(positions):
         return random.choice(positions)
 
 def extract_data(json_data):
+    global id_counter  # Access the global ID counter
+    id_counter += 1  # Increment the ID counter
+
     if 'data' in json_data and len(json_data['data']) > 0:
         item = json_data['data'][0]
         fullname = item.get('firstName') + ' ' + item.get('lastName')
-        email = None  # The provided JSON response doesn't contain an 'email' field
+        email = None
         
         phone = item.get('phone')
         
@@ -38,6 +43,7 @@ def extract_data(json_data):
         certification = item.get('certification', '')
 
         candidate_data = {
+            'id': id_counter,
             'fullname': fullname,
             'email': email,
             'phone': phone,
