@@ -60,5 +60,3 @@ def summarize_data(candidate_data):
     chain = LLMChain(llm=llm,prompt=prompt_template)
     response = chain.run({"candidate_data":candidate_data})
     return response
-
-print(summarize_data("MY DATA"))
