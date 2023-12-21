@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function PromptInput({ promptNumber, active, onClick }) {
+function PromptInput({ promptNumber, active, data }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
 
@@ -10,13 +10,27 @@ function PromptInput({ promptNumber, active, onClick }) {
     setTextboxVisible(!isTextboxVisible);
   };
 
-  const handleResponseSubmit = () => {
+  const handleSubmitPropmpt = async() => {
     // Create a JSON object with the response text
     const data = { response: responseText };
 
+    await axios
+          .patch('/prompt_input', data, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => {
+            // Handle the response from your Flask backend here
+            console.log('Response from Flask:', response.data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
     // Make a POST request to your Flask backend using Axios
-    axios
-      .post('/prompt_input', data, {
+    await axios
+      .post(`/run_llm/${data.candidateId}`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -28,9 +42,8 @@ function PromptInput({ promptNumber, active, onClick }) {
       .catch((error) => {
         console.error('Error:', error);
       });
-  };
 
-
+  }
 
   return (
     <>
@@ -64,7 +77,7 @@ function PromptInput({ promptNumber, active, onClick }) {
         <div className='flex items-center justify-center'>
           <button
           className="my-3 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
-          onClick={handleResponseSubmit}
+          onClick={handleSubmitPropmpt}
         >
           Rerun
         </button>
