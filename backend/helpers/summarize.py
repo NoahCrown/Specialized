@@ -1,10 +1,13 @@
+import os
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
+from dotenv import load_dotenv
 
 def summarize_data(candidate_data):
     #Change openai_api_key
-    llm = ChatOpenAI(openai_api_key="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", model="gpt-3.5-turbo-16k-0613", temperature=0)
+    load_dotenv()
+    llm = ChatOpenAI(openai_api_key= os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo-16k-0613", temperature=0)
     prompt_template = PromptTemplate(
         input_variables= ["candidate_data"],
         template="""
