@@ -4,23 +4,25 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from dotenv import load_dotenv
 
-def summarize_data(candidate_data):
+def summarize_data(candidate_data, custom_prompt):
     #Change openai_api_key
     load_dotenv()
     llm = ChatOpenAI(openai_api_key= os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo-16k-0613", temperature=0)
     prompt_template = PromptTemplate(
-        input_variables= ["candidate_data"],
+        input_variables= ["candidate_data", "custom_prompt"],
         template="""
         You are provided with the following data:
         {candidate_data}
-
+        Follow this instruction:
+        {custom_prompt}
         Summarize and format the given data to make it look like a Resume.
     """
 
     # template="""
     #     You are provided with the following data:
     #     {candidate_data}
-
+    #     Use the following instruction as guide:
+    #     {custom_prompt}
     #     Summarize and format the given data in tailwind in this format
     #     "
     #     <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 mb-4 overflow-scroll h-[100vh] border-r-2 border-solid border-[#D1D5DB]'>
@@ -58,5 +60,5 @@ def summarize_data(candidate_data):
     # """
     )
     chain = LLMChain(llm=llm,prompt=prompt_template)
-    response = chain.run({"candidate_data":candidate_data})
+    response = chain.run({"candidate_data":candidate_data, "custom_prompt": custom_prompt})
     return response

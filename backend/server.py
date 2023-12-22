@@ -1,6 +1,7 @@
 from flask import Flask, request, abort, jsonify
 from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
+from helpers.search import search_for_id
 from flask_cors import CORS
 import requests
 
@@ -15,18 +16,8 @@ def get_candidate():
     try:
         received_id = request.json
         candidate_id = received_id["candidateId"]
-
-        found_candidate_data = None
-
-        for response in list_of_response:
-            if response.get('id') == candidate_id:
-                found_candidate_data = response
-                break
-        
-        if found_candidate_data:
-            return jsonify(found_candidate_data)
-        else:
-            return jsonify({"message": "Candidate not found"})
+        candidate_data = search_for_id(candidate_id, list_of_response)
+        return candidate_data
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -35,12 +26,13 @@ def get_candidate():
 def get_custom_prompt():
     try:
         received_data = request.json
-        #call/search the active candidate
         custom_prompt = received_data["response"]
-        # response = summarize_data(candidate_data, id, custom prompt)
-        return custom_prompt
+        candidate_id = received_data["candidateId"]
+        candidate_data = search_for_id(candidate_id, list_of_response)
+        response = summarize_data(candidate_data, custom_prompt)
+        return response
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  # Return any exception as a JSON response with 500 status code
+        return jsonify({"error": str(e)}), 500 
         
 def process_api_response(response):
     if response.status_code == 200:
