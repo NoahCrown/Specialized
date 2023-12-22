@@ -1,36 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useCandidate } from '../context/Context';
 
-function PromptInput({ promptNumber, active, onClick }) {
+
+function PromptInput({ promptNumber, active }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
+  const { candidateId, setPromptResult } = useCandidate();
+
+
 
   
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
   };
 
-  const handleResponseSubmit = () => {
-    // Create a JSON object with the response text
-    const data = { response: responseText };
+  const handleSubmitPropmpt = async() => {
+    const data = {response: responseText, candidateId:candidateId }
+    console.log(data)
 
     // Make a POST request to your Flask backend using Axios
-    axios
-      .post('/your-flask-endpoint', data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => {
-        // Handle the response from your Flask backend here
-        console.log('Response from Flask:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  };
+    await axios
+  .post('/prompt_input', data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then((response) => {
+    // Handle the response from your Flask backend here
+    if (!response.data === null){
+       setPromptResult(response.data)
+    }
+    console.log(response.data);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    } 
+  });
 
 
+  }
 
   return (
     <>
@@ -64,7 +79,7 @@ function PromptInput({ promptNumber, active, onClick }) {
         <div className='flex items-center justify-center'>
           <button
           className="my-3 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
-          onClick={handleResponseSubmit}
+          onClick={handleSubmitPropmpt}
         >
           Rerun
         </button>

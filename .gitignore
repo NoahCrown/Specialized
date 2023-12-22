@@ -1,0 +1,11 @@
+.env
+.venv
+backend/venv
+venv/
+
+backend/helpers/__pycache__
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
+backend/.python-version

@@ -17,6 +17,6 @@ To run the `server.py` stored in `Specialized/backend`
 ```bash
 python -m venv venv
 source venv/Scripts/activate
-pip install requirements.txt
+pip install -r requirements.txt
 python server.py
 ```
