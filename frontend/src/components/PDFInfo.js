@@ -5,7 +5,7 @@ const PDFInfo = ({id, name, position, active}) => {
   const handleClick = async () => {
     try {
       // Send a POST request to the Flask backend
-      const response = await axios.post('enter-flask-endpoint', {
+      const response = await axios.post('/get_candidate', {
         candidateId: id, 
       });
 
