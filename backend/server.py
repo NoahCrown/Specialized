@@ -2,13 +2,15 @@ from flask import Flask, request, abort, jsonify
 from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
 from helpers.search import search_for_id
+from helpers.get_mockdata import extract_and_store
 from flask_cors import CORS
 import requests
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-list_of_response = []
+list_of_processed_response = []
 api_endpoint = 'https://fakerapi.it/api/v1/custom?_quantity=1&firstName=firstName&lastName=lastName&street=streetAddress&city=city&country=country&phone=phone&company=company_name&dateEntered=dateTime&dateRetired=dateTime&school=state&dateEntered=dateTime&dateGraduated=dateTime&certification=website'
 
 @app.route('/get_candidate', methods=['POST'])
@@ -16,7 +18,7 @@ def get_candidate():
     try:
         received_id = request.json
         candidate_id = received_id["candidateId"]
-        candidate_data = search_for_id(candidate_id, list_of_response)
+        candidate_data = search_for_id(candidate_id, list_of_processed_response)
         return candidate_data
 
     except Exception as e:
@@ -28,7 +30,7 @@ def get_custom_prompt():
         received_data = request.json
         custom_prompt = received_data["response"]
         candidate_id = received_data["candidateId"]
-        candidate_data = search_for_id(candidate_id, list_of_response)
+        candidate_data = search_for_id(candidate_id, list_of_processed_response)
         response = summarize_data(candidate_data, custom_prompt)
         return response
     except Exception as e:
@@ -43,9 +45,14 @@ def process_api_response(response):
     else:
         return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
     
+def process_api_mockresponse(response):
+    candidate_data = extract_and_store(response)
+
+    return candidate_data
+
 @app.route('/process_data', methods=['GET'])
 def handle_api_data():
-    global list_of_response
+    global list_of_processed_response
     try:
         # Make a GET request to the API
         # count = 0
@@ -54,7 +61,7 @@ def handle_api_data():
         #     processed_response = process_api_response(response)
         #     list_of_response.append(processed_response)
         #     count += 1
-        list_of_response = [[{"id":1,"first_name":"Janek","last_name":"Mallam","phone":"115-979-4386","dateOfBirth":None,"certification":None,"ethnicity":"Ute","primarySkills":"Ductwork","educationDegree":None,"comments":"Excellent problem-solving abilities","specialties":"Accounting"},
+        list_of_response = [{"id":1,"first_name":"Janek","last_name":"Mallam","phone":"115-979-4386","dateOfBirth":None,"certification":None,"ethnicity":"Ute","primarySkills":"Ductwork","educationDegree":None,"comments":"Excellent problem-solving abilities","specialties":"Accounting"},
 {"id":2,"first_name":"Zared","last_name":"Searby","phone":"269-262-3699","dateOfBirth":None,"certification":None,"ethnicity":"Panamanian","primarySkills":"RVM","educationDegree":None,"comments":"Excellent problem-solving abilities","specialties":"Sales"},
 {"id":3,"first_name":"Elden","last_name":"Sellars","phone":"404-769-2835","dateOfBirth":None,"certification":None,"ethnicity":None,"primarySkills":"SDH","educationDegree":"Master's Degree","comments":"Team player","specialties":"Data Analysis"},
 {"id":4,"first_name":"Rock","last_name":"Carlick","phone":"673-427-9566","dateOfBirth":"8/26/1991","certification":None,"ethnicity":"Malaysian","primarySkills":"SX.enterprise","educationDegree":None,"comments":"Team player","specialties":"Japanese Fluent"},
@@ -103,9 +110,12 @@ def handle_api_data():
 {"id":47,"first_name":"Ad","last_name":"Petrowsky","phone":"802-166-7928","dateOfBirth":"10/19/1999","certification":None,"ethnicity":"Filipino","primarySkills":"Business Object","educationDegree":None,"comments":"Adaptable and flexible","specialties":"Human Resources"},
 {"id":48,"first_name":"August","last_name":"Peile","phone":"665-342-3980","dateOfBirth":None,"certification":None,"ethnicity":"Costa Rican","primarySkills":"Kinesiology","educationDegree":None,"comments":"Adaptable and flexible","specialties":"Project Management"},
 {"id":49,"first_name":"Kaja","last_name":"Pashbee","phone":"216-733-5562","dateOfBirth":"5/9/1993","certification":None,"ethnicity":"Uruguayan","primarySkills":"Oil &amp; Gas Accounting","educationDegree":None,"comments":"Highly motivated and proactive","specialties":"Japanese Fluent"},
-{"id":50,"first_name":"Stirling","last_name":"Pidgen","phone":"580-663-7735","dateOfBirth":None,"certification":"Terry Inc","ethnicity":"Eskimo","primarySkills":"KnockoutJS","educationDegree":None,"comments":"Adaptable and flexible","specialties":"Graphic Design"}]]
+{"id":50,"first_name":"Stirling","last_name":"Pidgen","phone":"580-663-7735","dateOfBirth":None,"certification":"Terry Inc","ethnicity":"Eskimo","primarySkills":"KnockoutJS","educationDegree":None,"comments":"Adaptable and flexible","specialties":"Graphic Design"}]
         # Process the API response
-        return list_of_response
+        for response in list_of_response:
+            processed_response = process_api_mockresponse(response)
+            list_of_processed_response.append(processed_response)
+        return jsonify(list_of_processed_response)
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
