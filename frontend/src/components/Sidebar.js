@@ -34,7 +34,7 @@ const Sidebar = ({data}) => {
         <div className='w-full '>
             <p className='px-10'>Results</p>
             {data.slice(0, 3).map((val) => (    
-                <PDFInfo key={val.id} id={val.id} name={val.fullname} position={val.job_history['job position']} />
+                <PDFInfo key={val.id} id={val.id} first_name={val.first_name} last_name={val.last_name} position={val.specialties} />
             ))}
         </div>
         
