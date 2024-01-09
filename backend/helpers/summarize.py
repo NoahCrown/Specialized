@@ -8,7 +8,7 @@ def summarize_data(candidate_data, custom_prompt):
     #Change openai_api_key
     candidate_data = str(candidate_data)
     load_dotenv()
-    llm = ChatOpenAI(openai_api_key= os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo-16k-0613", temperature=0)
+    llm = ChatOpenAI(openai_api_key=os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo-16k-0613", temperature=0)
     prompt_template = PromptTemplate(
         input_variables= ["candidate_data", "custom_prompt"],
         template="""
@@ -24,25 +24,21 @@ def summarize_data(candidate_data, custom_prompt):
 
         JSON Format:
         {{
-                personal_info:{{
-                    'first_name': candidate's first name,
-                    'last_name;:candidate's last name,
-                    'phone_num':candidate's phone number,
-                    'address':candidate's address
-                }},
-                job_history:{{
-                    'position':candidate's position at job,
-                    'summary':[candidate's achievements in the said job],
-                }},
-                certificates:{{
-                    'title':title of the certificate,
-                    'website:website of the certificate,
-                }},
-                education:{{
-                    'university':candidate's university,
-                    'year_graduated:candidate's year of graduation,
-                    'course':candidate's course
-                }}
+                {{
+                    certification: candidate's ceritification,
+                    comments: 'comments about the candidate',
+                    dateOfBirth: 'date of birth of the candidate',
+                    educationDegree: 'educational degree of the candidate',
+                    ethnicity: 'candidate's ethnicity',
+                    first_name: 'candidate's first name',
+                    id: candidate's id,
+                    last_name: 'candidate's last name',
+                    phone: 'candidate's phone number',
+                    primarySkills: 'candidate's primary skill',
+                    specialties: 'candidate's specialities',
+                    inferred_age: candidate's inferred age based on year graduated if date of birth is unavailable,
+                    inferred_age_ai_confidence: 'confidence of ai on how accurate the inferred age is'
+  }}
         }}
 
         

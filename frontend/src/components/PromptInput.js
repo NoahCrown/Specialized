@@ -76,7 +76,8 @@ function PromptInput({ promptNumber, active }) {
           value={responseText}
           onChange={(e) => setResponseText(e.target.value)}
         ></textarea>
-        <div className='flex items-center justify-center'>
+        <div className='flex items-center justify-between px-4'>
+        <p className='underline font-bold hover:cursor-pointer'>Save</p>
           <button
           className="my-3 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
           onClick={handleSubmitPropmpt}
