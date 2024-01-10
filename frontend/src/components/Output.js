@@ -14,22 +14,40 @@ const Output = () => {
           <>
           <h1 className='text-3xl font-bold'>Output</h1>
       
-      <p className='text-[#919191]'>Resume information</p>
+      <p className='text-[#919191] '>Resume information</p>
       {/* Personal Information  */}
-      <div className='text-[#919191]'>
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Personal Information</p>
-          <p>First Name: {promptResult.fullname}</p>
-          <p>Last Name: {promptResult.fullname}</p>
+          <p>First Name:{promptResult.first_name} </p>
+          <p>Last Name: {promptResult.last_name} </p>
           <p>Phone: {promptResult.phone}</p>
-          <p>Address: {promptResult.address.city} {promptResult.address.country} {promptResult.address.street}</p>
+          <p>Address:{promptResult.ethnicity} </p>
       </div>
       {/* Job History  */}
-      <div className='text-[#919191]'>
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Job History</p>
           {/* {promptResult.job_history.map((val) =>{
             <p>{val}</p>
           })}
            */}
+      </div>
+
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
+          <p className='text-black py-2'>Skills/Qualification</p>
+          <p>Primary Skills: {promptResult.primarySkills} </p>
+          <p>Specialties: {promptResult.specialties} </p>
+          <p>Comments: {promptResult.comments}</p>
+      </div>
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
+          <p className='text-black py-2'>Age/Inferred Age</p>
+          <p>Inferred Age: {promptResult.primarySkills} </p>
+          <p>AI Confidence: </p>
+      </div>
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
+          <p className='text-black py-2'>Age/Inferred Age</p>
+          <p>Language:  </p>
+          <p>Language Proficiency:  </p>
+          <p>AI Confidence: </p>
       </div>
           </>
         
