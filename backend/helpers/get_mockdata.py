@@ -25,3 +25,28 @@ def extract_and_store(response):
     except json.JSONDecodeError as e:
         print("Error parsing JSON:", e)
         return None
+    
+def extract_and_store_work_history(response):
+    try:
+        # Parse the API response as JSON
+        api_data = response
+
+        candidate = api_data.get("candidate")
+        extracted_data = {
+            "id": api_data.get("id"),
+            "candidate":{
+                "id": candidate.get("id"),
+                "first_name": candidate.get("first_name"),
+                "last_name": candidate.get("last_name")
+                },
+            "startDate": api_data.get("startDate"),
+            "endDate": api_data.get("endDate"),
+            "companyName": api_data.get("companyName"),
+            "title": api_data.get("title"),
+            "islastJob": api_data.get("islastJob")
+        }
+        
+        return extracted_data
+    except json.JSONDecodeError as e:
+        print("Error parsing JSON:", e)
+        return None
