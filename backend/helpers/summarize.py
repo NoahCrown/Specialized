@@ -36,8 +36,21 @@ def summarize_data(candidate_data, custom_prompt):
                     phone: 'candidate's phone number',
                     primarySkills: 'candidate's primary skill',
                     specialties: 'candidate's specialities',
-                    inferred_age: candidate's inferred age based on year graduated if date of birth is unavailable,
-                    inferred_age_ai_confidence: 'confidence of ai on how accurate the inferred age is'
+                    (If the [choice] is == age provide this additional date below)
+                    inferred_age:  infer the age of the candidate based on the date given to you. you can use his/her job history, year of graduation, or birthday to infer his/her age. add a confidence level to see how confident you are with inferring the age data,
+                    inferred_age_ai_confidence: 'confidence of ai on how accurate the inferred age is on the scale of 1-5'
+                    (if the [choice is == language provide this additional date below])
+                    {
+                        language: japanese,
+                        profiecieny: base proficiency with the ethnicity in the data None/Basic/Conversational/Business/Fluent/Native
+                        confidence level: ( how confident the ai is in inferring the data )
+                    },
+                    {
+                        language: english,
+                        profiecieny: base proficiency with the ethnicity in the data None/Basic/Conversational/Business/Fluent/Native
+                        confidence level: ( how confident the ai is in inferring the data )
+                    }
+                
   }}
         }}
 

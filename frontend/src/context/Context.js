@@ -6,29 +6,16 @@ const Context = createContext();
 
 export const CandidateProvider = ({ children }) => {
   const [candidateId, setCandidateId] = useState(null);
-  // const [promptResult, setPromptResult] = useState({
-  //   personal_info:{
-  //     'first_name': '',
-  //     'last_name':'',
-  //     'phone_num':'',
-  //     'address':''
-  // },
-  // job_history:{
-  //     'position':'',
-  //     'summary':'',
-  // },
-  // certificates:{
-  //     'title':'',
-  //     'website':'',
-  // },
-  // education:{
-  //     'university':'',
-  //     'year_graduated':'',
-  //     'course':''
-  // }
-  // })
+
 
   const [promptResult, setPromptResult] = useState(null)
+
+  const [dataToInfer, setDataToInfer] = useState('');
+
+  const handleChange = (event) => {
+        setDataToInfer(event.target.value);
+  };
+
 
   const setCandidate = (id) => {
     setCandidateId(id);
@@ -39,7 +26,7 @@ export const CandidateProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ candidateId, setCandidate, promptResult, setPromptResult, setOutput }}>
+    <Context.Provider value={{ candidateId, setCandidate, promptResult, setPromptResult, setOutput, dataToInfer, handleChange}}>
       {children}
     </Context.Provider>
   );

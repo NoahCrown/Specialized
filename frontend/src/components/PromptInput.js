@@ -1,48 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import axios from 'axios';
 import { useCandidate } from '../context/Context';
 
 
-function PromptInput({ promptNumber, active }) {
+function PromptInput({ promptNumber, active, inferData  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const { candidateId, setPromptResult } = useCandidate();
+  const { candidateId, setPromptResult, dataToInfer } = useCandidate();
 
-
-
-  
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
   };
 
   const handleSubmitPropmpt = async() => {
-    const data = {response: responseText, candidateId:candidateId }
+    const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, }
     console.log(data)
 
     // Make a POST request to your Flask backend using Axios
     await axios
-  .post('/prompt_input', data, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-  .then((response) => {
-    // Handle the response from your Flask backend here
-    if (!response.data === null){
-       setPromptResult(response.data)
-    }
-    console.log(response.data);
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', error.response.headers);
-    } 
-  });
+    .post('/prompt_input', data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      // Handle the response from your Flask backend here
+      if (!response.data === null){
+        setPromptResult(response.data)
+      }
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } 
+    });
 
 
   }
