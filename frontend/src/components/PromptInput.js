@@ -3,10 +3,10 @@ import axios from 'axios';
 import { useCandidate } from '../context/Context';
 
 
-function PromptInput({ promptNumber, active, inferData  }) {
+function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const { candidateId, setPromptResult, dataToInfer } = useCandidate();
+  const { candidateId, dataToInfer, setInfered,inferedData  } = useCandidate();
 
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
@@ -25,10 +25,10 @@ function PromptInput({ promptNumber, active, inferData  }) {
     })
     .then((response) => {
       // Handle the response from your Flask backend here
-      if (!response.data === null){
-        setPromptResult(response.data)
+      if (response.data){
+        setInfered(response.data)
       }
-      console.log(response.data);
+      // console.log(response.data);
     })
     .catch((error) => {
       console.error('Error:', error);

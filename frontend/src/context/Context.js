@@ -12,9 +12,15 @@ export const CandidateProvider = ({ children }) => {
 
   const [dataToInfer, setDataToInfer] = useState('');
 
+  const [inferedData, setInferedData] = useState(null)
+
   const handleChange = (event) => {
         setDataToInfer(event.target.value);
   };
+
+  const setInfered = (data) => {
+    setInferedData(data)
+  }
 
 
   const setCandidate = (id) => {
@@ -26,7 +32,7 @@ export const CandidateProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ candidateId, setCandidate, promptResult, setPromptResult, setOutput, dataToInfer, handleChange}}>
+    <Context.Provider value={{ candidateId, setCandidate, promptResult, setPromptResult, setOutput, dataToInfer, handleChange, setInfered, inferedData}}>
       {children}
     </Context.Provider>
   );

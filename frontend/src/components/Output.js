@@ -3,10 +3,10 @@ import { useCandidate } from '../context/Context';
 
 
 const Output = () => {  
-  const { promptResult } = useCandidate();
+  const { promptResult, inferedData } = useCandidate();
   useEffect(() => {
-    console.log("PromptResult changed:", promptResult);
-  }, [promptResult]);
+    console.log("PromptResult changed:", inferedData);
+  }, [inferedData]);
   
   return (
     <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 overflow-scroll h-[105vh] border-r-2 border-solid border-[#D1D5DB]'>
@@ -40,11 +40,11 @@ const Output = () => {
       </div>
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Age/Inferred Age</p>
-          <p>Inferred Age: {promptResult.primarySkills} </p>
-          <p>AI Confidence: </p>
+          {inferedData && <p>Inferred Age: {inferedData.Age}  </p>}
+          {inferedData && <p>AI Confidence: {inferedData.confidence}  </p>}
       </div>
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
-          <p className='text-black py-2'>Age/Inferred Age</p>
+          <p className='text-black py-2'>Language Proficiency</p>
           <p>Language:  </p>
           <p>Language Proficiency:  </p>
           <p>AI Confidence: </p>

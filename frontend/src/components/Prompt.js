@@ -5,12 +5,6 @@ import { useCandidate } from '../context/Context';
 import PromptInput from './PromptInput'
 const Prompt = ({data}) => {
   const { dataToInfer, handleChange } = useCandidate();
-  // const [dataToInfer, setDataToInfer] = useState('');
-
-  //   const handleChange = (event) => {
-  //       setDataToInfer(event.target.value);
-  //   };
-
 
   console.log(dataToInfer)
   return (
@@ -21,7 +15,7 @@ const Prompt = ({data}) => {
         <select value={dataToInfer} onChange={handleChange}>
             <option value="age">Age</option>
 
-            <option value="language_skill">Language Skills EN</option>
+            <option value="languageSkills">Language Skills EN</option>
             
             <option value="location">Location</option>
 

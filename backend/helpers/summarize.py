@@ -20,4 +20,4 @@ def summarize_data(candidate_data, custom_prompt, infer_data):
     )
     chain = LLMChain(llm=llm,prompt=prompt_template)
     response = chain.run({"candidate_data":candidate_data, "custom_prompt": custom_prompt})
-    return response
+    return eval(response)
