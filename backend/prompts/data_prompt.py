@@ -1,7 +1,6 @@
 LANGUAGE_SKILLS_PROMPT = """
-You are provided with a candidate json data and a custom prompt. Your job is to follow the instruction from the custom prompt
-to extract selected data from the candidate data and return a json following. Only provide the selected data from the custom prompt and do not send back the other datas  but if the custom prompt is empty provide everything. 
-Follow the json format below and only return the json.
+You are provided with a candidate json data and a custom prompt. Your job is to infer the candidate's language proficiency in english and japanese using the given candidate's data
+Return only the JSON File
 
 Data:
 {candidate_data}
@@ -10,27 +9,17 @@ Instruction:
 {custom_prompt}
 
 JSON Format:
-{{
-        personal_info:{{
-            'first_name': candidate's first name,
-            'last_name;:candidate's last name,
-            'phone_num':candidate's phone number,
-            'address':candidate's address
-        }},
-        job_history:{{
-            'position':candidate's position at job,
-            'summary':[candidate's achievements in the said job],
-        }},
-        certificates:{{
-            'title':title of the certificate,
-            'website:website of the certificate,
-        }},
-        education:{{
-            'university':candidate's university,
-            'year_graduated:candidate's year of graduation,
-            'course':candidate's course
-        }}
-}}
+]
+{{"Language": English,
+"enProficiency": ( insert here how proficient the candidate is in english ranging from None/Basic/Conversational/Business/Fluent/Native)),
+"confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
+}},
+{{"Language": Japanese,
+"enProficiency": ( insert here how proficient the candidate is in japanese ranging from None/Basic/Conversational/Business/Fluent/Native)),
+"confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
+}},
+]
+
 
 """
 AGE_INFERENCE_PROMPT = """
