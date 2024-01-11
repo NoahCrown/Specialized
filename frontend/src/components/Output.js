@@ -57,7 +57,7 @@ const Output = () => {
           </>
         
         
-         : <h1>Fuck</h1>}
+         : <h1>No Data</h1>}
         
         
     </div>
