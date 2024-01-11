@@ -6,7 +6,7 @@ import { useCandidate } from '../context/Context';
 function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const { candidateId, dataToInfer, setInfered,inferedData  } = useCandidate();
+  const { candidateId, dataToInfer, setInfered, setInferedLang  } = useCandidate();
 
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
@@ -25,10 +25,12 @@ function PromptInput({ promptNumber, active  }) {
     })
     .then((response) => {
       // Handle the response from your Flask backend here
-      if (response.data){
+      if (response.data && dataToInfer === "age"){
         setInfered(response.data)
+      }else if (response.data && dataToInfer === "languageSkills"){
+        setInferedLang(response.data)
       }
-      // console.log(response.data);
+      console.log(response.data);
     })
     .catch((error) => {
       console.error('Error:', error);

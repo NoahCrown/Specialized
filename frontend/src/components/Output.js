@@ -3,10 +3,10 @@ import { useCandidate } from '../context/Context';
 
 
 const Output = () => {  
-  const { promptResult, inferedData } = useCandidate();
+  const { promptResult, inferedData, inferedLangProficiency } = useCandidate();
   useEffect(() => {
-    console.log("PromptResult changed:", inferedData);
-  }, [inferedData]);
+    console.log("PromptResult changed:", inferedLangProficiency);
+  }, [inferedLangProficiency]);
   
   return (
     <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 overflow-scroll h-[105vh] border-r-2 border-solid border-[#D1D5DB]'>
@@ -45,9 +45,14 @@ const Output = () => {
       </div>
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Language Proficiency</p>
-          <p>Language:  </p>
-          <p>Language Proficiency:  </p>
-          <p>AI Confidence: </p>
+          {inferedLangProficiency && inferedLangProficiency.map((val, index) => (
+        // Check if the data exists before rendering
+          <div className='mb-2' key={index}>
+            <p>Language: {val.Language}</p>
+            <p>Confidence: {val.confidence}</p>
+            <p>English Proficiency: {val.enProficiency}</p>
+          </div>
+          ))}
       </div>
           </>
         
