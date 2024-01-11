@@ -16,12 +16,16 @@ def summarize_data(candidate_data, custom_prompt, infer_data):
 
     if infer_data == "age":
         infer_template = AGE_INFERENCE_PROMPT
+        infer_var = ["candidate_data", "custom_prompt", 'current_date']
+        params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
     elif infer_data == "languageSkills":
         infer_template = LANGUAGE_SKILLS_PROMPT
+        infer_var = ["candidate_data", "custom_prompt"]
+        params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt}
     prompt_template = PromptTemplate(
-        input_variables= ["candidate_data", "custom_prompt", 'current_date'],
+        input_variables= infer_var,
         template= infer_template
     )
     chain = LLMChain(llm=llm,prompt=prompt_template)
-    response = chain.run({"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date})
+    response = chain.run(params)
     return eval(response)
