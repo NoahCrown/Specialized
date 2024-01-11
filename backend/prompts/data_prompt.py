@@ -51,3 +51,7 @@ Current Date:
 "confidence: ( insert confidence level here from 1 -5, 1 being the lowest)
 }}
 """
+
+CURRENT_LOCATION_INFERENCE_PROMPT = """
+
+"""

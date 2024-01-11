@@ -38,12 +38,12 @@ def get_custom_prompt():
         elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is None:
-            global list_of_processed_workhistory
-            list_of_workhistory = MOCK_CANDIDATEWORKHISTORY_DATA
-            for response in list_of_workhistory:
-                processed_response = extract_and_store_work_history(response)
-                list_of_processed_workhistory.append(processed_response)
             candidate_data = search_for_candidate(candidate_id, list_of_processed_workhistory)
+            response = summarize_data(candidate_data, custom_prompt, infer_data)
+        elif infer_data == "location":
+            candidate_work_history = search_for_candidate(candidate_id, list_of_processed_workhistory)
+            for d in candidate_work_history:
+                candidate_data.update(d)
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         return response
     except Exception as e:
@@ -65,7 +65,7 @@ def process_api_mockresponse(response):
 
 @app.route('/process_data', methods=['GET'])
 def handle_api_data():
-    global list_of_processed_candidates
+    global list_of_processed_candidates, list_of_processed_workhistory
     try:
         # Make a GET request to the API
         # count = 0
@@ -75,6 +75,10 @@ def handle_api_data():
         #     list_of_response.append(processed_response)
         #     count += 1
         list_of_candidates = MOCK_CANDIDATE_DATA
+        list_of_workhistory = MOCK_CANDIDATEWORKHISTORY_DATA
+        for response in list_of_workhistory:
+            processed_response = extract_and_store_work_history(response)
+            list_of_processed_workhistory.append(processed_response)
         # Process the API response
         for response in list_of_candidates:
             processed_response = process_api_mockresponse(response)
