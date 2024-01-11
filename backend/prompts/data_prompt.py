@@ -40,8 +40,11 @@ Data:
 {candidate_data}
 
 your job is to infer the age of the candidate based on the date given to you. you can use his/her birthday, if those are not available you can rely on his/her job history or year of graduation. add a confidence level to see how confident you are with inferring the age data
-
+I'll also provide you a date, give me the age of the candidate base of this date.
 only return The JSON File with the format below nothing else
+
+Current Date:
+{current_date}
 
 {{
 "Age": ( insert inferred age here ),
