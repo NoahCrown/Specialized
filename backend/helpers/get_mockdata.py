@@ -8,10 +8,17 @@ def extract_and_store(response):
         # Create an empty dictionary to store the extracted data
         extracted_data = {}
         
+        address = api_data.get("address")
         # Store the API response in the dictionary
         extracted_data["id"] = api_data.get("id")
         extracted_data["first_name"] = api_data.get("first_name")
         extracted_data["last_name"] = api_data.get("last_name")
+        extracted_data["address"] = {
+            "address1": address.get("address1"),
+            "address2": address.get("address2"),
+            "city": address.get("city"),
+            "state": address.get("state")
+        }
         extracted_data["phone"] = api_data.get("phone")
         extracted_data["dateOfBirth"] = api_data.get("dateOfBirth")
         extracted_data["certification"] = api_data.get("certification")
