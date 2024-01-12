@@ -1,7 +1,7 @@
 from flask import Flask, request, abort, jsonify
 from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
-from helpers.search import search_for_id, search_for_candidate
+from helpers.search import search_for_id, search_for_candidate, search_for_name
 from helpers.get_mockdata import extract_and_store, extract_and_store_work_history
 from mockdata.data import MOCK_CANDIDATE_DATA,MOCK_CANDIDATEWORKHISTORY_DATA
 from flask_cors import CORS
@@ -22,6 +22,16 @@ def get_candidate():
         candidate_data = search_for_id(candidate_id, list_of_processed_candidates)
         return candidate_data
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/search_name', methods = ['POST'])
+def search_candidate():
+    try:
+        received_name = request.json
+        candidate_name = received_name["name"]
+        candidate_data = search_for_name(candidate_name, list_of_processed_candidates)
+        return candidate_data
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
