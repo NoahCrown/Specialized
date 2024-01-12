@@ -23,7 +23,8 @@ JSON Format:
 
 """
 AGE_INFERENCE_PROMPT = """
-you are given this json data
+you are given this json data. the dates are in epoch timestamps
+
 
 Data:
 {candidate_data}
@@ -42,5 +43,16 @@ Current Date:
 """
 
 CURRENT_LOCATION_INFERENCE_PROMPT = """
+i'm gonna give you a candidate's data, your job is to infer the location of that candidate using his/her work experience, phone number area code and ethinicity
+
+Data:
+{candidate_data}
+
+
+only return me a json file that looks like this nothing else.
+{
+"Location":  ( insert here the inferred location of the candidate base on the data given to you ),
+"confidence": ( AI's confidence in inferring the data)
+}
 
 """

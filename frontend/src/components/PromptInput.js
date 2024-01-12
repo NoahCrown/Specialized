@@ -6,7 +6,7 @@ import { useCandidate } from '../context/Context';
 function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const { candidateId, dataToInfer, setInfered, setInferedLang  } = useCandidate();
+  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc  } = useCandidate();
 
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
@@ -29,6 +29,8 @@ function PromptInput({ promptNumber, active  }) {
         setInfered(response.data)
       }else if (response.data && dataToInfer === "languageSkills"){
         setInferedLang(response.data)
+      }else if (response.data && dataToInfer === "location"){
+        setInferedLoc(response.data)
       }
       console.log(response.data);
     })
