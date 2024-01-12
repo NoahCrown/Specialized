@@ -16,9 +16,16 @@ export const CandidateProvider = ({ children }) => {
 
   const [inferedLangProficiency, setInferedLangProficiency] = useState(null)
 
+  const [inferedLocation, setInferedLocation] = useState(null)
+
+
   const handleChange = (event) => {
         setDataToInfer(event.target.value);
   };
+
+  const setInferedLoc = (data) => {
+    setInferedLocation(data)
+  }
 
   const setInferedLang = (data) => {
     setInferedLangProficiency(data)
@@ -38,7 +45,20 @@ export const CandidateProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ candidateId, setCandidate, promptResult, setPromptResult, setOutput, dataToInfer, handleChange, setInfered, inferedData, inferedLangProficiency, setInferedLang}}>
+    <Context.Provider value={{ 
+      candidateId, 
+      setCandidate, 
+      promptResult, 
+      setPromptResult, 
+      setOutput, 
+      dataToInfer, 
+      handleChange, 
+      setInfered, 
+      inferedData, 
+      inferedLangProficiency, 
+      setInferedLang,
+      inferedLocation,
+      setInferedLoc}}>
       {children}
     </Context.Provider>
   );

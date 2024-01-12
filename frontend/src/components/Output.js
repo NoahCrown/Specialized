@@ -3,7 +3,7 @@ import { useCandidate } from '../context/Context';
 
 
 const Output = () => {  
-  const { promptResult, inferedData, inferedLangProficiency } = useCandidate();
+  const { promptResult, inferedData, inferedLangProficiency, inferedLocation } = useCandidate();
   useEffect(() => {
     console.log("PromptResult changed:", inferedLangProficiency);
   }, [inferedLangProficiency]);
@@ -53,6 +53,12 @@ const Output = () => {
             <p>English Proficiency: {val.enProficiency}</p>
           </div>
           ))}
+      </div>
+
+      <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
+          <p className='text-black py-2'>Location</p>
+          {inferedLocation && <p>Inferred Age: {inferedLocation.location}  </p>}
+          {inferedLocation && <p>AI Confidence: {inferedLocation.confidence}  </p>}
       </div>
           </>
         
