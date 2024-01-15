@@ -1,7 +1,30 @@
-import React from 'react'
+import React, {useState, useRef} from 'react'
 import PDFInfo from './PDFInfo'
 
 const Sidebar = ({data}) => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleDivClick = () => {
+    // Trigger the hidden file input click event
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = () => {
+    // You can handle the file upload logic here
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile)
+    }
+}
   return (
     <div className='flex justify-center items-center w-1/4 flex-col h-[105vh]'>
     {/* Specialized Nav */}
@@ -10,18 +33,29 @@ const Sidebar = ({data}) => {
         </div>
     {/* Pdf Info */}
         <div className='flex justify-center items-center flex-col p-3 w-[80%] px-4 border-solid border-b-2 border-[#E7E7E7] '>
-            <div className='border-solid border-2 border-[#E7E7E7] p-3 flex justify-center items-center w-full gap-8 p=4'>
-                <div className='rounded-full bg-[#CECECE] w-[15%] flex justify-center items-start p-2'>
-                    <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[70%]'/>
-                </div>
-
-                <div className='w-[70%] flex flex-col gap-2 '>
-                    <h3 className='font-bold'>Micah Angeles</h3>
-                    <p className='text-[#919191]'>Creative Lead</p>
-                    <buton className='font-bold underline hover:cursor-pointer'>View</buton>
+                <div className='w-[100%] flex flex-col gap-'>
+                    <div className='rounded-sm border-dotted border-2 border-[#E7E7E7] w-[100%] h-[20vh] flex flex-col justify-center items-center p-10 gap-2'>                    
+                        <div className='flex flex-col justify-center items-center'
+                        onClick={handleDivClick}>
+                            <img src={require('../img/upload.jpg')} alt='upload'></img>
+                            <input
+                            type="file"
+                            accept="application/pdf"
+                            name="pdf"
+                            className='upload-button hidden w-full' 
+                            onChange={handleFileChange}
+                            ref={fileInputRef} />
+                            <label id="upload-text">
+                                <span class="text-[.75rem] text-[#919191]" id="upload-click">Upload a CV from your computer</span>
+                            </label>
+                            
+                        </div>
+                        
+                        <button className='rounded-md bg-black text-white px-8 font-bold py-3 text-[.75rem]' onClick={handleUpload}>Upload</button>
+                    </div>
+                
                 </div>
             </div>
-        </div>
     {/* Search Bar  */}
         <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4'>
             <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2'>
