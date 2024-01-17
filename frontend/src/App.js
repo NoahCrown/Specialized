@@ -25,7 +25,7 @@ function App() {
 
 
   return (
-    <div className="App flex bg-white items-center flex-row box-border overflow-auto">
+    <div className="App flex bg-white items-center flex-row box-border overflow-auto h-full">
       <Sidebar data={data}/>
       <Output/>
       <Prompt data={data}/>

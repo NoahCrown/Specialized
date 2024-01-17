@@ -1,9 +1,33 @@
 import React, {useState, useRef} from 'react'
 import PDFInfo from './PDFInfo'
+import axios from 'axios';
 
 const Sidebar = ({data}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const [inputValue, setInputValue] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  console.log(searchResults)
+
+  const handleSearch = () => {
+    // Define the API endpoint
+    const apiUrl = '/search_name';
+
+    // Create a POST request data
+    const requestData = { name: inputValue };
+
+    // Make a POST request to the API using Axios
+    axios
+      .post(apiUrl, requestData)
+      .then(response => {
+        // Handle the successful response
+        setSearchResults(response.data);
+      })
+      .catch(error => {
+        // Handle errors here
+        console.error(error);
+      });
+  };
 
   const handleDivClick = () => {
     // Trigger the hidden file input click event
@@ -11,8 +35,6 @@ const Sidebar = ({data}) => {
       fileInputRef.current.click();
     }
   };
-
-
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -26,10 +48,10 @@ const Sidebar = ({data}) => {
     }
 }
   return (
-    <div className='flex justify-center items-center w-1/4 flex-col h-[105vh]'>
+    <div className='flex justify-center items-center w-1/4 flex-col h-full'>
     {/* Specialized Nav */}
-        <div className='border-solid border-b-2 border-[#E7E7E7] w-full px-2 py-2'>
-            <img src={require('../img/specialized_icon.png')} alt='specialized-icon' className='w-1/2 '/>
+    <div className='border-solid border-b-2 border-[#E7E7E7] w-full px-2 py-2'>
+            <img src={require('../img/specialized_icon.png')} alt='specialized-icon' className='w-1/2'/>
         </div>
     {/* Pdf Info */}
         <div className='flex justify-center items-center flex-col p-3 w-[80%] px-4 border-solid border-b-2 border-[#E7E7E7] '>
@@ -57,12 +79,26 @@ const Sidebar = ({data}) => {
                 </div>
             </div>
     {/* Search Bar  */}
-        <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4'>
+        <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4 border-solid border-b-2 border-[#E7E7E7]'>
+        <label className='text-[.80rem] text-[#8F8F8F]'>Search by name</label>
+            <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2'>
+                <input 
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)} 
+                  className='w-[90%] text-sm focus:outline-none' 
+                  placeholder='Search for a job position or name... '/>
+                <i class="fa-solid fa-x w-[10%] hover:cursor-pointer" ></i>
+            </div>
+            <button onClick={handleSearch} className='bg-black text-white w-full rounded-md p-2 hover:cursor-pointer '>Search</button>
+        </div>
+
+        <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4 border-solid border-b-2 border-[#E7E7E7]'>
+            <label className='text-[.80rem] text-[#8F8F8F]'>Search by missing data</label>
             <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2'>
                 <input className='w-[90%] text-sm focus:outline-none' placeholder='Search for a job position or name... '/>
                 <i class="fa-solid fa-x w-[10%] hover:cursor-pointer" ></i>
             </div>
-            <button className='bg-black text-white w-full rounded-md p-2 hover:cursor-pointer '>Search</button>
+            <button onClick={handleSearch} className='bg-black text-white w-full rounded-md p-2 hover:cursor-pointer '>Search</button>
         </div>
     {/* Results  */}
         <div className='w-full '>

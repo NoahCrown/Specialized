@@ -9,7 +9,7 @@ const Output = () => {
   }, [inferedLangProficiency]);
   
   return (
-    <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5] flex  p-6 flex-col gap-4 overflow-scroll h-[105vh] border-r-2 border-solid border-[#D1D5DB]'>
+    <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5]  flex  p-6 flex-col gap-4 overflow-scroll h-[130vh] border-r-2 border-solid border-[#D1D5DB]'>
         {promptResult !== null ? 
           <>
           <h1 className='text-3xl font-bold'>Output</h1>
