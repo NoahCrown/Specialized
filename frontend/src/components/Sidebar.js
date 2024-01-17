@@ -7,7 +7,11 @@ const Sidebar = ({data}) => {
   const fileInputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  console.log(searchResults)
+  const [missingDataToSearch, setMissingDataToSearch] = useState(null)
+
+  const handleMissingDataSearch = (event) => {
+    setMissingDataToSearch(event.target.value)
+  }
 
   const handleSearch = () => {
     // Define the API endpoint
@@ -38,15 +42,30 @@ const Sidebar = ({data}) => {
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    console.log(selectedFile)
   };
 
   const handleUpload = () => {
-    // You can handle the file upload logic here
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile)
+    // Check if a file is selected
+    if (!selectedFile) {
+      return;
     }
-}
+
+    const formData = new FormData();
+    formData.append('pdfFile', selectedFile);
+
+    // Replace 'YOUR_UPLOAD_URL' with your actual server endpoint
+    axios.post('/upload', formData)
+      .then((response) => {
+        // Handle the response from the server
+        console.log('File uploaded successfully:', response.data);
+      })
+      .catch((error) => {
+        // Handle any errors
+        console.error('Error uploading file:', error);
+      });
+  };
+
   return (
     <div className='flex justify-center items-center w-1/4 flex-col h-full'>
     {/* Specialized Nav */}
@@ -63,7 +82,7 @@ const Sidebar = ({data}) => {
                             <input
                             type="file"
                             accept="application/pdf"
-                            name="pdf"
+                            name="pdfFile"
                             className='upload-button hidden w-full' 
                             onChange={handleFileChange}
                             ref={fileInputRef} />
@@ -95,8 +114,14 @@ const Sidebar = ({data}) => {
         <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4 border-solid border-b-2 border-[#E7E7E7]'>
             <label className='text-[.80rem] text-[#8F8F8F]'>Search by missing data</label>
             <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2'>
-                <input className='w-[90%] text-sm focus:outline-none' placeholder='Search for a job position or name... '/>
-                <i class="fa-solid fa-x w-[10%] hover:cursor-pointer" ></i>
+              <select className='w-full' value={missingDataToSearch} onChange={handleMissingDataSearch}>
+              <option value="age">Age</option>
+
+              <option value="languageSkills">Language Skills EN</option>
+              
+              <option value="location">Location</option>
+
+          </select>
             </div>
             <button onClick={handleSearch} className='bg-black text-white w-full rounded-md p-2 hover:cursor-pointer '>Search</button>
         </div>
