@@ -22,7 +22,7 @@ def extract_cv(pdf_file):
     init_query_translation = '' if lang == 'en' else 'Suppose you are a {language} to English translator and the document is in {language} texts, can you translate it so that you can extract the data and read it without giving me an output of translated texts and then'
 
     candidate_query = '''
-        Follow this format and insert the proper information as values. Do not copy the value. If empty, just put 'none' as the value:(Only send me the data and nothing else).
+        Follow this format and insert the proper information as values. Do not copy the value. If empty, just put 'none' as the value:(Only send me/ return the data and nothing else).
         {{
             "candidate": {{
                 "address": {{
