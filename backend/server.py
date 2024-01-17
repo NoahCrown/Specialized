@@ -3,6 +3,7 @@ from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
 from helpers.search import search_for_id, search_for_candidate, search_for_name
 from helpers.get_mockdata import extract_and_store, extract_and_store_work_history
+from helpers.get_cv_data import extract_cv
 from mockdata.data import MOCK_CANDIDATE_DATA,MOCK_CANDIDATEWORKHISTORY_DATA
 from flask_cors import CORS
 import requests
@@ -96,6 +97,16 @@ def handle_api_data():
         return jsonify(list_of_processed_candidates)
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/upload', methods=['POST'])   
+def upload_file():
+    if 'pdfFile' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['pdfFile']
+    extracted_data = extract_cv(file)
+
+    return extracted_data
 
 if __name__ == '__main__':
     app.run()
