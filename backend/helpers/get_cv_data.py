@@ -1,4 +1,5 @@
 import os
+import json
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
@@ -57,5 +58,5 @@ def extract_cv(pdf_file):
         template= query
     )
     chain = LLMChain(llm=llm,prompt=prompt_template)
-    response = chain.run({params})
-    return eval(response)
+    response = chain.run(params)
+    return json.loads(response)
