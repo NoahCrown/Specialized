@@ -1,4 +1,5 @@
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, session
+from flask_session import Session
 from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
 from helpers.search import search_for_id, search_for_candidate, search_for_name
@@ -11,6 +12,9 @@ import json
 
 app = Flask(__name__)
 CORS(app)
+
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 list_of_processed_candidates, list_of_processed_workhistory = [], []
 api_endpoint = 'https://fakerapi.it/api/v1/custom?_quantity=1&firstName=firstName&lastName=lastName&street=streetAddress&city=city&country=country&phone=phone&company=company_name&dateEntered=dateTime&dateRetired=dateTime&school=state&dateEntered=dateTime&dateGraduated=dateTime&certification=website'
@@ -43,18 +47,26 @@ def get_custom_prompt():
         custom_prompt = received_data["response"]
         candidate_id = received_data["candidateId"]
         infer_data = received_data["dataToInfer"]
-        candidate_data = search_for_id(candidate_id, list_of_processed_candidates)
+        mode = received_data["mode"]
+        if mode == "bullhorn":
+            candidate_data = search_for_id(candidate_id, list_of_processed_candidates)
+        else:
+            candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
         if infer_data == "languageSkills":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
             response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data["dateOfBirth"] is None:
+        elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "bullhorn":
             candidate_data = search_for_candidate(candidate_id, list_of_processed_workhistory)
             response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "location":
+        elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "CV":
+            response = summarize_data(candidate_data, custom_prompt, infer_data)
+        elif infer_data == "location" and mode == "bullhorn":
             candidate_work_history = search_for_candidate(candidate_id, list_of_processed_workhistory)
             for d in candidate_work_history:
                 candidate_data.update(d)
+            response = summarize_data(candidate_data, custom_prompt, infer_data)
+        elif infer_data == "location" and mode == "CV":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         return response
     except Exception as e:
@@ -105,6 +117,7 @@ def upload_file():
 
     file = request.files['pdfFile']
     extracted_data = extract_cv(file)
+    session['pdfFile'] = extracted_data
 
     return extracted_data
 

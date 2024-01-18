@@ -1,4 +1,5 @@
 import os
+import json
 from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
@@ -32,4 +33,4 @@ def summarize_data(candidate_data, custom_prompt, infer_data):
     )
     chain = LLMChain(llm=llm,prompt=prompt_template)
     response = chain.run(params)
-    return eval(response)
+    return json.loads(response)
