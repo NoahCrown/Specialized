@@ -2,46 +2,49 @@ import React, { createContext, useContext, useState } from 'react';
 
 const Context = createContext();
 
-
-
 export const CandidateProvider = ({ children }) => {
+
+  // Candidate ID Context
   const [candidateId, setCandidateId] = useState(null);
-
-
-  const [promptResult, setPromptResult] = useState(null)
-
-  const [dataToInfer, setDataToInfer] = useState('');
-
-  const [inferedData, setInferedData] = useState(null)
-
-  const [inferedLangProficiency, setInferedLangProficiency] = useState(null)
-
-  const [inferedLocation, setInferedLocation] = useState(null)
-
-
-  const handleChange = (event) => {
-        setDataToInfer(event.target.value);
-  };
-
-  const setInferedLoc = (data) => {
-    setInferedLocation(data)
-  }
-
-  const setInferedLang = (data) => {
-    setInferedLangProficiency(data)
-  }
-
-  const setInfered = (data) => {
-    setInferedData(data)
-  }
-
 
   const setCandidate = (id) => {
     setCandidateId(id);
   };
 
+  // Output Display Context
+  const [promptResult, setPromptResult] = useState(null)
+
   const setOutput = (data) => {
     setPromptResult(data)
+  }
+
+  // Select Data To Infer Context
+  const [dataToInfer, setDataToInfer] = useState('');
+  
+  const handleChange = (event) => {
+    setDataToInfer(event.target.value);
+  };
+
+  // Infered Age Data Context
+  const [inferedData, setInferedData] = useState(null)
+
+  const setInfered = (data) => {
+    setInferedData(data)
+  }
+
+  // Infered Language Proficiency Context
+  const [inferedLangProficiency, setInferedLangProficiency] = useState(null)
+  
+  const setInferedLang = (data) => {
+    setInferedLangProficiency(data)
+  }
+
+
+  // Infered Location Data Context
+  const [inferedLocation, setInferedLocation] = useState(null)
+
+  const setInferedLoc = (data) => {
+    setInferedLocation(data)
   }
 
   return (
