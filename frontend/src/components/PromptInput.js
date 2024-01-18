@@ -6,14 +6,14 @@ import { useCandidate } from '../context/Context';
 function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState('');
-  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc  } = useCandidate();
+  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
 
   const toggleTextbox = () => {
     setTextboxVisible(!isTextboxVisible);
   };
 
   const handleSubmitPropmpt = async() => {
-    const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, }
+    const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
 
     // Make a POST request to your Flask backend using Axios

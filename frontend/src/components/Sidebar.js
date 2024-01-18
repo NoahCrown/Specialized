@@ -9,6 +9,9 @@ const Sidebar = ({data}) => {
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null)
+  const { setOutput, setModeOfData } = useCandidate();
+  
+
 
   const handleDrag = (event) => {
     event.preventDefault()
@@ -17,6 +20,7 @@ const Sidebar = ({data}) => {
   const handleDrop = (event) => {
     event.preventDefault()
     setSelectedFile(event.dataTransfer.files[0])
+  
 
 
   }
@@ -63,15 +67,17 @@ const Sidebar = ({data}) => {
     if (!selectedFile) {
       return;
     }
+    setModeOfData("CV")
 
     const formData = new FormData();
     formData.append('pdfFile', selectedFile);
 
     // Replace 'YOUR_UPLOAD_URL' with your actual server endpoint
-    axios.post('/upload', formData)
+    axios.post('/upload', {formData:formData,})
       .then((response) => {
         // Handle the response from the server
         console.log('File uploaded successfully:', response.data);
+        setOutput(response.data.candidate)
       })
       .catch((error) => {
         // Handle any errors

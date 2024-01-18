@@ -47,6 +47,11 @@ export const CandidateProvider = ({ children }) => {
     setInferedLocation(data)
   }
 
+  const [mode, setMode] = useState(null)
+  const setModeOfData = (data) => {
+    setMode(data)
+  }
+
   return (
     <Context.Provider value={{ 
       candidateId, 
@@ -61,7 +66,9 @@ export const CandidateProvider = ({ children }) => {
       inferedLangProficiency, 
       setInferedLang,
       inferedLocation,
-      setInferedLoc}}>
+      setInferedLoc,
+      mode,
+      setMode}}>
       {children}
     </Context.Provider>
   );
