@@ -4,7 +4,7 @@ from helpers.get_data import extract_data
 from helpers.summarize import summarize_data
 from helpers.search import search_for_id, search_for_candidate, search_for_name
 from helpers.get_mockdata import extract_and_store, extract_and_store_work_history
-from helpers.get_cv_data import extract_cv
+from helpers.get_cv_data_llama import extract_cv
 from mockdata.data import MOCK_CANDIDATE_DATA,MOCK_CANDIDATEWORKHISTORY_DATA
 from flask_cors import CORS
 import requests
