@@ -5,7 +5,7 @@ import { useCandidate } from '../context/Context';
 
 function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
-  const [responseText, setResponseText] = useState('');
+  const [responseText, setResponseText] = useState(null);
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
 
   const toggleTextbox = () => {

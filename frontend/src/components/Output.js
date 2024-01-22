@@ -36,9 +36,7 @@ const Output = () => {
 
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Skills/Qualification</p>
-          <p>Primary Skills: {promptResult.primarySkills.map((val => (
-            <p className=''>{val}</p>
-          )))} </p>
+          <p>Primary Skills: {promptResult.primarySkills}</p>
           <p>Specialties: {promptResult.specialties} </p>
           <p>Comments: {promptResult.comments}</p>
       </div>
