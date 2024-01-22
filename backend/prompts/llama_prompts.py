@@ -10,10 +10,15 @@ def language_skill(candidate_data, custom_prompt):
     You are provided with a candidate json data and a custom prompt. Your job is to infer the candidate's language proficiency in english and japanese using the given candidate's data
     Return only the JSON File
 
+    Don't add an explanation only send back the json data
+
+
     Data:
     {candidate_data}"""
 
     json_format= """
+    Don't add an explanation only send back the json data
+
     JSON Format:
     ]
     {
