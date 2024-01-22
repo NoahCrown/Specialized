@@ -1,9 +1,11 @@
+import os
 import json
 import replicate
 from dotenv import load_dotenv
 
 def language_skill(candidate_data, custom_prompt):
     load_dotenv()
+    api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
     load_data = f"""
     You are provided with a candidate json data and a custom prompt. Your job is to infer the candidate's language proficiency in english and japanese using the given candidate's data
     Return only the JSON File
@@ -31,7 +33,7 @@ def language_skill(candidate_data, custom_prompt):
         system_prompt = "You are a bot that answers in JSON format"
     else:
         system_prompt = custom_prompt
-    response = replicate.run("meta/llama-2-70b-chat",
+    response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
                     "system_prompt": system_prompt,
@@ -47,6 +49,7 @@ def language_skill(candidate_data, custom_prompt):
 
 def infer_age(candidate_data, custom_prompt, current_date):
     load_dotenv()
+    api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
     load_data = f"""
     you are given this json data. the dates are in epoch timestamps
 
@@ -72,7 +75,7 @@ def infer_age(candidate_data, custom_prompt, current_date):
         system_prompt = "You are a bot that answers in JSON format"
     else:
         system_prompt = custom_prompt
-    response = replicate.run("meta/llama-2-70b-chat",
+    response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
                     "system_prompt": system_prompt,
@@ -88,6 +91,7 @@ def infer_age(candidate_data, custom_prompt, current_date):
     
 def infer_location(candidate_data, custom_prompt, current_date):
     load_dotenv()
+    api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
     load_data = f"""
     i'm gonna give you a candidate's data, your job is to infer the location of that candidate using his/her work experience, phone number area code and ethinicity
 
@@ -110,7 +114,7 @@ def infer_location(candidate_data, custom_prompt, current_date):
         system_prompt = "You are a bot that answers in JSON format"
     else:
         system_prompt = custom_prompt
-    response = replicate.run("meta/llama-2-70b-chat",
+    response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
                     "system_prompt": system_prompt,
