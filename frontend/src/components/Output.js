@@ -5,8 +5,10 @@ import { useCandidate } from '../context/Context';
 const Output = () => {  
   const { promptResult, inferedData, inferedLangProficiency, inferedLocation } = useCandidate();
   useEffect(() => {
-    console.log("PromptResult changed:", inferedLangProficiency);
-  }, [inferedLangProficiency]);
+    console.log("PromptResult changed:", promptResult);
+  }, [promptResult]);
+
+  console.log(promptResult)
   
   return (
     <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5]  flex  p-6 flex-col gap-4 overflow-scroll h-[130vh] border-r-2 border-solid border-[#D1D5DB]'>
@@ -34,7 +36,9 @@ const Output = () => {
 
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Skills/Qualification</p>
-          <p>Primary Skills: {promptResult.primarySkills} </p>
+          <p>Primary Skills: {promptResult.primarySkills.map((val => (
+            <p className=''>{val}</p>
+          )))} </p>
           <p>Specialties: {promptResult.specialties} </p>
           <p>Comments: {promptResult.comments}</p>
       </div>
