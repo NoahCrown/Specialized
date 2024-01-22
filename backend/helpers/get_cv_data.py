@@ -49,7 +49,8 @@ def extract_cv(pdf_file):
                 "companyName": "candidate's work company",
                 "title": "Candidate's title in the said work",
                 "islastJob": "Is this candidate's last job? If so put true if not put false"
-                }}
+                }},
+                ( Add more work history if relevant)
                 ]
                 
             }}
