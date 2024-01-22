@@ -1,5 +1,3 @@
-import os
-import json
 import replicate
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
