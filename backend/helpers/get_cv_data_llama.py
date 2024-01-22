@@ -37,7 +37,16 @@ def extract_cv(pdf_file):
                 "primarySkills": "Skills stated in the candidate's information",
                 "educationDegree": "Education degree accomplished by the candidate",
                 "comments": None,
-                "specialties": "Specialties of the candidate"
+                "specialties": "Specialties of the candidate",
+                "workHistory": [
+                {
+                "startDate": "start month/date of candidate's work",
+                "endDate": "end month/date of candidate's work",
+                "companyName": "candidate's work company",
+                "title": "Candidate's title in the said work",
+                "islastJob": "Is this candidate's last job? If so put true if not put false"
+                }
+                ]
             }
         }
     '''
