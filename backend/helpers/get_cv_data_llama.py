@@ -23,12 +23,12 @@ def extract_cv(pdf_file):
         Follow this format and insert the proper information as values. Do not copy the value. If empty, just put 'None' as the value:(Only send me/ return the data and nothing else).
         {
                 "candidateId": 51,
-                "address": {{
+                "address": {
                     "address1": "The street/block where the candidate resides",
                     "address2": "House number of the candidate",
                     "city": "The city where the candidate resides",
                     "state": "State where the candidate resides"
-                }}
+                }
                 "first_name": "The first name of the candidate in the candidate's information",
                 "last_name": "The last name of the candidate in the candidate's information",
                 "phone": "Phone number of the candidate",
