@@ -120,6 +120,6 @@ def infer_location(candidate_data, custom_prompt, current_date):
             )
     response = ''.join(response)
     try:
-        return response
+        return eval(response)
     except:
         return json.loads(response)
