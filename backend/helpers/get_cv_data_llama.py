@@ -1,3 +1,4 @@
+import os
 import replicate
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
@@ -5,6 +6,7 @@ from langdetect import detect
 
 def extract_cv(pdf_file):
     load_dotenv()
+    api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
     pdf_reader = PdfReader(pdf_file)
     text = ""
 
@@ -50,7 +52,7 @@ def extract_cv(pdf_file):
     '''
 
     query = cv_query + init_query_translation + candidate_query
-    response = replicate.run("meta/llama-2-70b-chat",
+    response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
                     "system_prompt": "You are a bot that answers in JSON format",
