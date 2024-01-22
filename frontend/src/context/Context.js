@@ -4,6 +4,13 @@ const Context = createContext();
 
 export const CandidateProvider = ({ children }) => {
 
+  // Data Context
+  const [data, setData] = useState([])
+
+  const setAllData = (data) => {
+    setData(data)
+  }
+
   // Candidate ID Context
   const [candidateId, setCandidateId] = useState(null);
 
@@ -68,7 +75,9 @@ export const CandidateProvider = ({ children }) => {
       inferedLocation,
       setInferedLoc,
       mode,
-      setMode}}>
+      setModeOfData,
+      data,
+      setAllData}}>
       {children}
     </Context.Provider>
   );

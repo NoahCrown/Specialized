@@ -3,13 +3,13 @@ import { useCandidate } from '../context/Context';
 import PDFInfo from './PDFInfo'
 import axios from 'axios';
 
-const Sidebar = ({data}) => {
+const Sidebar = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null)
-  const { setOutput, setModeOfData } = useCandidate();
+  const { setOutput, setModeOfData, data } = useCandidate();
   
 
 
