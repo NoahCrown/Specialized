@@ -18,19 +18,18 @@ def language_skill(candidate_data, custom_prompt):
 
     json_format= """
     Don't add an explanation only send back the json data
-
     JSON Format:
-    ]
+    [
     {
-        "Language": English,
+        "Language": "English",
         "enProficiency": ( insert here how proficient the candidate is in english ranging from None/Basic/Conversational/Business/Fluent/Native)),
         "confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
     },
     {
-        "Language": Japanese,
+        "Language": "Japanese",
         "jpProficiency": ( insert here how proficient the candidate is in japanese ranging from None/Basic/Conversational/Business/Fluent/Native)),
         "confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
-    },
+    }
     ]
     """
     query = load_data + json_format
