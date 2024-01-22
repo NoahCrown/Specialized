@@ -11,6 +11,13 @@ export const CandidateProvider = ({ children }) => {
     setData(data)
   }
 
+  // File Upload Context
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const setUploadFile = (file) => {
+    setSelectedFile(file)
+  }
+
   // Candidate ID Context
   const [candidateId, setCandidateId] = useState(null);
 
@@ -77,7 +84,9 @@ export const CandidateProvider = ({ children }) => {
       mode,
       setModeOfData,
       data,
-      setAllData}}>
+      setAllData,
+      selectedFile,
+      setUploadFile}}>
       {children}
     </Context.Provider>
   );

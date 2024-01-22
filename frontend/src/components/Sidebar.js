@@ -4,12 +4,12 @@ import PDFInfo from './PDFInfo'
 import axios from 'axios';
 
 const Sidebar = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+  
   const fileInputRef = useRef(null);
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null)
-  const { setOutput, setModeOfData, data } = useCandidate();
+  const { setOutput, setModeOfData, data, selectedFile, setUploadFile } = useCandidate();
   
 
 
@@ -19,7 +19,7 @@ const Sidebar = () => {
   }
   const handleDrop = (event) => {
     event.preventDefault()
-    setSelectedFile(event.dataTransfer.files[0])
+    setUploadFile(event.dataTransfer.files[0])
   
 
 
@@ -58,29 +58,38 @@ const Sidebar = () => {
   };
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-    console.log(selectedFile)
+    console.log(event.target.files[0])
+    setUploadFile(event.target.files[0]);
   };
 
   const handleUpload = () => {
+
     // Check if a file is selected
     if (!selectedFile) {
       return;
     }
     setModeOfData("CV")
 
-    const formData = new FormData();
-    formData.append('pdfFile', selectedFile);
+    // const formData = new FormData();
+    console.log(selectedFile)
+
+    const formData = new FormData()
+    formData.append('pdfFile', selectedFile)
 
     // Replace 'YOUR_UPLOAD_URL' with your actual server endpoint
-    axios.post('/upload', {formData:formData,})
+    axios.post('/upload', formData)
+
       .then((response) => {
         // Handle the response from the server
         console.log('File uploaded successfully:', response.data);
-        setOutput(response.data.candidate)
+        setOutput(response.data)
+        console.log(formData)
+
       })
       .catch((error) => {
         // Handle any errors
+        console.log(formData)
+
         console.error('Error uploading file:', error);
       });
   };
