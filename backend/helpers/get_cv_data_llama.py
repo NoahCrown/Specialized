@@ -20,7 +20,6 @@ def extract_cv(pdf_file):
     candidate_query = '''
         Follow this format and insert the proper information as values. Do not copy the value. If empty, just put 'None' as the value:(Only send me/ return the data and nothing else).
         {
-            "candidate": {
                 "candidateId": 51,
                 "address": {
                     "address1": "The street/block where the candidate resides",
@@ -44,10 +43,9 @@ def extract_cv(pdf_file):
                 "endDate": "end month/date of candidate's work",
                 "companyName": "candidate's work company",
                 "title": "Candidate's title in the said work",
-                "islastJob": "Is this candidate's last job? If so put true if not put false"
+                "islastJob": "Is this candidate's last job? If so put True if not put False"
                 }
                 ]
-            }
         }
     '''
 
