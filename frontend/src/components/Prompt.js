@@ -3,7 +3,7 @@ import { useCandidate } from '../context/Context';
 
 
 import PromptInput from './PromptInput'
-const Prompt = ({data}) => {
+const Prompt = () => {
   const { dataToInfer, handleChange } = useCandidate();
 
   console.log(dataToInfer)
@@ -25,7 +25,7 @@ const Prompt = ({data}) => {
       </div>
       
       
-      <PromptInput data={data} inferData={dataToInfer}/>
+      <PromptInput inferData={dataToInfer}/>
     
 
     </div>
