@@ -55,13 +55,13 @@ def infer_age(candidate_data, custom_prompt, current_date):
 
     your job is to infer the age of the candidate based on the date given to you. you can use his/her birthday, if those are not available you can rely on his/her job history or year of graduation. add a confidence level to see how confident you are with inferring the age data
     I'll also provide you a date, give me the age of the candidate base of this date.
-    only return The JSON File with the format below nothing else
 
     Current Date:
     {current_date}
     """
 
     json_format= """
+    Don't add an explanation only send back the json data
     {
         "Age": ( insert inferred age here ),
         "confidence: ( insert confidence level here from 1-5, 1 being the lowest)
