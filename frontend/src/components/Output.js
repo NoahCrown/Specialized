@@ -5,8 +5,8 @@ import { useCandidate } from '../context/Context';
 const Output = () => {  
   const { promptResult, inferedData, inferedLangProficiency, inferedLocation } = useCandidate();
   useEffect(() => {
-    console.log("PromptResult changed:", promptResult);
-  }, [promptResult]);
+    console.log("PromptResult changed:", inferedLocation);
+  }, [inferedLocation]);
 
   console.log(promptResult)
   
@@ -52,14 +52,14 @@ const Output = () => {
           <div className='mb-2' key={index}>
             <p>Language: {val.Language}</p>
             <p>Confidence: {val.confidence}</p>
-            <p>English Proficiency: {val.enProficiency}</p>
+            <p>Proficiency: {val.enProficiency}</p>
           </div>
           ))}
       </div>
 
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Location</p>
-          {inferedLocation && <p>Inferred Age: {inferedLocation.location}  </p>}
+          {inferedLocation && <p>Inferred Location: {inferedLocation.location}  </p>}
           {inferedLocation && <p>AI Confidence: {inferedLocation.confidence}  </p>}
       </div>
           </>
