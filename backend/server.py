@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, request, abort, jsonify, session
 from flask_session import Session
 from helpers.get_data import extract_data
@@ -5,6 +7,7 @@ from helpers.summarize import summarize_data
 from helpers.search import search_for_id, search_for_candidate, search_for_name
 from helpers.get_mockdata import extract_and_store, extract_and_store_work_history
 from helpers.get_cv_data_llama import extract_cv
+from helpers.bullhorn_access import BullhornAuthHelper, on_401_error
 from mockdata.data import MOCK_CANDIDATE_DATA,MOCK_CANDIDATEWORKHISTORY_DATA
 from flask_cors import CORS
 import requests
@@ -16,31 +19,43 @@ CORS(app)
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
-list_of_processed_candidates, list_of_processed_workhistory = [], []
-api_endpoint = 'https://fakerapi.it/api/v1/custom?_quantity=1&firstName=firstName&lastName=lastName&street=streetAddress&city=city&country=country&phone=phone&company=company_name&dateEntered=dateTime&dateRetired=dateTime&school=state&dateEntered=dateTime&dateGraduated=dateTime&certification=website'
+load_dotenv()
+CLIENT_ID = os.getenv('SPECIALIZED_CLIENT_ID')
+USERNAME = os.getenv('SPECIALIZED_USERNAME')
+PASSWORD = os.getenv('SPECIALIZED_PASSWORD')
+CLIENT_SECRET = os.getenv('SPECIALIZED_CLIENT_SECRET')
+SPECIALIZED_URL = os.getenv('SPECIALIZED_REST_URL')
+
+# Initialize BullhornAuthHelper
+bullhorn_auth_helper = BullhornAuthHelper(CLIENT_ID, CLIENT_SECRET)
+bullhorn_auth_helper.authenticate(USERNAME, PASSWORD)
 
 @app.route('/get_candidate', methods=['POST'])
+@on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_candidate():
     try:
         received_id = request.json
         candidate_id = received_id["candidateId"]
-        candidate_data = search_for_id(candidate_id, list_of_processed_candidates)
+        access_token = bullhorn_auth_helper.get_rest_token()
+        search_candidate_by_id_url = f'search/Candidate?BhRestToken={access_token}&query=id:{candidate_id}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
+        candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
         return candidate_data
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/search_name', methods = ['POST'])
-def search_candidate():
-    try:
-        received_name = request.json
-        candidate_name = received_name["name"]
-        candidate_data = search_for_name(candidate_name, list_of_processed_candidates)
-        return candidate_data
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# @app.route('/search_name', methods = ['POST'])
+# def search_candidate():
+#     try:
+#         received_name = request.json
+#         candidate_name = received_name["name"]
+#         candidate_data = search_for_name(candidate_name, list_of_processed_candidates)
+#         return candidate_data
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 @app.route('/prompt_input', methods=['POST'])
+@on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_custom_prompt():
     try:
         received_data = request.json
@@ -48,8 +63,17 @@ def get_custom_prompt():
         candidate_id = received_data["candidateId"]
         infer_data = received_data["dataToInfer"]
         mode = received_data["mode"]
+        access_token = bullhorn_auth_helper.get_rest_token()
+        search_candidate_by_id_url = f'search/Candidate?BhRestToken={access_token}&query=id:{candidate_id}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
+        search_candidate_workhistory_by_id_url=f'query/CandidateWorkHistory?BhRestToken={access_token}&fields=id,candidate,startDate,endDate,companyName,title,isLastJob,comments,jobOrder&where=candidate.id={candidate_id}'
         if mode == "bullhorn":
-            candidate_data = search_for_id(candidate_id, list_of_processed_candidates)
+            candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
+            candidate_data = candidate_data.json()
+            candidate_data = candidate_data['data'][0]
+            if (infer_data == "age" and candidate_data["dateOfBirth"] is None) or (infer_data == "location" and mode == "bullhorn"):
+                candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
+                candidate_workhistory = candidate_workhistory.json()
+                candidate_workhistory = candidate_workhistory['data'][0]
         else:
             candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
         if infer_data == "languageSkills":
@@ -57,56 +81,30 @@ def get_custom_prompt():
         elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "bullhorn":
-            candidate_data = search_for_candidate(candidate_id, list_of_processed_workhistory)
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
+            response = summarize_data(candidate_workhistory, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "CV":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "location" and mode == "bullhorn":
-            candidate_work_history = search_for_candidate(candidate_id, list_of_processed_workhistory)
-            for d in candidate_work_history:
-                candidate_data.update(d)
+            candidate_data = [candidate_data, candidate_workhistory]
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "location" and mode == "CV":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         return response
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
-        
-def process_api_response(response):
-    if response.status_code == 200:
-        json_data = response.json()
-        candidate_data = extract_data(json_data)
-
-        return candidate_data
-    else:
-        return jsonify({'error': 'Failed to fetch data from API'}), response.status_code
-    
-def process_api_mockresponse(response):
-    candidate_data = extract_and_store(response)
-
-    return candidate_data
 
 @app.route('/process_data', methods=['GET'])
+@on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def handle_api_data():
-    global list_of_processed_candidates, list_of_processed_workhistory
     try:
-        # Make a GET request to the API
-        # count = 0
-        # while count < 4:
-        #     response = requests.get(api_endpoint)
-        #     processed_response = process_api_response(response)
-        #     list_of_response.append(processed_response)
-        #     count += 1
-        list_of_candidates = MOCK_CANDIDATE_DATA
-        list_of_workhistory = MOCK_CANDIDATEWORKHISTORY_DATA
-        for response in list_of_workhistory:
-            processed_response = extract_and_store_work_history(response)
-            list_of_processed_workhistory.append(processed_response)
-        # Process the API response
-        for response in list_of_candidates:
-            processed_response = process_api_mockresponse(response)
-            list_of_processed_candidates.append(processed_response)
-        return jsonify(list_of_processed_candidates)
+        access_token = bullhorn_auth_helper.get_rest_token()
+        get_candidate_url = f'search/Candidate?BhRestToken={access_token}&query=isDeleted:0&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties&sort=id&start=0&count=500'
+
+        response = requests.get(SPECIALIZED_URL+get_candidate_url)
+        response = response.json()
+        response = response['data']
+        return response
+
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
