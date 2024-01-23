@@ -107,7 +107,7 @@ def infer_location(candidate_data, custom_prompt, current_date):
     """
 
     json_format= """
-    only return me a json file that looks like this nothing else.
+    Don't add an explanation only send back the json data
     {
         "Location":  ( insert here the inferred location of the candidate base on the data given to you ),
         "confidence": ( AI's confidence in inferring the data 1-5, 5 being the highest)
