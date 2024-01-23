@@ -2,6 +2,10 @@ import React, {useState, useRef} from 'react'
 import { useCandidate } from '../context/Context';
 import PDFInfo from './PDFInfo'
 import axios from 'axios';
+import { Carousel } from "@material-tailwind/react";
+
+
+
 
 const Sidebar = () => {
   
@@ -10,8 +14,17 @@ const Sidebar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null)
   const { setOutput, setModeOfData, data, selectedFile, setUploadFile } = useCandidate();
-  
 
+  console.log(data)
+  const chunkArray = (array, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
+  const chunkedData = chunkArray(data, 3);
 
   const handleDrag = (event) => {
     event.preventDefault()
@@ -103,7 +116,7 @@ const Sidebar = () => {
     {/* Pdf Info */}
         <div className='flex justify-center items-center flex-col p-3 w-[80%] px-4 border-solid border-b-2 border-[#E7E7E7] '>
                 <div className='w-[100%] flex flex-col'>
-                    <div className='rounded-sm border-dotted border-2 border-[#E7E7E7] w-[100%] h-[20vh] flex flex-col justify-center items-center p-10 gap-2'>                    
+                    <div className='rounded-sm border-dashed border-2 border-[#E7E7E7] w-[100%] h-[20vh] flex flex-col justify-center items-center p-10 gap-2'>                    
                         <div className='flex flex-col justify-center items-center'
                         onClick={handleDivClick}
                         onDragOver={handleDrag}
@@ -146,7 +159,7 @@ const Sidebar = () => {
     {/* Search Bar  */}
         <div className='flex justify-center items-center flex-col gap-2 w-[80%] py-4 border-solid border-b-2 border-[#E7E7E7]'>
         <label className='text-[.80rem] text-[#8F8F8F] w-full text-left'>Search by name</label>
-            <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2'>
+            <div className='border-solid border-2 border-[#E7E7E7] w-full flex flex-row justify-between items-center gap-4 p-2 '>
                 <input 
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)} 
@@ -172,11 +185,28 @@ const Sidebar = () => {
             <button onClick={handleSearch} className='bg-black text-white w-full rounded-md p-2 hover:cursor-pointer '>Search</button>
         </div>
     {/* Results  */}
-        <div className='w-full '>
+        <div className='w-full  '>
             <p className='px-10'>Results</p>
-            {data.slice(0, 3).map((val) => (    
-                <PDFInfo key={val.id} id={val.id} first_name={val.first_name} last_name={val.last_name} position={val.specialties} />
-            ))}
+            <div>
+            <Carousel navigation={false}>
+      {chunkedData.map((chunk, index) => (
+        <div key={index} className="carousel-slide">
+        
+          {chunk.map((item) => (
+            <PDFInfo
+              key={item.id}
+              first_name={item.firstName}
+              last_name={item.lastName}
+              position={item.primarySkills.data[0]?.name || 'N/A'}
+            />
+          ))}
+        </div>
+      ))}
+      </Carousel>
+    </div>
+            
+
+            
         </div>
         
 
