@@ -39,20 +39,26 @@ def get_candidate():
         access_token = bullhorn_auth_helper.get_rest_token()
         search_candidate_by_id_url = f'search/Candidate?BhRestToken={access_token}&query=id:{candidate_id}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
         candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
+        candidate_data = candidate_data.json()
+        candidate_data = candidate_data['data'][0]
         return candidate_data
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-# @app.route('/search_name', methods = ['POST'])
-# def search_candidate():
-#     try:
-#         received_name = request.json
-#         candidate_name = received_name["name"]
-#         candidate_data = search_for_name(candidate_name, list_of_processed_candidates)
-#         return candidate_data
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
+@app.route('/search_name', methods = ['POST'])
+def search_candidate():
+    try:
+        received_name = request.json
+        candidate_name = received_name["name"]
+        access_token = bullhorn_auth_helper.get_rest_token()
+        search_candidate_by_name_url = f'search/Candidate?BhRestToken={access_token}&query=name:{candidate_name}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
+        candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_name_url)
+        candidate_data = candidate_data.json()
+        candidate_data = candidate_data['data']
+        return candidate_data
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/prompt_input', methods=['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
