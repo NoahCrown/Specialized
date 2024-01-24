@@ -52,7 +52,7 @@ def search_candidate():
         received_name = request.json
         candidate_name = received_name["name"]
         access_token = bullhorn_auth_helper.get_rest_token()
-        search_candidate_by_name_url = f'search/Candidate?BhRestToken={access_token}&query=name:{candidate_name}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
+        search_candidate_by_name_url = f'search/JobSubmission?BhRestToken={access_token}&fields=id,status,dateAdded,candidate,jobOrder&query=candidate.name:{candidate_name}&sort=candidate.name'
         candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_name_url)
         candidate_data = candidate_data.json()
         candidate_data = candidate_data['data']
@@ -104,9 +104,9 @@ def get_custom_prompt():
 def handle_api_data():
     try:
         access_token = bullhorn_auth_helper.get_rest_token()
-        get_candidate_url = f'query/JobSubmission?BhRestToken={access_token}&fields=id,status,candidate,jobOrder&where=isDeleted=false&sort=candidate.name&start=1&count=500'
+        get_job_submission_url = f'query/JobSubmission?BhRestToken={access_token}&fields=id,status,candidate,jobOrder&where=isDeleted=false&sort=candidate.name&start=1&count=500'
 
-        response = requests.get(SPECIALIZED_URL+get_candidate_url)
+        response = requests.get(SPECIALIZED_URL+get_job_submission_url)
         response = response.json()
         response = response['data']
         return response
