@@ -9,6 +9,7 @@ const Output = () => {
   }, [promptResult]);
 
   console.log(promptResult)
+  console.log(promptResult)
   
   return (
     <div className=' no-scrollbar w-[37.5%] bg-[#F5F5F5]  flex  p-6 flex-col gap-4 overflow-scroll min-h-[140vh] border-r-2 border-solid border-[#D1D5DB]'>
@@ -20,26 +21,38 @@ const Output = () => {
       {/* Personal Information  */}
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Personal Information</p>
-          <p>First Name:{promptResult.firstName} </p>
-          <p>Last Name: {promptResult.lastName} </p>
-          <p>Phone: {promptResult.phone || 'N/A'}</p>
-          <p>Address:{promptResult.ethnicity || 'N/A'} </p>
+          <p>First Name:{promptResult[0].firstName} </p>
+          <p>Last Name: {promptResult[0].lastName} </p>
+          <p>Phone: {promptResult[0].phone || 'N/A'}</p>
+          <p>Address:{promptResult[0].ethnicity || 'N/A'} </p>
+          <p>Email: {promptResult[0].email}</p>
       </div>
       {/* Job History  */}
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Job History</p>
-          {/* {promptResult.job_history.map((val) =>{
-            <p>{val}</p>
-          })}
-           */}
+          <p>Company Name: {promptResult[1].companyName}</p>
+          <p>Job Title: {promptResult[1].title}</p>
+          <p>Comments: {promptResult[1].comments}</p>
+          <p>Start date: {promptResult[1].startDate}</p>
+          <p>End date: {promptResult[1].endDate}</p>
+
       </div>
 
       <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Skills/Qualification</p>
-          <p>Primary Skills: {promptResult.primarySkills.data[0].name}</p>
-          <p>Specialties: {promptResult.specialties.data.map((val, index) => (
-            <p key={index}>{val.name}</p>
-          ))}</p>
+          <p>Primary Skills: {promptResult[0].primarySkills.data[0]?.name || promptResult[0].primarySkills?.data}</p>
+          <p>Secondary Skills: {promptResult[0].secondarySkills.data[0]?.name || promptResult[0].secondarySkills?.data} </p>
+          <p>Skill Set: {promptResult[0].skillSet}</p>
+          <p>Certifications: {promptResult[0].certifications}</p>
+  Specialties: 
+  {promptResult.specialties?.data.length > 0 ? (
+    promptResult.specialties?.data.map((val, index) => (
+      <p key={index}>{val.name}</p>
+    ))
+  ) : (
+    "N/A"
+  )}
+
 
           <p>Comments: {promptResult.comments}</p>
       </div>

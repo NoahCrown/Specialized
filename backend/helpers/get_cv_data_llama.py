@@ -21,37 +21,37 @@ def extract_cv(pdf_file):
 
     candidate_query = '''
         Follow this format and insert the proper information as values. 
-        Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data and nothing else).
+        Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data list and nothing else).
         Be accurate with the data. For example, in the address don't put in the address if it is not totally clear for you to identify. Just put "None" as the value, if so.
-        Do not put "null" as the value. Remember to put in "None" if the value is missing.
-            {
-                "candidateId": 51,
-                "address": {
-                    "address1": (The candidate's street/block where the candidate resides),
-                    "address2": (The candidate's house number),
-                    "city": (The candidate's city where he/she resides),
-                    "state": (The State the candidate resides)
-                }
-                "first_name": "The first name of the candidate in the candidate's information",
-                "last_name": "The last name of the candidate in the candidate's information",
-                "phone": "Phone number of the candidate",
-                "dateOfBirth": "Date of birth of the candidate",
-                "certification":"Certification/s of the candidate",
-                "ethnicity": "Ethnicity of the candidate",
-                "primarySkills": "Skills stated in the candidate's information separated by comma per skill",
-                "educationDegree": "Education degree accomplished by the candidate",
-                "comments": None,
-                "specialties": "Specialties of the candidate",
-                "workHistory": [
+        You should return a list of dictionary. Remember to plug in the datas as value.
+            
+                [{
+                'certifications': '(Certification of the candidate)',
+                'comments': '(Comments about the candidate)',
+                'dateOfBirth': '(Date of birth of the candidate)',
+                'educationDegree': (Education Degree of the candidate),
+                'email': '(Email of the candidate)',
+                'ethnicity': '(Ethnicity of the candidate)',
+                'firstName': '(First name of the candidate)',
+                'id': (Give an id to the user example is 334560, do not copy the id),
+                'lastName': '(Last name of the candidate)',
+                'phone': '(Phone number of the candidate)',
+                'primarySkills': { 'data': [ (Primary Skills of the candidate) ], 'total': (Total primary skills of the candidate) },
+                'secondarySkills': { 'data': [ (Secondary Skills of the candidate) ], 'total': (Total secondary skills of the candidate) },
+                'skillSet': (SkillSets of the candidate),
+                'specialties': { 'data': [ (Specialties of the candidate) ], 'total': (Total secondary skills of the candidate)}
+                },
                 {
-                "startDate": "start month/date of candidate's work",
-                "endDate": "end month/date of candidate's work",
-                "companyName": "candidate's work company",
-                "title": "Candidate's title in the said work",
-                "islastJob": "Is this candidate's last job? If so put True if not put False"
-                }
-                ]
-        }
+                'comments': '(Comments about the work history)',
+                'companyName': '(Company name of the work in candidate's work history)',
+                'endDate': (end date of work experience in epoch timestamp),
+                'id': (Work experience ID),
+                'isLastJob': '(Is this candidate's last job if yes True, if not False)',
+                'jobOrder': None,
+                'startDate': '(Start date of work history the candidate work's history )',
+                'title': '(candidate's work title in his last job)'
+                }]
+            
 
         Again, do not copy and paste the values. If you cannot find or undentify the value or keys just put the value as None.
     '''
@@ -60,7 +60,7 @@ def extract_cv(pdf_file):
     response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
-                    "system_prompt": "You are a bot that answers in JSON format",
+                    "system_prompt": "You are a bot that answers or returns data in JSON format",
                     "max_new_tokens": 4060,
                     "temperature": 0.01
                     }

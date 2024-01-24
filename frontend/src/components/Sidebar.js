@@ -3,6 +3,9 @@ import { useCandidate } from "../context/Context";
 import PDFInfo from "./PDFInfo";
 import axios from "axios";
 import { Carousel } from "@material-tailwind/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Sidebar = () => {
   const fileInputRef = useRef(null);
@@ -59,6 +62,7 @@ const Sidebar = () => {
   const handleClearSearch = () => {
     setSearchResults([]);
     setInputValue("");
+    toast.success("Cleared")
   };
 
   const handleDivClick = () => {
@@ -71,6 +75,7 @@ const Sidebar = () => {
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     setUploadFile(event.target.files[0]);
+    toast.success('File uploaded successfully')
   };
 
   const handleUpload = () => {
@@ -95,6 +100,7 @@ const Sidebar = () => {
         console.log("File uploaded successfully:", response.data);
         setOutput(response.data);
         console.log(formData);
+        toast.success('File uploaded successfully')
       })
       .catch((error) => {
         // Handle any errors
@@ -260,6 +266,7 @@ const Sidebar = () => {
           </div>
           
         </div>
+        <ToastContainer/>
       </div>
   );
 };
