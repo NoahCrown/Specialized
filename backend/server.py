@@ -104,7 +104,7 @@ def get_custom_prompt():
 def handle_api_data():
     try:
         access_token = bullhorn_auth_helper.get_rest_token()
-        get_candidate_url = f'search/Candidate?BhRestToken={access_token}&query=isDeleted:0&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties&sort=id&start=0&count=500'
+        get_candidate_url = f'query/JobSubmission?BhRestToken={access_token}&fields=id,status,candidate,jobOrder&where=isDeleted=false&sort=candidate.name&start=1&count=500'
 
         response = requests.get(SPECIALIZED_URL+get_candidate_url)
         response = response.json()
