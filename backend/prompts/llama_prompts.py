@@ -22,13 +22,13 @@ def language_skill(candidate_data, custom_prompt):
     [
     {
         "Language": "English",
-        "enProficiency": ( insert here how proficient the candidate is in english ranging from None/Basic/Conversational/Business/Fluent/Native)),
-        "confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
+        "enProficiency": ( insert here how proficient the candidate is in english (en) ranging from None/Basic/Conversational/Business/Fluent/Native)),
+        "confidence: ( insert confidence level here from 1-5, 1 being the lowest),
     },
     {
         "Language": "Japanese",
-        "jpProficiency": ( insert here how proficient the candidate is in japanese ranging from None/Basic/Conversational/Business/Fluent/Native)),
-        "confidence: ( insert confidence level here from 1 -5, 1 being the lowest),
+        "jpProficiency": ( insert here how proficient the candidate is in japanese (jp) ranging from None/Basic/Conversational/Business/Fluent/Native)),
+        "confidence: ( insert confidence level here from 1-5, 1 being the lowest),
     }
     ]
     """
@@ -107,10 +107,10 @@ def infer_location(candidate_data, custom_prompt, current_date):
     """
 
     json_format= """
-    Don't add an explanation only send back the json data
+    only return me a json file that looks like this nothing else.
     {
         "Location":  ( insert here the inferred location of the candidate base on the data given to you ),
-        "confidence": ( AI's confidence in inferring the data)
+        "confidence": ( AI's confidence in inferring the data 1-5, 5 being the highest)
     }
     """
     query = load_data + json_format
