@@ -38,9 +38,17 @@ def get_candidate():
         candidate_id = received_id["candidateId"]
         access_token = bullhorn_auth_helper.get_rest_token()
         search_candidate_by_id_url = f'search/Candidate?BhRestToken={access_token}&query=id:{candidate_id}&fields=id,firstName,lastName,email,phone,dateOfBirth,certifications,ethnicity,primarySkills,educationDegree,comments,secondarySkills,skillSet,specialties'
+        search_candidate_workhistory_by_id_url=f'query/CandidateWorkHistory?BhRestToken={access_token}&fields=id,candidate,startDate,endDate,companyName,title,isLastJob,comments,jobOrder&where=candidate.id={candidate_id}'
+        
+        candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
+        candidate_workhistory = candidate_workhistory.json()
+        candidate_workhistory = candidate_workhistory['data'][0]
+
         candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
         candidate_data = candidate_data.json()
         candidate_data = candidate_data['data'][0]
+
+        candidate_data = [candidate_data,candidate_workhistory]
         return candidate_data
 
     except Exception as e:
