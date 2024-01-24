@@ -27,7 +27,7 @@ const Prompt = () => {
 
   console.log(dataToInfer)
   return (
-    <div className='bg-[#F5F5F5] p-6 flex flex-col justify-start w-[37.5%] h-[130vh] gap-6 no-scrollbar'>
+    <div className='bg-[#F5F5F5] p-6 flex flex-col justify-start w-[37.5%] gap-6 no-scrollbar min-h-[140vh]'>
       <div className='flex justify-between gap-5 items-center'>
         <h1 className='text-3xl font-bold'>Prompt</h1>
       <div>

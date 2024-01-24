@@ -27,7 +27,7 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
   };
 
   return (
-    <div className='p-3 flex justify-center items-center w-full gap-8 p=4 hover:bg-[#CECECE]'>
+    <div className='p-3 flex justify-center items-center w-[100%] gap-8 p=4 hover:bg-[#CECECE] mx-[.5rem]'>
       <div className='rounded-full bg-[#D3D3D3] w-[10%] flex justify-center items-start p-2'>
         <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[70%]'/>
       </div>
@@ -35,7 +35,7 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
       <div className='w-[70%] flex flex-col gap-2 justify-items-start  '>
         <h3 className='font-bold'>{first_name} {last_name}</h3>
         <p className='text-[#919191]'>{position}</p>
-        <button className='font-bold und  erline hover:cursor-pointer text-left' onClick={handleClick}>
+        <button className='font-bold underline hover:cursor-pointer text-left' onClick={handleClick}>
           {active ? 'View' : 'Run'}
         </button>
       </div>

@@ -27,7 +27,7 @@ function App() {
 
 
   return (
-    <div className="App flex bg-white items-center flex-row box-border overflow-auto h-full">
+    <div className="App flex bg-white items-center flex-row box-border">
       <Sidebar/>
       <Output/>
       <Prompt/>
