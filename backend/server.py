@@ -96,7 +96,7 @@ def get_custom_prompt():
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "bullhorn":
             response = summarize_data(candidate_workhistory, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "CV":
+        elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is None and mode == "CV":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "location" and mode == "bullhorn":
             candidate_data = [candidate_data, candidate_workhistory]
