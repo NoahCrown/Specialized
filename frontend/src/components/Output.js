@@ -82,7 +82,7 @@ const Output = () => {
       {inferedLocation &&
         <div className='text-[#919191] border-solid border-b-2 border-[#E7E7E7] w-full py-2'>
           <p className='text-black py-2'>Location</p>
-          {inferedLocation && <p>Inferred Location: {inferedLocation.location}  </p>}
+          {inferedLocation && <p>Inferred Location: {inferedLocation.Location}  </p>}
           {inferedLocation && <p>AI Confidence: {inferedLocation.confidence}  </p>}
       </div> 
       }

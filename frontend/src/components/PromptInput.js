@@ -1,11 +1,12 @@
 import React, {useState } from 'react';
 import axios from 'axios';
 import { useCandidate } from '../context/Context';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 function PromptInput({ promptNumber, active  }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
-  const [responseText, setResponseText] = useState(null);
+  const [responseText, setResponseText] = useState(" ");
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
 
   const toggleTextbox = () => {
@@ -15,6 +16,7 @@ function PromptInput({ promptNumber, active  }) {
   const handleSubmitPropmpt = async() => {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
+    toast.success(`Inferring ${data.dataToInfer}, please wait.`)
 
     // Make a POST request to your Flask backend using Axios
     await axios
@@ -27,16 +29,22 @@ function PromptInput({ promptNumber, active  }) {
       // Handle the response from your Flask backend here
       if (response.data && dataToInfer === "age"){
         setInfered(response.data)
+        toast.success('Successfully inferred Age Data.')
       }else if (response.data && dataToInfer === "languageSkills"){
         setInferedLang(response.data)
+        toast.success('Successfully inferred Language Proficiency Data.')
+
       }else if (response.data && dataToInfer === "location"){
         setInferedLoc(response.data)
+        toast.success('Successfully inferred Location Data.')
+
       }
       console.log(response.data);
     })
     .catch((error) => {
       console.error('Error:', error);
       if (error.response) {
+        toast.warn('Failed to infer data, please try again later.')
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         console.error('Response data:', error.response.data);
@@ -92,6 +100,7 @@ function PromptInput({ promptNumber, active  }) {
 
       
     </div>
+    <ToastContainer/>
 
     </>
   );
