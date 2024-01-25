@@ -88,23 +88,23 @@ def get_custom_prompt():
                 candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
                 candidate_workhistory = candidate_workhistory.json()
                 candidate_workhistory = candidate_workhistory['data']
+                candidate_data = [candidate_data, candidate_workhistory]
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
+
+            elif infer_data == "languageSkills":
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
+            elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
         else:
             candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
-        if infer_data == "languageSkills":
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data["dateOfBirth"] is not None and mode == "bullhorn":
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is not None and mode == "CV":
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "bullhorn":
-            response = summarize_data(candidate_workhistory, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is None and mode == "CV":
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "location" and mode == "bullhorn":
-            candidate_data = [candidate_data, candidate_workhistory]
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "location" and mode == "CV":
-            response = summarize_data(candidate_data, custom_prompt, infer_data)
+            if infer_data == "languageSkills":
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
+            elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is not None:
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
+            elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is None:
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
+            elif infer_data == "location":
+                response = summarize_data(candidate_data, custom_prompt, infer_data)
         return response
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
