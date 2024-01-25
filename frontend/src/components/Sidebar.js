@@ -12,7 +12,7 @@ const Sidebar = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null);
-  const { setOutput, setModeOfData, data, selectedFile, setUploadFile } =
+  const { setOutput, setModeOfData, data, selectedFile, setUploadFile, setInferedLang, setInferedLoc, setInfered  } =
     useCandidate();
 
   console.log(searchResults);
@@ -75,7 +75,6 @@ const Sidebar = () => {
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     setUploadFile(event.target.files[0]);
-    toast.success('File uploaded successfully')
   };
 
   const handleUpload = () => {
@@ -83,6 +82,10 @@ const Sidebar = () => {
     if (!selectedFile) {
       return;
     }
+    toast.success('Uploading file, please wait.')
+    setInfered(null)
+    setInferedLang(null)
+    setInferedLoc(null)
     setModeOfData("CV");
 
     // const formData = new FormData();
