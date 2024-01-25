@@ -92,7 +92,9 @@ def get_custom_prompt():
             candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
         if infer_data == "languageSkills":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
-        elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
+        elif infer_data == "age" and candidate_data["dateOfBirth"] is not None and mode == "bullhorn":
+            response = summarize_data(candidate_data, custom_prompt, infer_data)
+        elif infer_data == "age" and candidate_data["dateOfBirth"] is not None and mode == "CV":
             response = summarize_data(candidate_data, custom_prompt, infer_data)
         elif infer_data == "age" and candidate_data["dateOfBirth"] is None and mode == "bullhorn":
             response = summarize_data(candidate_workhistory, custom_prompt, infer_data)
