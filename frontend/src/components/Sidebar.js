@@ -269,7 +269,6 @@ const Sidebar = () => {
           </div>
           
         </div>
-        <ToastContainer/>
       </div>
   );
 };
