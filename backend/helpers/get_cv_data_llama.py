@@ -28,7 +28,7 @@ def extract_cv(pdf_file):
                 [{
                 'certifications': '(Certification of the candidate)',
                 'comments': '(Comments about the candidate)',
-                'dateOfBirth': '(Date of birth of the candidate)',
+                'dateOfBirth': '(Date of birth of the candidate according to the cv. Do not infer the data. just put in what you see in the cv/resume)',
                 'educationDegree': (Education Degree of the candidate),
                 'email': '(Email of the candidate)',
                 'ethnicity': '(Ethnicity of the candidate)',

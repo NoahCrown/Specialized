@@ -5,6 +5,8 @@ import Prompt from "./components/Prompt";
 import { useEffect } from "react";
 import axios from 'axios'
 import { useCandidate } from './context/Context';
+import { ToastContainer } from 'react-toastify';
+
 
 
 
@@ -31,6 +33,8 @@ function App() {
       <Sidebar/>
       <Output/>
       <Prompt/>
+      <ToastContainer/>
+
     </div>
   );
 }
