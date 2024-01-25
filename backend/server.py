@@ -87,7 +87,7 @@ def get_custom_prompt():
             if (infer_data == "age" and candidate_data["dateOfBirth"] is None) or (infer_data == "location" and mode == "bullhorn"):
                 candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
                 candidate_workhistory = candidate_workhistory.json()
-                candidate_workhistory = candidate_workhistory['data'][0]
+                candidate_workhistory = candidate_workhistory['data']
         else:
             candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
         if infer_data == "languageSkills":
