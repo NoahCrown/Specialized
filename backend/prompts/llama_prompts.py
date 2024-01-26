@@ -10,10 +10,6 @@ def language_skill(candidate_data, custom_prompt):
         custom_prompt = ""
     else:
         pass
-    base_prompt = """
-    You are provided with a candidate json data and a custom prompt. Your job is to infer the candidate's language proficiency in english and japanese using the given candidate's data.
-    Please follow the JSON format provided below and return only the JSON data.
-    """
 
     load_data = f"""
     Data:
@@ -35,7 +31,7 @@ def language_skill(candidate_data, custom_prompt):
     }
     ]
     """
-    query = base_prompt + custom_prompt + load_data + json_format
+    query = custom_prompt + load_data + json_format
     system_prompt = "You are a bot that answers in JSON format"
     response = api.run("meta/llama-2-70b-chat",
                 input={
@@ -64,7 +60,7 @@ def infer_age(candidate_data, custom_prompt, current_date):
     Data:
     {candidate_data}
 
-    your job is to infer the age of the candidate based on the date given to you. you can use his/her birthday, if those are not available you can rely on his/her job history or year of graduation. add a confidence level to see how confident you are with inferring the age data
+    {custom_prompt}
     I'll also provide you a date, give me the age of the candidate base of this date.
 
     Current Date:
@@ -78,7 +74,7 @@ def infer_age(candidate_data, custom_prompt, current_date):
         "confidence: ( insert confidence level here from 1-5, 1 being the lowest)
     }
     """
-    query = load_data + custom_prompt + json_format
+    query = load_data + json_format
     system_prompt = "You are a bot that answers in JSON format"
     response = api.run("meta/llama-2-70b-chat",
                 input={
@@ -101,9 +97,7 @@ def infer_location(candidate_data, custom_prompt, current_date):
         custom_prompt = ""
     else:
         pass
-    base_instruction = """
-    i'm gonna give you a candidate's data, your job is to infer the location of that candidate using his/her work experience, phone number area code and ethinicity
-    """
+    
     load_data = f"""
     Data:
     {candidate_data}
@@ -119,7 +113,7 @@ def infer_location(candidate_data, custom_prompt, current_date):
         "confidence": ( AI's confidence in inferring the data 1-5, 5 being the highest)
     }
     """
-    query = base_instruction + custom_prompt + load_data + json_format
+    query = custom_prompt + load_data + json_format
     system_prompt = "You are a bot that answers in JSON format"
     response = api.run("meta/llama-2-70b-chat",
                 input={
