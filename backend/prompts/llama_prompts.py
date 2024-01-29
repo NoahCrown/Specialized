@@ -21,6 +21,8 @@ def language_skill(candidate_data, custom_prompt):
 
     json_format= """
     Don't add an explanation only send back the json data
+    Please follow the json format provided below and only return the json data
+
     JSON Format:
     [
     {
@@ -73,6 +75,7 @@ def infer_age(candidate_data, custom_prompt, current_date):
 
     json_format= """
     Don't add an explanation only send back the json data
+    Please follow the json format provided below and only return the json data
     {
         "Age": ( insert inferred age here ),
         "confidence: ( insert confidence level here from 1-5, 1 being the lowest)
@@ -114,6 +117,8 @@ def infer_location(candidate_data, custom_prompt, current_date):
 
     json_format= """
     Don't add an explanation only send back the json data
+    Please follow the json format provided below and only return the json data
+
     {
         "Location":  ( insert here the inferred location of the candidate base on the data given to you ),
         "confidence": ( AI's confidence in inferring the data 1-5, 5 being the highest)

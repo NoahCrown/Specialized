@@ -1,18 +1,15 @@
 import React, {useState } from 'react';
 import axios from 'axios';
 import { useCandidate } from '../context/Context';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 
-function PromptInput({ promptNumber, active  }) {
-  const [isTextboxVisible, setTextboxVisible] = useState(false);
+function PromptInput({active  }) {
+  const [isTextboxVisible, setTextboxVisible] = useState(true);
   const [responseText, setResponseText] = useState(" ");
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
 
-  const toggleTextbox = () => {
-    setTextboxVisible(!isTextboxVisible);
-  };
-
+ 
   const handleSubmitPropmpt = async() => {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
@@ -45,11 +42,7 @@ function PromptInput({ promptNumber, active  }) {
       console.error('Error:', error);
       if (error.response) {
         toast.warn('Failed to infer data, please try again later.')
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Response data:', error.response.data);
-        console.error('Response status:', error.response.status);
-        console.error('Response headers:', error.response.headers);
+        // T
       } 
     });
 
@@ -62,15 +55,16 @@ function PromptInput({ promptNumber, active  }) {
     
     <div className="relative bg-white text-black">
       <div
+        // onClick={setTextboxVisible(!isTextboxVisible)}
         className={`cursor-pointer border-solid border-2 border-[#D1D5DB] px-10  p-4 gap-2 rounded text-black flex flex-row justify-between items-center ${
           active ? 'bg-blue-500 text-white' : ''
         }`}
-        onClick={toggleTextbox}
+        
       >
         <div className='rounded-full bg-[#CECECE] w-[8%] flex justify-center items-start p-2 '>
           <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[60%]'/>
         </div>
-        <input className='focus:outline-none' placeholder={`Enter name ${promptNumber} here`} />
+        <input className='focus:outline-none' placeholder={`Enter name here`} />
         {isTextboxVisible ? (
           <i className="fa-solid fa-minus"></i>
         ) : (
@@ -100,7 +94,6 @@ function PromptInput({ promptNumber, active  }) {
 
       
     </div>
-    <ToastContainer/>
 
     </>
   );

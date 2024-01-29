@@ -73,7 +73,7 @@ const Output = () => {
           <div className='mb-2' key={index}>
             <p>Language: {val.Language}</p>
             <p>Confidence: {val.confidence}</p>
-            <p>Proficiency: {val.enProficiency}</p>
+            <p>Proficiency: {val.enProficiency || val.jpProficiency}</p>
           </div>
           ))}
         </div>
