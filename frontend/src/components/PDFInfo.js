@@ -34,7 +34,7 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
       </div>
 
       <div className='w-[70%] flex flex-col gap-2 justify-items-start  '>
-        <h3 className='font-bold'>{first_name} {last_name}</h3>
+      <h3 className='font-bold'>{first_name && last_name ? `${first_name} ${last_name}` : "N/A"}</h3>
         <p className='text-[#919191]'>{position}</p>
         <button className='font-bold underline hover:cursor-pointer text-left' onClick={handleClick}>
           {active ? 'View' : 'Run'}

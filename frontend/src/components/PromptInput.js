@@ -55,7 +55,7 @@ function PromptInput({active  }) {
     
     <div className="relative bg-white text-black">
       <div
-        // onClick={setTextboxVisible(!isTextboxVisible)}
+        onClick={() => setTextboxVisible(!isTextboxVisible)}
         className={`cursor-pointer border-solid border-2 border-[#D1D5DB] px-10  p-4 gap-2 rounded text-black flex flex-row justify-between items-center ${
           active ? 'bg-blue-500 text-white' : ''
         }`}

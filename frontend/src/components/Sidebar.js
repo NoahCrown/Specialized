@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useCandidate } from "../context/Context";
 import PDFInfo from "./PDFInfo";
 import axios from "axios";
 import { Carousel } from "@material-tailwind/react";
-import { ToastContainer, toast } from 'react-toastify';
+import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -17,6 +17,8 @@ const Sidebar = () => {
 
   console.log(searchResults);
   console.log(inputValue);
+
+  
 
   console.log(data);
   const chunkArray = (array, chunkSize) => {
@@ -113,8 +115,15 @@ const Sidebar = () => {
       });
   };
 
+  const handleFileRemove = () => {
+    setUploadFile(null); // Set the uploaded file to null to remove it
+  };
+
   return (
-    <div className=" box-border flex justify-center items-center w-1/4 flex-col max-h-fit ">
+    <div className="w-1/4 flex justify-start">
+
+    
+    <div className=".no-scrollbar box-border flex justify-start justify-items-start	 items-center w-full flex-col max-h-fit min-h-[135vh] ">
       {/* Specialized Nav */}
       <div className="border-solid border-b-2 border-[#E7E7E7] w-full px-2 py-2">
         <img
@@ -135,8 +144,8 @@ const Sidebar = () => {
             >
               {selectedFile ? (
                 <>
-                  <div className="flex flex-row justify-center items-center gap-3 w-full ">
-                    <div className="rounded-full bg-[#D3D3D3] w-[15%] flex justify-center items-center p-2">
+                  <div className="flex flex-row justify-center items-center gap-5 w-full ">
+                    <div className="rounded-full bg-[#D3D3D3] min-w-[20%] max-w-[20%] flex justify-center items-center p-2">
                       <img
                         src={require("../img/pdf_icon.png")}
                         alt="pdf-icon"
@@ -144,8 +153,10 @@ const Sidebar = () => {
                       />
                     </div>
                     <p className="text-[.75rem] min-w-[60%] max-w-[60%] break-words">
-                      {selectedFile.name}
+                      {selectedFile.name} 
                     </p>
+
+                    <i onClick={handleFileRemove} class="fa-regular fa-circle-xmark"></i>  
                   </div>
                 </>
               ) : (
@@ -232,7 +243,7 @@ const Sidebar = () => {
       {/* Results  */}
       <div className="w-full">
         <p className="px-10 mb-3">Results</p>
-          <div className="">
+          <div className=" min-h-fit">
             {searchResults.length > 0 ? (
               <Carousel  navigation={false}>
                 {chunkedSearchResults.map((chunk, index) => (
@@ -269,6 +280,7 @@ const Sidebar = () => {
           </div>
           
         </div>
+      </div>
       </div>
   );
 };
