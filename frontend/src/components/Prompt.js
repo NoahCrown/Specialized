@@ -4,11 +4,15 @@ import { useCandidate } from '../context/Context';
 import PromptInput from './PromptInput';
 
 const Prompt = () => {
-  const { dataToInfer, handleChange } = useCandidate();
+  const { dataToInfer, handleChange, mode, promptResult } = useCandidate();
   const [promptInputs, setPromptInputs] = useState([]);
 
+  console.log(dataToInfer)
+  console.log(mode)
+  console.log(promptResult)
+
   const addPromptInput = () => {
-    setPromptInputs([...promptInputs, <PromptInput/>]);
+    setPromptInputs([...promptInputs, <PromptInput key={`${mode} ${dataToInfer}`} currentDataToInfer={dataToInfer} currentMode={mode} currentName={promptResult[0].firstName} />]);
   };
 
 

@@ -61,10 +61,25 @@ export const CandidateProvider = ({ children }) => {
     setInferedLocation(data)
   }
 
+
+  // Mode of Data Context
   const [mode, setMode] = useState(null)
   const setModeOfData = (data) => {
     setMode(data)
   }
+
+  // Search bar Context
+  const [inputValue, setInputValue] = useState("");
+  const setSearch = (data) => {
+    setInputValue(data)
+  }
+
+  // Search Result Context
+  const [searchResults, setSearchResults] = useState([]);
+  const setSearchData = (data) => {
+    setSearchResults(data)
+  }
+
 
   return (
     <Context.Provider value={{ 

@@ -48,6 +48,7 @@ const Sidebar = () => {
   const handleDrop = (event) => {
     event.preventDefault();
     setUploadFile(event.dataTransfer.files[0]);
+    toast.success('Filed Added Successfully')
   };
 
   const handleMissingDataSearch = (event) => {
@@ -72,7 +73,7 @@ const Sidebar = () => {
   const handleClearSearch = () => {
     setSearchResults([]);
     setInputValue("");
-    toast.success("Cleared")
+    toast.success("Cleared search" )
   };
 
   const handleDivClick = () => {
@@ -85,6 +86,8 @@ const Sidebar = () => {
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     setUploadFile(event.target.files[0]);
+    toast.success('Filed Added Successfully')
+
   };
 
   const handleUpload = () => {
@@ -125,6 +128,8 @@ const Sidebar = () => {
 
   const handleFileRemove = () => {
     setUploadFile(null); // Set the uploaded file to null to remove it
+    toast.success('Filed Removed Successfully')
+
   };
 
   return (

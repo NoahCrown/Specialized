@@ -4,8 +4,8 @@ import { useCandidate } from '../context/Context';
 import { toast } from 'react-toastify';
 
 
-function PromptInput({active  }) {
-  const [isTextboxVisible, setTextboxVisible] = useState(true);
+function PromptInput({ currentDataToInfer, currentMode, currentName }) {
+  const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState(" ");
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
 
@@ -56,15 +56,14 @@ function PromptInput({active  }) {
     <div className="relative bg-white text-black">
       <div
         onClick={() => setTextboxVisible(!isTextboxVisible)}
-        className={`cursor-pointer border-solid border-2 border-[#D1D5DB] px-10  p-4 gap-2 rounded text-black flex flex-row justify-between items-center ${
-          active ? 'bg-blue-500 text-white' : ''
+        className={`cursor-pointer border-solid border-2 border-[#D1D5DB] px-10  p-4 gap-2 rounded text-black flex flex-row justify-between items-center  : ''
         }`}
         
       >
         <div className='rounded-full bg-[#CECECE] w-[8%] flex justify-center items-start p-2 '>
           <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[60%]'/>
         </div>
-        <input className='focus:outline-none' placeholder={`Enter name here`} />
+        <input className='focus:outline-none' placeholder={`${currentName} - ${currentMode} - ${currentDataToInfer}`} />
         {isTextboxVisible ? (
           <i className="fa-solid fa-minus"></i>
         ) : (
@@ -72,7 +71,7 @@ function PromptInput({active  }) {
         )}
       </div>
       {isTextboxVisible && (
-        <div className="absolute left-0 mt-2 p-2 bg-white rounded text-black w-full">
+        <div className="relative left-0 mt-2 p-2 bg-white rounded text-black w-full">
           <textarea
           className="w-full h-[60vh] border border-gray-300 rounded p-2"
           placeholder={`Enter your prompt`}
