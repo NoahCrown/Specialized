@@ -23,9 +23,10 @@ const Prompt = () => {
         <h1 className='text-3xl font-bold'>Prompt</h1>
         <div>
           <select
-            className='border border-solid border-black'
+            className='border border-solid border-black text-center'
             value={dataToInfer}
             onChange={handleChange}
+            defaultValue="age"
           >
             <option value='age'>Age</option>
             <option value='languageSkills'>Language Skills EN</option>
@@ -36,7 +37,7 @@ const Prompt = () => {
       <div className='flex justify-center items-center'>
         <button
           onClick={addPromptInput} // Call the addPrompt function when the button is clicked
-          className='w-1/2 border border-black border-dashed text-black bg-[#F5F5F5] w- rounded-md px-[.8rem] py-[.4rem] hover:cursor-pointer '
+          className='border border-[#ababab] border-dashed text-[#ababab] bg-[#F5F5F5] w-full rounded-md px-[.8rem] py-[.4rem] hover:border-black hover:text-black hover:cursor-pointer '
         >
          <i className='fa-solid fa-plus'></i> Add a new prompt 
         </button>
