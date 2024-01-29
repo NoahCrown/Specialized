@@ -12,7 +12,15 @@ const Sidebar = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [missingDataToSearch, setMissingDataToSearch] = useState(null);
-  const { setOutput, setModeOfData, data, selectedFile, setUploadFile, setInferedLang, setInferedLoc, setInfered  } =
+  const { 
+    setOutput, 
+    setModeOfData, 
+    data, 
+    selectedFile, 
+    setUploadFile, 
+    setInferedLang, 
+    setInferedLoc, 
+    setInfered  } =
     useCandidate();
 
   console.log(searchResults);
@@ -156,7 +164,7 @@ const Sidebar = () => {
                       {selectedFile.name} 
                     </p>
 
-                    <i onClick={handleFileRemove} class="fa-regular fa-circle-xmark"></i>  
+                    <i onClick={handleFileRemove} class="hover:cursor-pointer fa-regular fa-circle-xmark"></i>  
                   </div>
                 </>
               ) : (
