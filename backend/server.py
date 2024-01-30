@@ -68,7 +68,28 @@ def search_candidate():
         return candidate_data
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+@app.route('/get_pdf', methods = ['POST'])
+@on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
+def get_candidate_pdf():
+    try:
+        received_id = request.json
+        candidate_id = received_id['candidateId']
+        access_token = bullhorn_auth_helper.get_rest_token()
+        search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
+        file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
+        file_id = file_id.json()
+        file_id = file_id['data'][0]['id']
+
+        get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
+        candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
+        candidate_file = candidate_file.json()
+        candidate_file = candidate_file['File']['fileContent']
+
+        return {"candidateFile": candidate_file}
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/get_prompt', methods = ['POST'])
 def send_base_prompt():
     try:
