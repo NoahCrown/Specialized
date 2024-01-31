@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useCandidate } from "../context/Context";
+import { Rings } from 'react-loader-spinner'
+
 
 const Output = () => {
   const { promptResult, inferedData, inferedLangProficiency, inferedLocation } =
@@ -188,7 +190,17 @@ const Output = () => {
           <img src={require("../img/no-data.png")} alt="svg-no-data" className="w-1/3"/>
           <p className="text-[#919191]">No data to show.</p>
           <p className="text-[#919191]">Upload or run CVs to load data.</p>
+          <Rings
+  visible={true}
+  height="80"
+  width="80"
+  color="#4fa94d"
+  ariaLabel="rings-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />
         </div>
+
       )}
     </div>
   );

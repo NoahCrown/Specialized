@@ -128,7 +128,7 @@ const Sidebar = () => {
 
   const handleFileRemove = () => {
     setUploadFile(null); // Set the uploaded file to null to remove it
-    toast.success('Filed Removed Successfully')
+    toast.success('Filed Removed   Successfully')
 
   };
 
