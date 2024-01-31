@@ -4,16 +4,25 @@ import { useCandidate } from '../context/Context';
 import { toast } from 'react-toastify';
 
 
-function PromptInput({ currentDataToInfer, currentMode, currentName }) {
+function PromptInput({ prompt }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState(" ");
-  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode  } = useCandidate();
+  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode, setDataLoaderInferredAge, setDataLoaderInferredLangProf, setDataLoaderInferredLoc  } = useCandidate();
 
+  console.log(prompt)
  
   const handleSubmitPropmpt = async() => {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
     toast.success(`Inferring ${data.dataToInfer}, please wait.`)
+    if (dataToInfer === 'age'){
+      setDataLoaderInferredAge(true)
+    } else if(dataToInfer === "languageSkills"){
+      setDataLoaderInferredLangProf(true)
+    } else if(dataToInfer === "location"){
+      setDataLoaderInferredLoc(true)
+    }
+    
 
     // Make a POST request to your Flask backend using Axios
     await axios
@@ -26,13 +35,16 @@ function PromptInput({ currentDataToInfer, currentMode, currentName }) {
       // Handle the response from your Flask backend here
       if (response.data && dataToInfer === "age"){
         setInfered(response.data)
+        setDataLoaderInferredAge(false)
         toast.success('Successfully inferred Age Data.')
       }else if (response.data && dataToInfer === "languageSkills"){
         setInferedLang(response.data)
+        setDataLoaderInferredLangProf(false)
         toast.success('Successfully inferred Language Proficiency Data.')
 
       }else if (response.data && dataToInfer === "location"){
         setInferedLoc(response.data)
+        setDataLoaderInferredLoc(false)
         toast.success('Successfully inferred Location Data.')
 
       }
@@ -63,7 +75,7 @@ function PromptInput({ currentDataToInfer, currentMode, currentName }) {
         <div className='rounded-full bg-[#CECECE] w-[8%] flex justify-center items-start p-2 '>
           <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[60%]'/>
         </div>
-        <input className='focus:outline-none' placeholder={`${currentName} - ${currentMode} - ${currentDataToInfer}`} />
+        <input className='focus:outline-none' placeholder={`Enter name`} />
         {isTextboxVisible ? (
           <i className="fa-solid fa-minus"></i>
         ) : (
@@ -72,12 +84,16 @@ function PromptInput({ currentDataToInfer, currentMode, currentName }) {
       </div>
       {isTextboxVisible && (
         <div className="relative left-0 mt-2 p-2 bg-white rounded text-black w-full">
-          <textarea
-          className="w-full h-[60vh] border border-gray-300 rounded p-2"
-          placeholder={`Enter your prompt`}
-          value={responseText}
-          onChange={(e) => setResponseText(e.target.value)}
-        ></textarea>
+        <p>{prompt}</p>
+        <textarea
+  className="w-full h-[60vh] border border-gray-300 rounded p-2"
+  placeholder={prompt}
+  defaultValue={prompt}
+  value={prompt}
+  onChange={(e) => setResponseText(e.target.value)}
+/>
+
+
         <div className='flex items-center justify-between px-4'>
         <p className='underline font-bold hover:cursor-pointer'>Save</p>
           <button

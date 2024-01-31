@@ -80,6 +80,57 @@ export const CandidateProvider = ({ children }) => {
     setSearchResults(data)
   }
 
+  // Data loading Loader Context
+  const [isLoading, setIsLoading] = useState(false)
+
+  const setDataLoader = (bool) => {
+    setIsLoading(bool)
+  }
+
+  // Inferred Age Loading Context
+  const [isLoadingInferredAge, setIsLoadingInferredAge] = useState(false)
+
+  const setDataLoaderInferredAge = (bool) => {
+    setIsLoadingInferredAge(bool)
+  }
+
+  // Inferred Language Profiency Loading Context
+  const [isLoadingInferredLangProf, setIsLoadingInferredLangProf] = useState(false)
+
+  const setDataLoaderInferredLangProf = (bool) => {
+    setIsLoadingInferredLangProf(bool)
+  }
+
+  // Inferred Location Loading Context
+  const [isLoadingInferredLoc, setIsLoadingInferredLoc] = useState(false)
+
+  const setDataLoaderInferredLoc = (bool) => {
+    setIsLoadingInferredLoc(bool)
+  }
+  
+  // Opening PDF Logic Context
+  const handleOpenPdfInNewTab = (base64Pdf) => {
+    try {
+      var pdfData = `data:application/pdf;base64,${base64Pdf}`;
+  
+      var w = window.open("");
+  
+      if (w) {
+        w.document.write(
+          `<embed width="100%" height="100%" src="${pdfData}" type="application/pdf" />`
+        );
+      } else {
+        throw new Error("Failed to open a new tab.");
+      }
+    } catch (error) {
+      console.error("Error opening PDF in new tab:", error);
+      // } finally {
+      //   if (w) w.document.close();
+      // }
+    }
+  };
+
+
 
   return (
     <Context.Provider value={{ 
@@ -101,7 +152,16 @@ export const CandidateProvider = ({ children }) => {
       data,
       setAllData,
       selectedFile,
-      setUploadFile}}>
+      setUploadFile,
+      isLoading,
+      setDataLoader,
+      isLoadingInferredAge,
+      setDataLoaderInferredAge,
+      isLoadingInferredLangProf,
+      setDataLoaderInferredLangProf,
+      isLoadingInferredLoc,
+      setDataLoaderInferredLoc,
+      handleOpenPdfInNewTab}}>
       {children}
     </Context.Provider>
   );

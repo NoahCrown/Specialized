@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCandidate } from '../context/Context';
+import axios from 'axios';
 
 import PromptInput from './PromptInput';
 
@@ -7,13 +8,28 @@ const Prompt = () => {
   const { dataToInfer, handleChange, mode, promptResult } = useCandidate();
   const [promptInputs, setPromptInputs] = useState([]);
 
-  console.log(dataToInfer)
-  console.log(mode)
-  console.log(promptResult)
+  
+  const addPromptInput = async () => {
+    try {
+      // Send a POST request to the Flask backend
+      const response = await axios.post('/get_prompt', {
+        dataToInfer: dataToInfer,
+      });
 
-  const addPromptInput = () => {
-    setPromptInputs([...promptInputs, <PromptInput key={`${mode} ${dataToInfer}`} currentDataToInfer={dataToInfer} currentMode={mode} currentName={promptResult[0].firstName} />]);
+      console.log(response.data.prompt)
+  
+      // Check if response.data is defined before adding it to promptInputs
+      if (response.data) {
+        setPromptInputs([...promptInputs, <PromptInput prompt={response.data.prompt} />]);
+      } else {
+        console.warn('Response data is undefined.');
+      }
+    } catch (error) {
+      // Handle errors
+      console.error('Error sending POST request:', error);
+    }
   };
+  
 
 
   console.log(dataToInfer);

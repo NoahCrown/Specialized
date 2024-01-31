@@ -2,17 +2,19 @@ import React from 'react';
 import axios from 'axios';
 import { useCandidate } from '../context/Context';
 const PDFInfo = ({id, first_name, last_name, position, active}) => {
-  const { setCandidate,setOutput, setInferedLang, setInfered, setModeOfData, setInferedLoc } = useCandidate();
+  const { setCandidate,setOutput, setInferedLang, setInfered, setModeOfData, setInferedLoc, setDataLoader } = useCandidate();
 
   
   const handleClick = async () => {
     console.log(id)
+    setDataLoader(true)
     
     try {
       // Send a POST request to the Flask backend
       const response = await axios.post('/get_candidate', {
         candidateId: id, 
       });
+      setDataLoader(false)
       setCandidate(id);
       setOutput(response.data)
       setInferedLang(null)
