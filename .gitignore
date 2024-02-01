@@ -3,9 +3,9 @@
 backend/venv
 venv/
 flask_session
-node_modules
 
 
+node_modules/
 backend/helpers/__pycache__
 __pycache__/
 */__pycache__/
