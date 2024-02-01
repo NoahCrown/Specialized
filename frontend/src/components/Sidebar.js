@@ -5,6 +5,8 @@ import axios from "axios";
 import { Carousel } from "@material-tailwind/react";
 import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Slider from "react-slick";
+
 
 
 const Sidebar = () => {
@@ -20,14 +22,39 @@ const Sidebar = () => {
     setUploadFile, 
     setInferedLang, 
     setInferedLoc, 
-    setInfered  } =
+    setInfered,
+    setDataLoader
+    } =
     useCandidate();
 
   console.log(searchResults);
   console.log(inputValue);
+  console.log(data)
 
   
+  var settings = {
+    infinite: true,
+    speed: 700,
+    slidesToShow: 3,
+    slidesToScroll: 2,
+    arrows:false,
+    slidesPerRows:3,
+    vertical: true,
+    verticalSwiping: false,
+    swipeToSlide: true,
+    focusOnSelect: true,
+  };
 
+  const sliderRef = React.createRef();
+  console.log(sliderRef)
+
+  const next = () => {
+    sliderRef.current.slickNext();
+  };
+
+  const previous = () => {
+    sliderRef.current.slickPrev();
+  };
   console.log(data);
   const chunkArray = (array, chunkSize) => {
     const chunks = [];
@@ -90,7 +117,7 @@ const Sidebar = () => {
 
   };
 
-  const handleUpload = () => {
+  const handleUpload = async() => {
     // Check if a file is selected
     if (!selectedFile) {
       return;
@@ -99,28 +126,32 @@ const Sidebar = () => {
     setInfered(null)
     setInferedLang(null)
     setInferedLoc(null)
+    setDataLoader(true)
     setModeOfData("CV");
 
     // const formData = new FormData();
     console.log(selectedFile);
 
-    const formData = new FormData();
-    formData.append("pdfFile", selectedFile);
+    const pdfData = new FormData();
+    pdfData.append("pdfFile", selectedFile); // Make sure selectedFile is defined and contains a file object
+    console.log(pdfData); // Log the FormData object after appending the file
+    
 
     // Replace 'YOUR_UPLOAD_URL' with your actual server endpoint
-    axios
-      .post("/upload", formData)
+    await axios
+      .post("/upload", pdfData)
 
       .then((response) => {
         // Handle the response from the server
         console.log("File uploaded successfully:", response.data);
         setOutput(response.data);
-        console.log(formData);
+        console.log(pdfData);
         toast.success('File uploaded successfully')
+        setDataLoader(false)
       })
       .catch((error) => {
         // Handle any errors
-        console.log(formData);
+        console.log(pdfData);
 
         console.error("Error uploading file:", error);
       });
@@ -128,7 +159,7 @@ const Sidebar = () => {
 
   const handleFileRemove = () => {
     setUploadFile(null); // Set the uploaded file to null to remove it
-    toast.success('Filed Removed   Successfully')
+    toast.success('File Removed Successfully')
 
   };
 
@@ -258,38 +289,42 @@ const Sidebar = () => {
         <p className="px-10 mb-3">Results</p>
           <div className=" min-h-fit">
             {searchResults.length > 0 ? (
-              <Carousel  navigation={false}>
-                {chunkedSearchResults.map((chunk, index) => (
-                  <div key={index} className="carousel-slide">
-                    {chunk.map((item) => (
-                      <PDFInfo
+              
+              <Slider ref={sliderRef} {...settings}>
+                {searchResults.map((item) => (
+                  <PDFInfo
                         key={item.candidate.id}
                         id={item.candidate.id}
                         first_name={item.candidate.firstName}
                         last_name={item.candidate.lastName}
                         position={item.jobOrder.title || "N/A"}
                       />
-                    ))}
-                  </div>
                 ))}
-              </Carousel>
+
+              </Slider>
             ) : (
-              <Carousel navigation={false}>
-                {chunkedData.map((chunk, index) => (
-                  <div key={index} className="carousel-slide">
-                    {chunk.map((item) => (
-                      <PDFInfo
+              <Slider {...settings} ref={sliderRef}>
+                {data.map((item) => (
+                  <PDFInfo
                         key={item.candidate.id}
                         id={item.candidate.id}
                         first_name={item.candidate.firstName}
                         last_name={item.candidate.lastName}
                         position={item.jobOrder.title || "N/A"}
                       />
-                    ))}
-                  </div>
                 ))}
-              </Carousel>
+
+              </Slider>
+
             )}
+            <div className="text-center flex justify-evenly ">
+          <button className="button"  onClick={previous}>
+          <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <button className="button" onClick={next}>
+          <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
           </div>
           
         </div>

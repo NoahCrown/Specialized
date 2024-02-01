@@ -12,7 +12,7 @@ const Prompt = () => {
   const addPromptInput = async () => {
     try {
       // Send a POST request to the Flask backend
-      const response = await axios.post('/get_prompt', {
+      const response = await axios.post('/load_prompt', {
         dataToInfer: dataToInfer,
       });
 

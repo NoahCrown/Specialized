@@ -15,7 +15,8 @@ const Output = () => {
     isLoadingInferredAge,
     isLoadingInferredLangProf,
     isLoadingInferredLoc,
-    handleOpenPdfInNewTab
+    handleOpenPdfInNewTab,
+    mode
   } = useCandidate();
 
   console.log(promptResult);
@@ -26,7 +27,8 @@ const Output = () => {
     try {
       // Send a POST request to the Flask backend
       const response = await axios.post('/get_pdf', {
-        candidateId: promptResult[0].id, 
+        candidateId: promptResult[0].id,
+        mode: mode
       });
       console.log(response.data.candidateFile)
       const base64 = response.data.candidateFile
