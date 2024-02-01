@@ -193,15 +193,20 @@ def upload_file():
         return jsonify({'error': 'No file part'}), 400
 
     file = request.files['pdfFile']
-    pdf_data = base64.b64encode(file.read())
+    temp_path = '/Specialized/backend/temp.pdf'
+    file.save(temp_path)
+    with open('/Specialized/backend/temp.pdf', 'rb') as pdf_file:
+        pdf_data = pdf_file.read()
+    pdf_data = base64.b64encode(pdf_data)
     pdf_data = pdf_data.decode("utf-8")
 
-    extracted_data = extract_cv(file)
+    extracted_data = extract_cv(pdf_file)
     session['pdfFile'] = extracted_data
     
     # Cache key for the PDF file
     cache_key = 'uploaded_pdf'
     cache.set(cache_key, pdf_data, timeout=60*60)
+    os.remove(temp_path)
 
     return extracted_data
 

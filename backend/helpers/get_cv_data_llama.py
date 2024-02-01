@@ -1,17 +1,24 @@
 import os
 import replicate
 from dotenv import load_dotenv
+import fitz
 from PyPDF2 import PdfReader
 from langdetect import detect
 
 def extract_cv(pdf_file):
     load_dotenv()
     api = replicate.Client(api_token=os.environ["REPLICATE_API_TOKEN"])
-    pdf_reader = PdfReader(pdf_file)
-    text = ""
+    # pdf_reader = PdfReader(pdf_file)
+    # text = ""
 
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    # for page in pdf_reader.pages:
+    #     text += page.extract_text()
+    temp_path = '/Specialized/backend/temp.pdf'
+    doc = fitz.open(temp_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    doc.close()
 
     lang = detect(text)
 
@@ -24,6 +31,7 @@ def extract_cv(pdf_file):
         Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data list and nothing else).
         Be accurate with the data. For example, in the address don't put in the address if it is not totally clear for you to identify. Just put "None" as the value, if so.
         You should return a list of dictionary. Remember to plug in the datas as value.
+        Please return only the JSON data
             
                 [{
                 'certifications': '(Certification of the candidate)',
@@ -66,4 +74,8 @@ def extract_cv(pdf_file):
                     }
             )
     response = ''.join(response)
+    json_start = response.find('[')
+    json_end = response.rfind(']') + 1
+
+    response = response[json_start:json_end]
     return eval(response)
