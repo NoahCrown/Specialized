@@ -194,7 +194,7 @@ def upload_file():
 
     file = request.files['pdfFile']
     temp_path = '/Specialized/backend/temp.pdf'
-    base_path = os.path.dirname(__file__)  # Get the directory in which the script is located
+    base_path = os.path.abspath(os.path.dirname(__file__))  # Get the directory in which the script is located
     file_path = os.path.join(base_path, temp_path)
     file.save(file_path)
     with open(file_path, 'rb') as pdf_file:

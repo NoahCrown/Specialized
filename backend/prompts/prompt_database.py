@@ -4,7 +4,7 @@ from datetime import datetime
 
 DATABASE_FOLDER_RELATIVE = '/Specialized/backend/prompts/'
 DATABASE_FILENAME = 'prompts.db'
-script_directory = os.path.dirname(__file__)
+script_directory = os.path.abspath(os.path.dirname(__file__)) 
 DATABASE_FOLDER = os.path.join(script_directory, DATABASE_FOLDER_RELATIVE)
 DATABASE_PATH = os.path.join(DATABASE_FOLDER, DATABASE_FILENAME)
 
