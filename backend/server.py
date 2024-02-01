@@ -194,8 +194,10 @@ def upload_file():
 
     file = request.files['pdfFile']
     temp_path = '/Specialized/backend/temp.pdf'
-    file.save(temp_path)
-    with open('/Specialized/backend/temp.pdf', 'rb') as pdf_file:
+    base_path = os.path.dirname(__file__)  # Get the directory in which the script is located
+    file_path = os.path.join(base_path, temp_path)
+    file.save(file_path)
+    with open(file_path, 'rb') as pdf_file:
         pdf_data = pdf_file.read()
     pdf_data = base64.b64encode(pdf_data)
     pdf_data = pdf_data.decode("utf-8")
