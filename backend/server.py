@@ -9,6 +9,7 @@ from helpers.get_mockdata import extract_and_store, extract_and_store_work_histo
 from helpers.get_cv_data_llama import extract_cv
 from helpers.bullhorn_access import BullhornAuthHelper, on_401_error
 from prompts.data_prompt import AGE_BASE_PROMPT, LANGUAGE_SKILL_BASE_PROMPT, LOCATION_BASE_PROMPT
+from prompts.prompt_database import read_item, SavePrompts, LoadPrompts, DeletePrompts
 from flask_cors import CORS
 import requests
 import json
@@ -90,22 +91,36 @@ def get_candidate_pdf():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/get_prompt', methods = ['POST'])
-def send_base_prompt():
+@app.route('/get_prompt/<int:version_number>', methods = ['POST'])
+def send_base_prompt(version_number):
     try:
         received_type = request.json
         prompt_type = received_type["dataToInfer"]
-        if prompt_type == "age":
-            response = {"prompt":AGE_BASE_PROMPT}
-        elif prompt_type == "languageSkills":
-            response = {"prompt":LANGUAGE_SKILL_BASE_PROMPT}
-        elif prompt_type == "location":
-            response = {"prompt":LOCATION_BASE_PROMPT}
+        prompt = read_item(prompt_type,version_number)
+        if prompt == "No data found":
+            if prompt_type == 'age':
+                prompt = AGE_BASE_PROMPT
+            elif prompt_type == 'languageSkills':
+                prompt = LANGUAGE_SKILL_BASE_PROMPT
+            elif prompt_type == 'location':
+                prompt = LOCATION_BASE_PROMPT
+        response = {"prompt":prompt}
         
         return jsonify(response)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/load_prompt', methods = ['POST'])
+def get_prompt_count():
+    try:
+        received_type = request.json
+        prompt_type = received_type['dataToInfer']
+        load = LoadPrompts(prompt_type)
+        response = load.load_prompts()
+
+        return jsonify(response)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/prompt_input', methods=['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
