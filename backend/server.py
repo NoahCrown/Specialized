@@ -1,5 +1,7 @@
 import os
+import base64
 from dotenv import load_dotenv
+from cachelib import SimpleCache
 from flask import Flask, request, abort, jsonify, session
 from flask_session import Session
 from helpers.get_data import extract_data
@@ -19,6 +21,8 @@ CORS(app)
 
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
+
+cache = SimpleCache()
 
 load_dotenv()
 CLIENT_ID = os.getenv('SPECIALIZED_CLIENT_ID')
@@ -74,20 +78,25 @@ def search_candidate():
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_candidate_pdf():
     try:
-        received_id = request.json
-        candidate_id = received_id['candidateId']
-        access_token = bullhorn_auth_helper.get_rest_token()
-        search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
-        file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
-        file_id = file_id.json()
-        file_id = file_id['data'][0]['id']
+        received_data= request.json
+        candidate_id = received_data['candidateId']
+        mode = received_data['mode']
+        if mode == "bullhorn":
+            access_token = bullhorn_auth_helper.get_rest_token()
+            search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
+            file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
+            file_id = file_id.json()
+            file_id = file_id['data'][0]['id']
 
-        get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
-        candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
-        candidate_file = candidate_file.json()
-        candidate_file = candidate_file['File']['fileContent']
+            get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
+            candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
+            candidate_file = candidate_file.json()
+            candidate_file = candidate_file['File']['fileContent']
+        else:
+            cache_key = 'uploaded_pdf'
+            candidate_file = cache.get(cache_key)
 
-        return {"candidateFile": candidate_file}
+        return jsonify({"candidateFile": candidate_file})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -184,8 +193,15 @@ def upload_file():
         return jsonify({'error': 'No file part'}), 400
 
     file = request.files['pdfFile']
+    pdf_data = base64.b64encode(file.read())
+    pdf_data = pdf_data.decode("utf-8")
+
     extracted_data = extract_cv(file)
     session['pdfFile'] = extracted_data
+    
+    # Cache key for the PDF file
+    cache_key = 'uploaded_pdf'
+    cache.set(cache_key, pdf_data, timeout=60*60)
 
     return extracted_data
 
