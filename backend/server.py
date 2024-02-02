@@ -193,7 +193,7 @@ def upload_file():
         return jsonify({'error': 'No file part'}), 400
 
     file = request.files['pdfFile']
-    temp_path = '/Specialized/backend/temp.pdf'
+    temp_path = 'temp.pdf'
     base_path = os.path.abspath(os.path.dirname(__file__))  # Get the directory in which the script is located
     file_path = os.path.join(base_path, temp_path)
     file.save(file_path)
@@ -208,7 +208,7 @@ def upload_file():
     # Cache key for the PDF file
     cache_key = 'uploaded_pdf'
     cache.set(cache_key, pdf_data, timeout=60*60)
-    os.remove(temp_path)
+    os.remove(file_path)
 
     return extracted_data
 
