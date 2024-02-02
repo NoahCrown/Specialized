@@ -130,6 +130,31 @@ def get_prompt_count():
         return jsonify(response)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/save_prompt', methods = ['POST'])
+def save_prompt_on_db():
+    try:
+        received_type = request.json
+        prompt = received_type['response']
+        prompt_type = received_type['dataToInfer']
+        load = SavePrompts(prompt, prompt_type)
+        response = load.create_versions()
+
+        return jsonify({"response":response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/delete_prompt/<int:version_number>', methods = ['POST'])
+def delete_prompt_on_db(version_number):
+    try:
+        received_type = request.json
+        prompt_type = received_type['dataToInfer']
+        load = DeletePrompts(prompt_type, version_number)
+        response = load.delete_item()
+
+        return jsonify({"response":response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/prompt_input', methods=['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
