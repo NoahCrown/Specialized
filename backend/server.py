@@ -99,6 +99,40 @@ def get_candidate_pdf():
         return jsonify({"candidateFile": candidate_file})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/extract_bullhorn', methods = ['POST'])
+@on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
+def extract_bullhorn_pdf():
+    try:
+        received_data= request.json
+        candidate_id = received_data['candidateId']
+        access_token = bullhorn_auth_helper.get_rest_token()
+        search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
+        file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
+        file_id = file_id.json()
+        file_id = file_id['data'][0]['id']
+
+        get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
+        candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
+        candidate_file = candidate_file.json()
+        candidate_file = candidate_file['File']['fileContent']
+
+        decoded_b64 = base64.b64decode(candidate_file)
+
+        temp_path = 'temp.pdf'
+        base_path = os.path.abspath(os.path.dirname(__file__))  # Get the directory in which the script is located
+        file_path = os.path.join(base_path, temp_path)
+        with open(file_path, 'wb') as file:
+            file.write(decoded_b64)
+
+        extracted_data = extract_cv(file_path)
+        cache_key = 'extracted_bullhorn'
+        cache.set(cache_key, extracted_data, timeout=60*60)
+        os.remove(file_path)
+        
+        return extracted_data
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/get_prompt/<int:version_number>', methods = ['POST'])
 def send_base_prompt(version_number):

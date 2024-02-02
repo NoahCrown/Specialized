@@ -2,8 +2,22 @@ import os
 import replicate
 from dotenv import load_dotenv
 import fitz
+import json
 from PyPDF2 import PdfReader
 from langdetect import detect
+
+def parse_json_with_autofix(json_str):
+    try:
+        return eval(json_str)
+    except Exception as e:
+        if "Expecting ',' delimiter" in str(e) or "Expecting ']' delimiter" in str(e) or "SyntaxError(\"'\[\' was never closed)\"":
+            try:
+                fixed_json_str = json_str.rstrip() + ']'
+                return eval(fixed_json_str)
+            except Exception as e:
+                raise ValueError("Could not fix JSON string") from e
+        else:
+            raise
 
 def extract_cv(pdf_file):
     load_dotenv()
@@ -29,8 +43,7 @@ def extract_cv(pdf_file):
         Follow this format and insert the proper information as values. 
         Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data list and nothing else).
         Be accurate with the data. For example, in the address don't put in the address if it is not totally clear for you to identify. Just put "None" as the value, if so.
-        You should return a list of dictionary. Remember to plug in the datas as value.
-        Please return only the JSON data
+        You should return a list of dictionary. Remember to plug in the datas as value. Remember to put all of the work history available.
             
                 [{
                 'certifications': '(Certification of the candidate)',
@@ -48,8 +61,8 @@ def extract_cv(pdf_file):
                 'skillSet': (SkillSets of the candidate),
                 'specialties': { 'data': [ (Specialties of the candidate) ], 'total': (Total secondary skills of the candidate)}
                 },
-                {
-                'comments': '(Comments about the work history)',
+                [{
+                'comments': '(Work Description/summary)',
                 'companyName': '(Company name of the work in candidate's work history)',
                 'endDate': (end date of work experience in epoch timestamp),
                 'id': (Work experience ID),
@@ -58,6 +71,7 @@ def extract_cv(pdf_file):
                 'startDate': '(Start date of work history the candidate work's history )',
                 'title': '(candidate's work title in his last job)'
                 }]
+                ]
             
 
         Again, do not copy and paste the values. If you cannot find or undentify the value or keys just put the value as None.
@@ -67,8 +81,8 @@ def extract_cv(pdf_file):
     response = api.run("meta/llama-2-70b-chat",
                 input={
                     "prompt": query,
-                    "system_prompt": "You are a bot that answers or returns data in JSON format",
-                    "max_new_tokens": 4060,
+                    "system_prompt": "You are a bot that inputs extracted Resume data to JSON",
+                    "max_new_tokens": 5060,
                     "temperature": 0.01
                     }
             )
@@ -77,4 +91,5 @@ def extract_cv(pdf_file):
     json_end = response.rfind(']') + 1
 
     response = response[json_start:json_end]
-    return eval(response)
+    response = parse_json_with_autofix(response)
+    return response
