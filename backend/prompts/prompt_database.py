@@ -57,12 +57,13 @@ class DeletePrompts:
 
 # USED FOR LOADING NUMBER OF PROMPT VERSIONS
 class LoadPrompts:
-    def __init__(self, column_name= "age"):
+    def __init__(self, column_name=None):
         self.column_name = column_name
+        self.default_columns = ['age', 'languageSkills', 'location']
     
     def get_max_version_number_for_column(self, cursor, column_name):
-        # Find the highest version number for the specified column where it is not null
-        cursor.execute(f"SELECT MAX(version_number) FROM item_versions WHERE {column_name} IS NOT NULL")
+        query = f"SELECT MAX(version_number) FROM item_versions WHERE {column_name} IS NOT NULL"
+        cursor.execute(query)
         max_version = cursor.fetchone()[0]
         return max_version if max_version is not None else 0
 
@@ -71,13 +72,20 @@ class LoadPrompts:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
 
-        # Get the max version number for the 'age' column
-        max_version = self.get_max_version_number_for_column(cursor, self.column_name)
+        max_versions = {}
 
-        # Close the connection
+        if self.column_name:
+            max_version = self.get_max_version_number_for_column(cursor, self.column_name)
+            max_versions[self.column_name] = max_version
+        else:
+            # Get max version number for the predefined set of columns
+            for column_name in self.default_columns:
+                max_version = self.get_max_version_number_for_column(cursor, column_name)
+                max_versions[column_name] = max_version
+
         conn.close()
 
-        return {self.column_name:max_version}
+        return max_versions
 
 # USED FOR SAVING NEW PROMPTS
 class SavePrompts:
