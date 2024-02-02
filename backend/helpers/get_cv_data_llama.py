@@ -13,8 +13,7 @@ def extract_cv(pdf_file):
 
     # for page in pdf_reader.pages:
     #     text += page.extract_text()
-    temp_path = '/Specialized/backend/temp.pdf'
-    doc = fitz.open(temp_path)
+    doc = fitz.open(pdf_file)
     text = ""
     for page in doc:
         text += page.get_text()

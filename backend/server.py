@@ -202,7 +202,7 @@ def upload_file():
     pdf_data = base64.b64encode(pdf_data)
     pdf_data = pdf_data.decode("utf-8")
 
-    extracted_data = extract_cv(pdf_file)
+    extracted_data = extract_cv(file_path)
     session['pdfFile'] = extracted_data
     
     # Cache key for the PDF file
