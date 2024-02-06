@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useCandidate } from "../context/Context";
 import PDFInfo from "./PDFInfo";
 import axios from "axios";
-import { Carousel } from "@material-tailwind/react";
 import {toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Slider from "react-slick";
@@ -26,11 +25,6 @@ const Sidebar = () => {
     setDataLoader
     } =
     useCandidate();
-
-  console.log(searchResults);
-  console.log(inputValue);
-  console.log(data)
-
   
   var settings = {
     infinite: true,

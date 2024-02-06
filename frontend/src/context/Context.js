@@ -34,10 +34,10 @@ export const CandidateProvider = ({ children }) => {
 
   // Select Data To Infer Context
   const [dataToInfer, setDataToInfer] = useState('');
-  
-  const handleChange = (event) => {
-    setDataToInfer(event.target.value);
-  };
+
+  const setDataInfer = (data) => {
+    setDataToInfer(data)
+  }
 
   // Infered Age Data Context
   const [inferedData, setInferedData] = useState(null)
@@ -130,6 +130,53 @@ export const CandidateProvider = ({ children }) => {
     }
   };
 
+  // Epoch To Date
+  function epochToDateString(epochTime) {
+    // Convert epoch time to milliseconds (JavaScript uses milliseconds)
+    const date = new Date(epochTime * 1000);
+  
+    // Extract the year, month, and day
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    // Create a formatted date string
+    const dateString = `${year}-${month}-${day}`;
+  
+    return dateString;
+  }
+
+  // Prompts Context 
+  const [agePrompts, setAgePrompts] = useState([])
+  const setAgePromptInputs = (data) => {
+    setAgePrompts(data)
+  }
+
+  const [languagePrompts, setLanguagePrompts] = useState([]); // State for language prompts
+  const setLanguagePromptInputs = (data) => {
+    setLanguagePrompts(data);
+  };
+
+
+  const [locationPrompts, setLocationPrompts] = useState([]); // State for location prompts
+  const setLocationPromptInputs = (data) => {
+    setLocationPrompts(data);
+  };
+
+  // Saved Prompts Context
+  const [savedPrompts, setSavedPrompts] = useState({
+    'age': 0,
+    'languageSkills': 0,
+    'location': 0
+  })
+
+  const setSavedPromptsData = (data) => {
+    setSavedPrompts(data)
+
+  }
+
+  
+
 
 
   return (
@@ -139,8 +186,7 @@ export const CandidateProvider = ({ children }) => {
       promptResult, 
       setPromptResult, 
       setOutput, 
-      dataToInfer, 
-      handleChange, 
+      dataToInfer,  
       setInfered, 
       inferedData, 
       inferedLangProficiency, 
@@ -161,7 +207,17 @@ export const CandidateProvider = ({ children }) => {
       setDataLoaderInferredLangProf,
       isLoadingInferredLoc,
       setDataLoaderInferredLoc,
-      handleOpenPdfInNewTab}}>
+      handleOpenPdfInNewTab,
+      epochToDateString,
+      setDataInfer,
+      agePrompts,
+      languagePrompts,
+      locationPrompts,
+      setAgePromptInputs,
+      setLanguagePromptInputs,
+      setLocationPromptInputs,
+      savedPrompts, 
+      setSavedPromptsData}}>
       {children}
     </Context.Provider>
   );

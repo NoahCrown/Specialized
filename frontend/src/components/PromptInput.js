@@ -4,15 +4,21 @@ import { useCandidate } from '../context/Context';
 import { toast } from 'react-toastify';
 
 
-function PromptInput({ prompt }) {
+function PromptInput({ prompt, id }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
-  const [responseText, setResponseText] = useState(" ");
-  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode, setDataLoaderInferredAge, setDataLoaderInferredLangProf, setDataLoaderInferredLoc  } = useCandidate();
+  const [responseText, setResponseText] = useState(prompt);
+  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode, setDataLoaderInferredAge, setDataLoaderInferredLangProf, setDataLoaderInferredLoc,
+    setAgePromptInputs,
+    setLanguagePromptInputs,
+    setLocationPromptInputs,
+    agePrompts,
+    languagePrompts,
+    locationPrompts,  } = useCandidate();
 
   console.log(prompt)
  
   const handleSubmitPropmpt = async() => {
-    const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
+    const data = {response: null, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
     toast.success(`Inferring ${data.dataToInfer}, please wait.`)
     if (dataToInfer === 'age'){
@@ -61,6 +67,47 @@ function PromptInput({ prompt }) {
 
   }
 
+  const savePrompt = async () => {
+    try {
+      const data = { response: responseText, dataToInfer: dataToInfer };
+      const response = await axios.post('/save_prompt', data);
+      console.log('Prompt saved successfully:', response.data);
+      toast.success('Prompt successfully saved.')
+          
+    } catch (error) {
+      console.error('Error saving prompt:', error);
+      toast.warn('Failed to save prompt')
+      // Handle the error appropriately
+    }
+  };
+
+  const deletePrompt = async () => {
+    try {
+      const data = { dataToInfer: dataToInfer };
+      const response = await axios.post(`/delete_prompt/${id}`, data);
+      console.log('Prompt deleted successfully:', response.data);
+  
+      // Assuming 'id' is the index of the prompt you want to delete
+      const promptIndexToDelete = id;
+  
+      // Update the respective state array (agePrompts, languagePrompts, or locationPrompts)
+      if (dataToInfer === 'age') {
+        setAgePromptInputs(agePrompts.filter((_, index) => index !== promptIndexToDelete));
+      } else if (dataToInfer === 'languageSkills') {
+        setLanguagePromptInputs(languagePrompts.filter((_, index) => index !== promptIndexToDelete));
+      } else if (dataToInfer === 'location') {
+        setLocationPromptInputs(locationPrompts.filter((_, index) => index !== promptIndexToDelete));
+      }
+  
+      toast.success('Prompt successfully deleted.');
+    } catch (error) {
+      console.error('Error deleting prompt:', error);
+      toast.error('Failed to delete prompt.');
+      // Handle the error appropriately
+    }
+  };
+  
+  
   return (
     <>
 
@@ -84,24 +131,26 @@ function PromptInput({ prompt }) {
       </div>
       {isTextboxVisible && (
         <div className="relative left-0 mt-2 p-2 bg-white rounded text-black w-full">
-        <p>{prompt}</p>
         <textarea
   className="w-full h-[60vh] border border-gray-300 rounded p-2"
   placeholder={prompt}
   defaultValue={prompt}
-  value={prompt}
+  value={responseText}
   onChange={(e) => setResponseText(e.target.value)}
 />
 
 
         <div className='flex items-center justify-between px-4'>
-        <p className='underline font-bold hover:cursor-pointer'>Save</p>
+          <p onClick={savePrompt} className='underline font-bold hover:cursor-pointer'>Save</p>
+          <button onClick={deletePrompt}>
+            <i class="fa-solid fa-trash"></i>
+          </button>
           <button
           className="my-3 bg-black hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
           onClick={handleSubmitPropmpt}
-        >
+          >
           Rerun
-        </button>
+          </button>
         </div>
         
         </div>
