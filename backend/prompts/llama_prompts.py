@@ -29,14 +29,7 @@ def language_skill(candidate_data, custom_prompt):
     Data: 
     {candidate_data}
 
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
     Json Format:
-
-
-    
-"""
-
-    json_format= """
     [
     {{
         "Language":"English",
@@ -50,10 +43,31 @@ def language_skill(candidate_data, custom_prompt):
     }}
     ]
 
-    [/INST]
+    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
 
+    [/INST]
+    
+"""
+
+    json_format= """
+    Don't add an explanation only send back the json data
+    Please follow the json format provided below and only return the json data
+
+    JSON Format:
+    [
+    {{
+        "Language":"English",
+        "enProficiency":( insert here how proficient the candidate is in english (en) ranging from None/Basic/Conversational/Business/Fluent/Native)),
+        "confidence: ( insert confidence level here from 1-5, 1 being the lowest),
+    }},
+    {{
+        "Language":"Japanese",
+        "jpProficiency":( insert here how proficient the candidate is in japanese (jp) ranging from None/Basic/Conversational/Business/Fluent/Native)),
+        "confidence:( insert confidence level here from 1-5, 1 being the lowest),
+    }}
+    ]
     """
-    query = custom_prompt + load_data + json_format
+    query = custom_prompt + load_data 
     prompt = PromptTemplate(template=query, input_variables=["candidate_data"])
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
     llm.model_kwargs = {
@@ -94,18 +108,19 @@ def infer_age(candidate_data, custom_prompt, current_date):
     Current Date: 
     {current_date}
 
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
     Json Format:
+    {{"Age": (insert here the inferred age of the candidate base on the data given to you), "confidence": (AI's confidence in inferring the data 1-5, 5 being the highest),}}
 
-    
+    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
+
+    [/INST]
 
     """
 
     json_format = """
     {{"Age": (insert here the inferred age of the candidate base on the data given to you), "confidence": (AI's confidence in inferring the data 1-5, 5 being the highest),}}
-    [/INST]
     """
-    query = load_data +json_format
+    query = load_data 
     prompt = PromptTemplate(template=query, input_variables=["candidate_data", "custom_prompt", "current_date"])
     params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
@@ -147,21 +162,24 @@ def infer_location(candidate_data, custom_prompt, current_date):
     Current Date: 
     {current_date}
 
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
     Json Format:
+    {{"Location":( insert here the inferred location of the candidate base on the data given to you ),"confidence":( AI's confidence in inferring the data 1-5, 5 being the highest)}}
     
+    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
+    [/INST]
 
     """
 
     json_format= """
+    Don't add an explanation only send back the json data
+    Please follow the json format provided below and only return the json data
+
     {
         "Location":  '( insert here the inferred location of the candidate base on the data given to you )',
         "confidence": ( AI's confidence in inferring the data 1-5, 5 being the highest)
     }
-    [/INST]
-
     """
-    query = custom_prompt + load_data + json_format
+    query = custom_prompt + load_data
     prompt = PromptTemplate(template=query, input_variables=["candidate_data", "current_date"])
     params = {"candidate_data":candidate_data, "current_date": current_date}
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
