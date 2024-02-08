@@ -2,24 +2,46 @@ import os
 from langchain_community.llms.deepinfra import DeepInfra
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Field, EmailStr
+from typing import List, Optional
 from dotenv import load_dotenv
 import fitz
 import json
 from PyPDF2 import PdfReader
 from langdetect import detect
 
-def parse_json_with_autofix(json_str):
-    try:
-        return eval(json_str)
-    except Exception as e:
-        if "Expecting ',' delimiter" in str(e) or "Expecting ']' delimiter" in str(e) or "SyntaxError(\"'\{\' was never closed)\"":
-            try:
-                fixed_json_str = json_str.rstrip() + '}'
-                return eval(fixed_json_str)
-            except Exception as e:
-                raise ValueError("Could not fix JSON string") from e
-        else:
-            raise
+class SkillData(BaseModel):
+    data: List[str] = Field( description="List of skills")
+    total: int = Field( description="Total number of skills")
+
+class Candidate(BaseModel):
+    certifications: str = Field(description="Certifications held by the candidate")
+    comments: Optional[str] = Field(description="General comments or notes about the candidate")
+    dateOfBirth: str = Field(description="Candidate's date of birth as listed on their CV or resume")
+    educationDegree: str = Field(description="Highest educational degree obtained by the candidate")
+    email: str = Field(description="Candidate's email address")
+    ethnicity: Optional[str] = Field(description="Candidate's self-reported ethnicity (optional)")
+    firstName: str = Field(description="Candidate's first name")
+    id: int = Field(description="A unique identifier for the candidate")
+    lastName: str = Field(description="Candidate's last name")
+    phone: str = Field(description="Candidate's contact phone number")
+    primarySkills: SkillData = Field(description="Primary skills or competencies of the candidate")
+    secondarySkills: SkillData = Field(description="Secondary skills or competencies of the candidate")
+    skillSet: List[str] = Field(description="Comprehensive list of the candidate's skills")
+    specialties: SkillData = Field(description="Areas of specialty or expertise for the candidate")
+
+class WorkExperience(BaseModel):
+    comments: str = Field(description="Description or remarks about the work experience")
+    companyName: str = Field(description="Name of the company associated with the work experience")
+    endDate: int = Field(description="End date of the work experience, represented as an epoch timestamp")
+    id: int = Field(description="Unique identifier for this particular work experience entry")
+    isLastJob: bool = Field(description="Indicates whether this position was the candidate's most recent job")
+    startDate: str = Field(description="Start date of the work experience, can be a specific date or period")
+    title: str = Field(description="Job title or position held during this work experience")
+
+class CandidateWorkHistory(BaseModel):
+    workHistory: List[WorkExperience] = Field(description="A list detailing the work experiences or work history of the individual")
 
 def extract_cv(pdf_file):
     load_dotenv()
@@ -45,86 +67,48 @@ def extract_cv(pdf_file):
         <<SYS>>
         [INST]
         This is a CV containing candidate's information: {text}
-        Follow this format and insert the proper information as values. 
-        Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data list and nothing else).
-        Be accurate with the data. For example, in the address don't put in the address if it is not totally clear for you to identify. Just put "None" as the value, if so.
-        You should return a valid dictionary following the format below. Remember to plug in the datas as value.
-            
-            {{
-                'certifications': '(Certification of the candidate)',
-                'comments': '(Comments about the candidate)',
-                'dateOfBirth': '(Date of birth of the candidate according to the cv. Do not infer the data. just put in what you see in the cv/resume)',
-                'educationDegree': '(Education Degree of the candidate)',
-                'email': '(Email of the candidate)',
-                'ethnicity': '(Ethnicity of the candidate)',
-                'firstName': '(First name of the candidate)',
-                'id': (Give an id to the user example is 334560, do not copy the id),
-                'lastName': '(Last name of the candidate)',
-                'phone': '(Phone number of the candidate)',
-                'primarySkills': {{ 'data': [ '(Primary Skills of the candidate)' ], 'total': (Total primary skills of the candidate) }},
-                'secondarySkills': {{ 'data': [ '(Secondary Skills of the candidate)' ], 'total': (Total secondary skills of the candidate) }},
-                'skillSet': (SkillSets of the candidate),
-                'specialties': {{ 'data': [ '(Specialties of the candidate)' ], 'total': (Total specialties of the candidate) }}
-            }}
-        Again, do not copy and paste the values. If you cannot find or undentify the value or keys just put the value as None.
+        You need to extract the values from the given information and put it in the given JSON format below. If a value is not mentioned, put null.
+        
+        Format instructions:
+        {format_instructions}
         [/INST]
     """
 
     query = init_query_translation + candidate_query
-    prompt = PromptTemplate(template=query, input_variables=["text"])
+    parser = JsonOutputParser(pydantic_object=Candidate)
+    prompt = PromptTemplate(template=query, input_variables=["text"], partial_variables={"format_instructions": parser.get_format_instructions()})
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
     llm.model_kwargs = {
-        "temperature": 0
+        "temperature": 0,
+        "max_tokens":10000000
     }
-    llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response_candidate = llm_chain.run(text)
-    json_start = response_candidate.find('{')
-    json_end = response_candidate.rfind('}') + 1
-
-    response = response_candidate[json_start:json_end]
-    print(eval(response))
-
+    llm_chain = prompt | llm | parser
+    response_candidate = llm_chain.invoke({"text": text})
     # response = parse_json_with_autofix(response)
+    print(response_candidate)
 
     workhistory_query = """
         <<SYS>>
-        You are a bot who is professional at extracting candidate's work history data from a candidate's resume.
+        You are a bot who is professional at extracting candidate's data from a candidate's resume.
         <<SYS>>
-        
         [INST]
-        This is a CV containing candidate's information: {text}
-        Follow this format and insert the proper information as values. 
-        Do not copy the example values given to you. If you cannot find the value, just put 'None' as the value and don't put the example value provided in the example json:(Only send me/ return the data list and nothing else).
-        Be accurate with the data. For example, in the address don't put in the address if it is not totally clear for you to identify. Just put None as the value, if so.
-        You should return a valid dictionary following the format below. Remember to plug in the datas as value. Remember to put all of the work history available.
-            
-            {{"workHistory": [{{
-                                'comments': '(insert here candidate's work description)',
-                                'companyName': '(insert here candidate's company name of the work in candidate's work history)',
-                                'endDate': (insert here end date of work experience in epoch timestamp),
-                                'id': (insert here the candidate's work experience ID),
-                                'isLastJob': '(insert here Is this candidate's last job if yes True, if not False)',
-                                'jobOrder': None,
-                                'startDate': '(insert here Start date of work history the candidate work's history )',
-                                'title': '(insert here the candidate's work title in his last job)'}}]}}
-        Again, do not copy and paste the values. If you cannot find or undentify the value or keys just put the value as None.
+        This is a resume containing candidate's work history: {text}
+        You need to extract the work history of the given candidate and put it in the given JSON format below. If a value is not mentioned, put null.
+
+        Format instructions:
+        {format_instructions}
+        Answer:
         [/INST]
 
     """
 
     workhistory_query = init_query_translation + workhistory_query
-    prompt = PromptTemplate(template=workhistory_query, input_variables=["text"])
-    llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response_workhistory = llm_chain.run(text)
-    json_start = response_workhistory.find('{')
-    json_end = response_workhistory.rfind('}') + 1
+    parser = JsonOutputParser(pydantic_object=CandidateWorkHistory)
+    prompt = PromptTemplate(template=workhistory_query, input_variables=["text"],partial_variables={"format_instructions": parser.get_format_instructions()})
+    llm_chain = prompt | llm | parser
+    response_workhistory = llm_chain.invoke({"text": text})
 
-    response = response_workhistory[json_start:json_end]
     print(response_workhistory)
-    print(eval(response))
-
-    # response = parse_json_with_autofix(response)
-
     response = [response_candidate, response_workhistory]
-
+    print(response)
     return response
