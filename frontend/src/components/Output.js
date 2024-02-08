@@ -27,7 +27,6 @@ const Output = () => {
         candidateId: promptResult[0].id,
         mode: mode,
       });
-      console.log(response.data.candidateFile);
       const base64 = response.data.candidateFile;
       handleOpenPdfInNewTab(base64);
     } catch (error) {

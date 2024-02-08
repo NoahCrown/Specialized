@@ -18,68 +18,91 @@ const Prompt = () => {
     setSavedPromptsData, 
   } = useCandidate();
 
-  const [promptInputs, setPromptInputs] = useState([]);
-  console.log(savedPrompts);
+  const [unsavedAgePrompts, setUnsavedAgePrompts] = useState([])
+  const [unsavedLangPrompts, setUnsavedLangPrompts] = useState([])
+  const [unsavedLocPrompts, setUnsavedLocPrompts] = useState([])
+
+  const handleOnChange = async (event) => {
+    const val = event.target.value;
+    await setDataInfer(val);
+  };
 
   useEffect(() => {
-    const fetchPromptData = async () => {
+
+    const loadSavedPrompts = async(dataInfer, i) => {
+      try{
+        const response = await axios.post(`/get_prompt/${i}`, {
+          dataToInfer:dataInfer
+        })
+        return response.data.prompt
+
+      }catch(err){
+        console.log(err)
+
+      }
+    }
+
+    const loadPromptData = async() => {
       try {
         const response = await axios.post('/load_prompt', {
           dataToInfer: null,
         });
     
         if (response.data) {
-          await setSavedPromptsData(response.data);
+          await setSavedPromptsData(response.data);        
+          if (dataToInfer === 'age') {
+            const agePromptsArray = await Promise.all(
+              Array.from({ length: savedPrompts['age'] }, async (_, i) => {
+                const dataPrompt = await loadSavedPrompts(dataToInfer, i+1);
+                return (
+                  <PromptInput id={`age${i + 1}`} key={`age${i + 1}`} prompt={dataPrompt} />
+                );
+              })
+            );
+            setAgePromptInputs(agePromptsArray);
+          }
           
+           else if (dataToInfer === 'languageSkills') {
+            const langPromptsArray = await Promise.all(
+              Array.from({length:savedPrompts['languageSkills']}, async(_, i) => {
+                const dataPrompt = await loadSavedPrompts(dataToInfer, i+1);
+                return (
+                  <PromptInput id={`age${i + 1}`} key={`age${i + 1}`} prompt={dataPrompt} />
+                );
+
+              })
+            )
+            setLanguagePromptInputs(langPromptsArray);
+          } else if (dataToInfer === 'location') {
+            const locPromptsArray = await Promise.all(
+              Array.from({length:savedPrompts['location']}, async(_, i) => {
+                const dataPrompt = await loadSavedPrompts(dataToInfer, i+1);
+                return (
+                  <PromptInput id={`age${i + 1}`} key={`age${i + 1}`} prompt={dataPrompt} />
+                );
+
+              })
+            )
+            setLocationPromptInputs(locPromptsArray);
+          }
         }
+        
       } catch (error) {
         console.error('Error sending POST request:', error);
       }
-    };
-  
-    fetchPromptData();
-  }, []);
-
-  useEffect(() => {
-    const loadSavedPrompts = async() => {
-      for (let i = 1; i <= savedPrompts[dataToInfer]; i++) {
-        try {
-          const response = await axios.post(`/get_prompt/${i}`, {
-            dataToInfer: dataToInfer,
-          });
-
-          if (dataToInfer === 'age') {
-            setAgePromptInputs([...agePrompts, <PromptInput id={i} key={i} prompt={response.data.prompt}/> ])
-          } else if (dataToInfer === 'languageSkills') {
-            setLanguagePromptInputs([...languagePrompts, <PromptInput id={i} key={i} prompt={response.data.prompt}/> ])
-          } else if (dataToInfer === 'location') {
-            setLocationPromptInputs([...locationPrompts, <PromptInput id={i} key={i} prompt={response.data.prompt}/> ])
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
     }
+    
+    loadPromptData()
 
-    loadSavedPrompts()
-  },[dataToInfer])
-  
-
-  
-
-  const handleOnChange = async (event) => {
-    const val = event.target.value;
-    setDataInfer(val);
-
-  };
+  }, [dataToInfer])
 
   const addPromptInput = () => {
     if (dataToInfer === "age"){
-      setAgePromptInputs([...agePrompts, <PromptInput/>])
+      setUnsavedAgePrompts([...unsavedAgePrompts, <PromptInput/>])
     }else if(dataToInfer === "languageSkills"){
-      setLanguagePromptInputs([...languagePrompts, <PromptInput/>])
+      setUnsavedLangPrompts([...unsavedLangPrompts, <PromptInput/>])
     }else if (dataToInfer === 'location')
-      setLocationPromptInputs([...locationPrompts, <PromptInput />]);
+      setUnsavedLocPrompts([...unsavedLocPrompts, <PromptInput />]);
   };
 
   return (
@@ -94,6 +117,7 @@ const Prompt = () => {
               defaultValue='age'
               onChange={handleOnChange}
             >
+              <option value="" disabled selected>Select a data to infer</option>
               <option value='age'>Age</option>
               <option value='languageSkills'>Language Skills EN</option>
               <option value='location'>Location</option>
@@ -109,12 +133,38 @@ const Prompt = () => {
           </button>
         </div>
         <div>
-          {dataToInfer === 'age' &&
-            agePrompts.map((prompt, index) => <div key={index}>{prompt}</div>)}
-          {dataToInfer === 'languageSkills' &&
-            languagePrompts.map((prompt, index) => <div key={index}>{prompt}</div>)}
-          {dataToInfer === 'location' &&
-            locationPrompts.map((prompt, index) => <div key={index}>{prompt}</div>)}
+        {dataToInfer === 'age' && (
+  <div>
+    {agePrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+    {unsavedAgePrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+  </div>
+)}
+
+            
+{dataToInfer === 'languageSkills' && (
+  <div>
+    {languagePrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+    {unsavedLangPrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+  </div>
+)}
+{dataToInfer === 'location' && (
+  <div>
+    {locationPrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+    {unsavedLocPrompts.map((prompt, index) => (
+      <div key={index}>{prompt}</div>
+    ))}
+  </div>
+)}
         </div>
       </div>
     </div>
