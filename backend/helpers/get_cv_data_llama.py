@@ -12,8 +12,8 @@ from PyPDF2 import PdfReader
 from langdetect import detect
 
 class SkillData(BaseModel):
-    data: List[str] = Field( description="List of skills")
-    total: int = Field( description="Total number of skills")
+    data: List[str] = Field(description="List of skills")
+    total: int = Field(description="Total number of skills")
 
 class Candidate(BaseModel):
     certifications: str = Field(description="Certifications held by the candidate")
@@ -23,25 +23,66 @@ class Candidate(BaseModel):
     email: str = Field(description="Candidate's email address")
     ethnicity: Optional[str] = Field(description="Candidate's self-reported ethnicity (optional)")
     firstName: str = Field(description="Candidate's first name")
-    id: int = Field(description="A unique identifier for the candidate")
     lastName: str = Field(description="Candidate's last name")
     phone: str = Field(description="Candidate's contact phone number")
     primarySkills: SkillData = Field(description="Primary skills or competencies of the candidate")
     secondarySkills: SkillData = Field(description="Secondary skills or competencies of the candidate")
-    skillSet: List[str] = Field(description="Comprehensive list of the candidate's skills")
+    skillSet: SkillData = Field(description="Comprehensive list of the candidate's skills")
     specialties: SkillData = Field(description="Areas of specialty or expertise for the candidate")
 
 class WorkExperience(BaseModel):
     comments: str = Field(description="Description or remarks about the work experience")
     companyName: str = Field(description="Name of the company associated with the work experience")
     endDate: int = Field(description="End date of the work experience, represented as an epoch timestamp")
-    id: int = Field(description="Unique identifier for this particular work experience entry")
     isLastJob: bool = Field(description="Indicates whether this position was the candidate's most recent job")
     startDate: str = Field(description="Start date of the work experience, can be a specific date or period")
     title: str = Field(description="Job title or position held during this work experience")
 
 class CandidateWorkHistory(BaseModel):
     workHistory: List[WorkExperience] = Field(description="A list detailing the work experiences or work history of the individual")
+
+def get_workhistory_from_text(text):
+    query = """
+    <<SYS>>
+    You are a bot who is professional at extracting candidate data from a candidate's resume.
+    <<SYS>>
+    [INST]
+    This is a CV containing candidate's information: {text}
+    Give me the whole work history of the candidate. Please DO NOT summarize and give the exact details of each work experience.
+    If there are no value for the needed data, just put None.
+    This is the data the that I need:
+    - Description or remarks about the work experience
+    - Name of the company associated with the work experience
+    - End date of the work experience
+    - Start date of the work experience
+    - Indicates whether this position was the candidate's most recent job
+    - Job title or position held during this work experience
+    
+    Answer:
+    [/INST]
+    """
+    prompt = PromptTemplate(template=query, input_variables=["text"])
+    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
+    llm.model_kwargs = {
+        "temperature": 0,
+        "max_tokens":10000000
+    }
+    chain = prompt | llm
+    response = chain.invoke({"text": text})
+    return response
+
+def run_llama_candidate(query,text,parser):
+    prompt = PromptTemplate(template=query, input_variables=["text"], partial_variables={"format_instructions": parser.get_format_instructions()})
+    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
+    llm.model_kwargs = {
+        "temperature": 0,
+        "max_tokens":10000000
+    }
+    llm_chain = prompt | llm | parser
+    response_candidate = llm_chain.invoke({"text": text})
+    # response = parse_json_with_autofix(response)
+    print(response_candidate)
+    return response_candidate
 
 def extract_cv(pdf_file):
     load_dotenv()
@@ -75,17 +116,9 @@ def extract_cv(pdf_file):
     """
 
     query = init_query_translation + candidate_query
-    parser = JsonOutputParser(pydantic_object=Candidate)
-    prompt = PromptTemplate(template=query, input_variables=["text"], partial_variables={"format_instructions": parser.get_format_instructions()})
-    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
-    llm.model_kwargs = {
-        "temperature": 0,
-        "max_tokens":10000000
-    }
-    llm_chain = prompt | llm | parser
-    response_candidate = llm_chain.invoke({"text": text})
-    # response = parse_json_with_autofix(response)
-    print(response_candidate)
+    candidate_parser = JsonOutputParser(pydantic_object=Candidate)
+
+    summarized_text = get_workhistory_from_text(text)
 
     workhistory_query = """
         <<SYS>>
@@ -103,12 +136,9 @@ def extract_cv(pdf_file):
     """
 
     workhistory_query = init_query_translation + workhistory_query
-    parser = JsonOutputParser(pydantic_object=CandidateWorkHistory)
-    prompt = PromptTemplate(template=workhistory_query, input_variables=["text"],partial_variables={"format_instructions": parser.get_format_instructions()})
-    llm_chain = prompt | llm | parser
-    response_workhistory = llm_chain.invoke({"text": text})
-
-    print(response_workhistory)
+    workhistory_parser = JsonOutputParser(pydantic_object=CandidateWorkHistory)
+    response_candidate= run_llama_candidate(query,text,candidate_parser)
+    response_workhistory = run_llama_candidate(workhistory_query,summarized_text,workhistory_parser)
     response = [response_candidate, response_workhistory]
     print(response)
     return response
