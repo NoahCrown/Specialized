@@ -112,6 +112,7 @@ def extract_cv(pdf_file):
         
         Format instructions:
         {format_instructions}
+        Answer:
         [/INST]
     """
 
