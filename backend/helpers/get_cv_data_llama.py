@@ -108,7 +108,9 @@ def extract_cv(pdf_file):
         <<SYS>>
         [INST]
         This is a CV containing candidate's information: {text}
-        You need to extract the values from the given information and put it in the given JSON format below. If a value is not mentioned, put null.
+
+        Question:
+        Please provide the candidate's profile as a JSON object. If a value is not mentioned, put null.
         
         Format instructions:
         {format_instructions}
@@ -126,10 +128,10 @@ def extract_cv(pdf_file):
         You are a bot who is professional at extracting candidate's data from a candidate's resume.
         <<SYS>>
         [INST]
-        This is a summary of a candidate's work history: {text}
+        This is a summary of a candidate's work history and experience: {text}
 
         Question:
-        Please provide the whole work history of the candidate as a JSON object. If a value is not mentioned, put null.
+        Please provide the whole work history and experience of the candidate as a JSON object. If a value is not mentioned, put null.
 
         Format instructions:
         {format_instructions}
