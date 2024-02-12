@@ -3,9 +3,33 @@ import json
 from langchain_community.llms.deepinfra import DeepInfra
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Field, EmailStr
+from typing import List, Optional, Literal, Union
 from dotenv import load_dotenv
 
-def language_skill(candidate_data, custom_prompt):
+class EnglishProficiency(BaseModel):
+    Language: Literal["English"] = Field(default="English", description="The language is English.")
+    enProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="How proficient the candidate is in English.")
+    confidence: int = Field(..., ge=1, le=5, description="Confidence level in the language from 1 (lowest) to 5 (highest).")
+
+class JapaneseProficiency(BaseModel):
+    Language: Literal["Japanese"] = Field(default="Japanese", description="The language is Japanese.")
+    jpProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="How proficient the candidate is in Japanese.")
+    confidence: int = Field(..., ge=1, le=5, description="Confidence level in the language from 1 (lowest) to 5 (highest).")
+
+class LanguageProficiency(BaseModel):
+    languageSkills: List[Union[EnglishProficiency, JapaneseProficiency]] = Field(..., description="Inferred language skills of the candidate for English and Japanese.")
+
+class AgeInference(BaseModel):
+    Age: int = Field(..., description="Inferred age of the candidate")
+    confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
+
+class LocationInference(BaseModel):
+    Location: str = Field(..., description="Inferred location of the candidate")
+    confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the location, 1 being the lowest and 5 the highest")
+
+def language_skill(candidate_data, custom_prompt, parser = LanguageProficiency):
     load_dotenv()
     os.environ["DEEPINFRA_API_TOKEN"] = os.getenv('DEEPINFRA_API_TOKEN')
     if custom_prompt is None:
@@ -24,44 +48,26 @@ def language_skill(candidate_data, custom_prompt):
     Data: 
     {candidate_data}
 
-    Json Format:
-    [
-    {{
-        "Language":"English",
-        "enProficiency":( insert here how proficient the candidate is in english (en) ranging from None/Basic/Conversational/Business/Fluent/Native)),
-        "confidence: ( insert confidence level here from 1-5, 1 being the lowest),
-    }},
-    {{
-        "Language":"Japanese",
-        "jpProficiency":( insert here how proficient the candidate is in japanese (jp) ranging from None/Basic/Conversational/Business/Fluent/Native)),
-        "confidence:( insert confidence level here from 1-5, 1 being the lowest),
-    }}
-    ]
+    Format instructions:
+    {format_instructions}
 
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
-
+    Answer:
     [/INST]
     
 """
-    query = load_data 
-    prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data"])
+    query = load_data
+    language_parser = JsonOutputParser(pydantic_object=parser)
+    prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data"],partial_variables={"format_instructions": language_parser.get_format_instructions()})
     params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt}
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
     llm.model_kwargs = {
         "temperature": 0
     }
-    llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response = llm_chain.run(params)
-    json_start = response.find('[')
-    json_end = response.rfind(']') + 1
+    llm_chain = prompt | llm | language_parser
+    response = llm_chain.invoke(params)
+    return response
 
-    response = response[json_start:json_end]
-    try:
-        return eval(response)
-    except:
-        return json.loads(response)
-
-def infer_age(candidate_data, custom_prompt, current_date):
+def infer_age(candidate_data, custom_prompt, current_date, parser = AgeInference):
     load_dotenv()
     os.environ["DEEPINFRA_API_TOKEN"] = os.getenv('DEEPINFRA_API_TOKEN')
     if custom_prompt is None:
@@ -84,33 +90,26 @@ def infer_age(candidate_data, custom_prompt, current_date):
     Current Date: 
     {current_date}
 
-    Json Format:
-    {{"Age": (insert here the inferred age of the candidate base on the data given to you), "confidence": (AI's confidence in inferring the data 1-5, 5 being the highest),}}
+    Format instructions:
+    {format_instructions}
 
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
-
+    Answer:
     [/INST]
 
     """
-    query = load_data 
-    prompt = PromptTemplate(template=query, input_variables=["candidate_data", "custom_prompt", "current_date"])
+    query = load_data
+    age_parser = JsonOutputParser(pydantic_object=parser)
+    prompt = PromptTemplate(template=query, input_variables=["candidate_data", "custom_prompt", "current_date"], partial_variables={"format_instructions": age_parser.get_format_instructions()})
     params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
     llm.model_kwargs = {
         "temperature": 0,
     }
-    llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response = llm_chain.run(params)
-    json_start = response.find('{')
-    json_end = response.rfind('}') + 1
-
-    response = response[json_start:json_end]
-    try:
-        return eval(response)
-    except:
-        return json.loads(response)
+    llm_chain = prompt | llm | age_parser
+    response = llm_chain.invoke(params)
+    return response
     
-def infer_location(candidate_data, custom_prompt, current_date):
+def infer_location(candidate_data, custom_prompt, current_date, parser = LocationInference):
     load_dotenv()
     os.environ["DEEPINFRA_API_TOKEN"] = os.getenv('DEEPINFRA_API_TOKEN')
     if custom_prompt is None:
@@ -132,27 +131,21 @@ def infer_location(candidate_data, custom_prompt, current_date):
     Current Date: 
     {current_date}
 
-    Json Format:
-    {{"Location":( insert here the inferred location of the candidate base on the data given to you ),"confidence":( AI's confidence in inferring the data 1-5, 5 being the highest)}}
-    
-    Only return me a json object, no explanation, no sample data, no nothing, just the json data with values inserted in it.
+    Format instructions:
+    {format_instructions}
+
+    Answer:
     [/INST]
 
     """
-    query = custom_prompt + load_data
-    prompt = PromptTemplate(template=query, input_variables=["candidate_data","custom_prompt", "current_date"])
+    query = load_data
+    location_parser = JsonOutputParser(pydantic_object=parser)
+    prompt = PromptTemplate(template=query, input_variables=["candidate_data","custom_prompt", "current_date"], partial_variables={"format_instructions": location_parser.get_format_instructions()})
     params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
     llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
     llm.model_kwargs = {
         "temperature": 0
     }
-    llm_chain = LLMChain(prompt=prompt, llm=llm)
-    response = llm_chain.run(params)
-    json_start = response.find('{')
-    json_end = response.rfind('}') + 1
-
-    response = response[json_start:json_end]
-    try:
-        return eval(response)
-    except:
-        return json.loads(response)
+    llm_chain = prompt | llm | location_parser
+    response = llm_chain.invoke(params)
+    return response
