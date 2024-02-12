@@ -145,20 +145,19 @@ const AnalyzerOutput = () => {
                     </li>
                   )
                 )
-              ) : promptResult[0].primarySkills?.[0]?.data &&
-                promptResult[0].primarySkills?.[0]?.data?.length > 0 ? (
+              ) : promptResult[0].primarySkills?.[0]?.data ? (
                 promptResult[0].primarySkills?.[0]?.data.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val.name || val}
                   </li>
                 ))
-              ) : promptResult[0].primarySkills?.data?.length > 0 ? (
+              ) : promptResult[0].primarySkills?.data ? (
                 promptResult[0].primarySkills?.data?.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val.name}
                   </li>
                 ))
-              ) : promptResult[0]?.primarySkills.length > 0 ? (
+              ) : promptResult[0]?.primarySkills ? (
                 promptResult[0]?.primarySkills.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val}
@@ -182,20 +181,19 @@ const AnalyzerOutput = () => {
                     </li>
                   )
                 )
-              ) : promptResult[0].secondarySkills?.[0]?.data &&
-                promptResult[0].secondarySkills?.[0]?.data.length > 0 ? (
+              ) : promptResult[0].secondarySkills?.[0]?.data ? (
                 promptResult[0].secondarySkills?.[0]?.data.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val.name || val}
                   </li>
                 ))
-              ) : promptResult[0]?.secondarySkills?.data?.length > 0 ? (
+              ) : promptResult[0]?.secondarySkills?.data ? (
                 promptResult[0]?.secondarySkills?.data?.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val.name}
                   </li>
                 ))
-              ) : promptResult[0]?.secondarySkills.length > 0 ? (
+              ) : promptResult[0]?.secondarySkills ? (
                 promptResult[0]?.secondarySkills.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val}
@@ -219,8 +217,7 @@ const AnalyzerOutput = () => {
                     </li>
                   )
                 )
-              ) : promptResult[0].skillSet?.[0]?.data &&
-                promptResult[0].skillSet?.[0]?.data?.length > 0 ? (
+              ) : promptResult[0].skillSet?.[0]?.data ? (
                 promptResult[0].skillSet?.[0]?.data.map((val, index) => (
                   <li className="list-disc" key={index}>
                     {val.name || val}
