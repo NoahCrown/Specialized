@@ -10,16 +10,16 @@ from dotenv import load_dotenv
 
 class EnglishProficiency(BaseModel):
     Language: Literal["English"] = Field(default="English", description="The language is English.")
-    enProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="How proficient the candidate is in English.")
-    confidence: int = Field(..., ge=1, le=5, description="Confidence level in the language from 1 (lowest) to 5 (highest).")
+    enProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="Inferred proficiency of the candidate in English.")
+    confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
 
 class JapaneseProficiency(BaseModel):
     Language: Literal["Japanese"] = Field(default="Japanese", description="The language is Japanese.")
-    jpProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="How proficient the candidate is in Japanese.")
-    confidence: int = Field(..., ge=1, le=5, description="Confidence level in the language from 1 (lowest) to 5 (highest).")
+    jpProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="Inferred proficiency of the candidate in Japanese.")
+    confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
 
 class LanguageProficiency(BaseModel):
-    languageSkills: List[Union[EnglishProficiency, JapaneseProficiency]] = Field(..., description="Inferred language skills of the candidate for English and Japanese.")
+    languageSkills: List[Union[EnglishProficiency, JapaneseProficiency]] = Field(..., description="Inferred proficiency of the candidate in English and Japanese")
 
 class AgeInference(BaseModel):
     Age: int = Field(..., description="Inferred age of the candidate")

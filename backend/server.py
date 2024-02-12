@@ -126,7 +126,7 @@ def extract_bullhorn_pdf():
             file.write(decoded_b64)
 
         extracted_data = extract_cv(file_path)
-        cache_key = 'extracted_bullhorn'
+        cache_key = 'extracted_cv'
         cache.set(cache_key, extracted_data, timeout=60*60)
         os.remove(file_path)
         
@@ -218,7 +218,8 @@ def get_custom_prompt():
             elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
                 response = summarize_data(candidate_data, custom_prompt, infer_data)
         else:
-            candidate_data = session.get('pdfFile', 'No Candidate available please upload the CV again')
+            cache_key = 'extracted_cv'
+            candidate_data = cache.get(cache_key)
             if infer_data == "languageSkills":
                 response = summarize_data(candidate_data, custom_prompt, infer_data)
             elif infer_data == "age" and candidate_data[0]["dateOfBirth"] is not None:
@@ -263,7 +264,9 @@ def upload_file():
 
     extracted_data = extract_cv(file_path)
     session['pdfFile'] = extracted_data
-    
+
+    cache_key = 'extracted_cv'
+    cache.set(cache_key, extracted_data, timeout=60*60)
     # Cache key for the PDF file
     cache_key = 'uploaded_pdf'
     cache.set(cache_key, pdf_data, timeout=60*60)
