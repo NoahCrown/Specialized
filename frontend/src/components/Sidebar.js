@@ -50,16 +50,7 @@ const Sidebar = () => {
     sliderRef.current.slickPrev();
   };
   console.log(data);
-  const chunkArray = (array, chunkSize) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
 
-  const chunkedData = chunkArray(data, 3);
-  const chunkedSearchResults = chunkArray(searchResults, 3);
 
   console.log();
 

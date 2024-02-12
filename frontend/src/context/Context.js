@@ -32,6 +32,20 @@ export const CandidateProvider = ({ children }) => {
     setPromptResult(data)
   }
 
+  // Output Parsed Data Context
+  const [parsedData, setParsedData] = useState(null)
+
+  const setBHParsedData = (data) => {
+    setPromptResult(data)
+  }
+
+  // Ouput Default Bullhorn Data Context
+  const [defaultBullhornData, setDefaultBullhornData] = useState(null)
+
+  const setDisplayBullhorn = (data) => {
+    setDefaultBullhornData(data)
+  }
+
   // Select Data To Infer Context
   const [dataToInfer, setDataToInfer] = useState('');
 
@@ -132,19 +146,30 @@ export const CandidateProvider = ({ children }) => {
 
   // Epoch To Date
   function epochToDateString(epochTime) {
+    // Check if epochTime is a valid number
+    if (isNaN(epochTime) || epochTime < 0) {
+        return "Invalid Epoch Time";
+    }
+
     // Convert epoch time to milliseconds (JavaScript uses milliseconds)
     const date = new Date(epochTime * 1000);
-  
+
+    // Check if the resulting date is valid
+    if (isNaN(date.getTime())) {
+        return "Invalid Date";
+    }
+
     // Extract the year, month, and day
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
     const day = date.getDate().toString().padStart(2, '0');
-  
+
     // Create a formatted date string
     const dateString = `${year}-${month}-${day}`;
-  
+
     return dateString;
-  }
+}
+
 
   // Prompts Context 
   const [agePrompts, setAgePrompts] = useState([])
@@ -217,7 +242,11 @@ export const CandidateProvider = ({ children }) => {
       setLanguagePromptInputs,
       setLocationPromptInputs,
       savedPrompts, 
-      setSavedPromptsData}}>
+      setSavedPromptsData,
+      parsedData,
+      setBHParsedData,
+      defaultBullhornData,
+      setDisplayBullhorn}}>
       {children}
     </Context.Provider>
   );

@@ -18,7 +18,7 @@ function PromptInput({ prompt, id }) {
   console.log(prompt)
  
   const handleSubmitPropmpt = async() => {
-    const data = {response: null, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
+    const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
     toast.success(`Inferring ${data.dataToInfer}, please wait.`)
     if (dataToInfer === 'age'){
@@ -133,8 +133,7 @@ function PromptInput({ prompt, id }) {
         <div className="relative left-0 mt-2 p-2 bg-white rounded text-black w-full">
         <textarea
   className="w-full h-[60vh] border border-gray-300 rounded p-2"
-  placeholder={prompt}
-  defaultValue={prompt}
+  defaultValue={responseText}
   value={responseText}
   onChange={(e) => setResponseText(e.target.value)}
 />
