@@ -185,6 +185,11 @@ export const CandidateProvider = ({ children }) => {
     setLoaderContext(data)
   }
 
+  const [isNewData, setIsNewData] = useState(false)
+  const setThisNewData = (data) => {
+    setIsNewData(data)
+  }
+
   
 
 
@@ -228,7 +233,9 @@ export const CandidateProvider = ({ children }) => {
       defaultBullhornData,
       setDisplayBullhorn,
       loaderContext,
-      setLoaderDetails}}>
+      setLoaderDetails,
+      isNewData,
+      setThisNewData}}>
       {children}
     </Context.Provider>
   );

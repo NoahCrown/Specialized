@@ -13,7 +13,9 @@ const Output = () => {
     defaultBullhornData,
     setModeOfData,
     setDataLoader,
-    setLoaderDetails
+    setLoaderDetails,
+    isNewData,
+    setThisNewData
   } = useCandidate();
 
 
@@ -21,6 +23,7 @@ const Output = () => {
   const [showParsedData, setShowParsedData] = useState(false);
   console.log(parsedBullhornData)
   console.log(promptResult)
+
 
 
   const switchData = () => {
@@ -46,6 +49,7 @@ const Output = () => {
       });
       setParsedBullhornData(response.data);
       setDataLoader(false)
+      setThisNewData(false)
       toast.success('Successfully parsed bullhorn data.')
     } catch (error) {
       setDataLoader(false)
@@ -76,7 +80,7 @@ const Output = () => {
       <div className="mt-10">
         <div className="flex justify-between mb-5">
           <h1 className="text-3xl font-bold">Output</h1>
-          {mode === "bullhorn" && !parsedBullhornData ? (
+          {mode === "bullhorn" && isNewData ? (
             <button
               className="border border-[#ababab] border-dashed text-[#ababab] bg-[#F5F5F5] w-1/4 rounded-md px-[.8rem] py-[.4rem] hover:border-black hover:text-black hover:cursor-pointer"
               onClick={parseBullhornData}
@@ -84,6 +88,7 @@ const Output = () => {
               <i className="fa-solid fa-code"></i> Parse
             </button>
           ) : (
+          !isNewData  && 
             <button
               className="border border-[#ababab] border-dashed text-[#ababab] bg-[#F5F5F5] w-1/4 rounded-md px-[.8rem] py-[.4rem] hover:border-black hover:text-black hover:cursor-pointer"
               onClick={switchData}

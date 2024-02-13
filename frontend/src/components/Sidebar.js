@@ -24,6 +24,7 @@ const Sidebar = () => {
     setInfered,
     setDataLoader,
     setLoaderDetails,
+
     } =
     useCandidate();
   

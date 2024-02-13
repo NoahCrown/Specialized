@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useCandidate } from '../context/Context';
 const PDFInfo = ({id, first_name, last_name, position, active}) => {
-  const { setCandidate,setOutput, setInferedLang, setInfered, setModeOfData, setInferedLoc, setDataLoader, setDisplayBullhorn } = useCandidate();
+  const { setCandidate,setOutput, setInferedLang, setInfered, setModeOfData, setInferedLoc, setDataLoader, setDisplayBullhorn, isNewData, setThisNewData } = useCandidate();
 
   
   const handleClick = async () => {
@@ -23,6 +23,8 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
       setInfered(null)
       setInferedLoc(null)
       setModeOfData("bullhorn")
+      setThisNewData(true)
+
 
       console.log(response.data);
     } catch (error) {
