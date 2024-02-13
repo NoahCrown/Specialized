@@ -118,7 +118,7 @@ const Prompt = () => {
           <h1 className="text-3xl font-bold">Prompt</h1>
           <div>
             <select
-              className="border border-solid border-black text-center"
+              className="border border-[#ababab] border-dashed text-[#ababab] text-center hover:border-black hover:text-black hover:cursor-pointer p-1"
               value={dataToInfer}
               defaultValue="age"
               onChange={handleOnChange}
