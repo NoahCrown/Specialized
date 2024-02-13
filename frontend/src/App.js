@@ -6,12 +6,13 @@ import { useEffect } from "react";
 import axios from 'axios'
 import { useCandidate } from './context/Context';
 import { ToastContainer } from 'react-toastify';
+import ModalLoader from "./components/ModalLoader";
 
 
 
 
 function App() {
-  const { setAllData } = useCandidate();
+  const { setAllData, isLoading } = useCandidate();
 
   useEffect(() => {
     async function fetchData() {
@@ -30,10 +31,16 @@ function App() {
 
   return (
     <div className="App flex bg-white items-center flex-row box-border">
+    {isLoading && 
+        <ModalLoader/> }
+
+
       <Sidebar/>
       <Output/>
       <Prompt/>
       <ToastContainer/>
+
+  
 
     </div>
   );

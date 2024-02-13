@@ -8,11 +8,7 @@ const AnalyzerOutput = () => {
     inferedData,
     inferedLangProficiency,
     inferedLocation,
-    isLoadingInferredAge,
-    isLoadingInferredLangProf,
-    isLoadingInferredLoc,
     epochToDateString,
-    mode,
   } = useCandidate();
   return (
     <>
@@ -306,10 +302,7 @@ const AnalyzerOutput = () => {
           </span>
         </div>
       </div>
-      {isLoadingInferredAge ? (
-        <Loader />
-      ) : (
-        inferedData && (
+      {inferedData && (
           <div className="text-black border-solid border-b-2 border-[#E7E7E7] w-full py-2">
             <p className="font-semibold py-2">Inferred Age</p>
             <div className="flex flex-wrap items-center">
@@ -326,12 +319,9 @@ const AnalyzerOutput = () => {
             </div>
           </div>
         )
-      )}
+      }
 
-      {isLoadingInferredLangProf ? (
-        <Loader />
-      ) : (
-        inferedLangProficiency && (
+      {inferedLangProficiency && (
   <div className="text-black border-solid border-b-2 border-[#E7E7E7] w-full py-2">
     <p className="font-semibold py-2">Inferred Language Proficiency</p>
     {inferedLangProficiency?.properties ? (
@@ -384,12 +374,9 @@ const AnalyzerOutput = () => {
   </div>
 )
           
-      )}
+      }
 
-      {isLoadingInferredLoc ? (
-        <Loader />
-      ) : (
-        inferedLocation && (
+      {inferedLocation && (
           <div className="text-black border-solid border-b-2 border-[#E7E7E7] w-full py-2">
             <p className="font-semibold py-2"> Inferred Location</p>
             <div className="flex flex-wrap items-center">
@@ -405,7 +392,7 @@ const AnalyzerOutput = () => {
               </span>
             </div>
           </div>
-        )
+      
       )}
     </>
   );

@@ -7,8 +7,8 @@ const Loader = () => {
     <div className="flex flex-col justify-center items-center">
     <Rings 
       visible={true}
-      height={80}
-      width={80}
+      height={100}
+      width={100}
       color="#F7BA37"
       ariaLabel="rings-loading"
       wrapperStyle={{}}

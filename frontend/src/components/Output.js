@@ -4,16 +4,17 @@ import Loader from "./Loader";
 import axios from "axios";
 import AnalyzerOutput from "./AnalyzerOutput";
 import {toast } from 'react-toastify';
+import ModalLoader from "./ModalLoader";
 
 const Output = () => {
   const {
     promptResult,
-    isLoading,
     handleOpenPdfInNewTab,
     mode,
     setOutput,
     defaultBullhornData,
-    setModeOfData
+    setModeOfData,
+    setDataLoader
   } = useCandidate();
 
 
@@ -36,6 +37,7 @@ const Output = () => {
   };
 
   const parseBullhornData = async () => {
+    setDataLoader(true)
     try {
       toast.success('Parsing bullhorn data.')
 
@@ -44,10 +46,15 @@ const Output = () => {
         candidateId: promptResult[0].id,
       });
       setParsedBullhornData(response.data);
+      setDataLoader(false)
+
       toast.success('Successfully parsed bullhorn data.')
     } catch (error) {
       // Handle errors
       console.error("Error sending POST request:", error);
+      setDataLoader(false)
+
+
     }
   };
 
@@ -93,10 +100,7 @@ const Output = () => {
             <i className="fa-regular fa-file-pdf"></i> View PDF
           </button>
         </div>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          promptResult && promptResult.length > 0 ? (
+        {promptResult && promptResult.length > 0 ? (
             <AnalyzerOutput />
           ) : (
             <div className="w-full flex justify-center items-center flex-col min-h-[80vh]">
@@ -111,7 +115,7 @@ const Output = () => {
               </p>
             </div>
           )
-        )}
+        }
       </div>
     </div>
   );

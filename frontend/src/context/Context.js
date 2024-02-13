@@ -101,27 +101,6 @@ export const CandidateProvider = ({ children }) => {
     setIsLoading(bool)
   }
 
-  // Inferred Age Loading Context
-  const [isLoadingInferredAge, setIsLoadingInferredAge] = useState(false)
-
-  const setDataLoaderInferredAge = (bool) => {
-    setIsLoadingInferredAge(bool)
-  }
-
-  // Inferred Language Profiency Loading Context
-  const [isLoadingInferredLangProf, setIsLoadingInferredLangProf] = useState(false)
-
-  const setDataLoaderInferredLangProf = (bool) => {
-    setIsLoadingInferredLangProf(bool)
-  }
-
-  // Inferred Location Loading Context
-  const [isLoadingInferredLoc, setIsLoadingInferredLoc] = useState(false)
-
-  const setDataLoaderInferredLoc = (bool) => {
-    setIsLoadingInferredLoc(bool)
-  }
-  
   // Opening PDF Logic Context
   const handleOpenPdfInNewTab = (base64Pdf) => {
     try {
@@ -226,12 +205,6 @@ export const CandidateProvider = ({ children }) => {
       setUploadFile,
       isLoading,
       setDataLoader,
-      isLoadingInferredAge,
-      setDataLoaderInferredAge,
-      isLoadingInferredLangProf,
-      setDataLoaderInferredLangProf,
-      isLoadingInferredLoc,
-      setDataLoaderInferredLoc,
       handleOpenPdfInNewTab,
       epochToDateString,
       setDataInfer,

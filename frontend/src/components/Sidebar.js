@@ -22,7 +22,8 @@ const Sidebar = () => {
     setInferedLang, 
     setInferedLoc, 
     setInfered,
-    setDataLoader
+    setDataLoader,
+    isLoading
     } =
     useCandidate();
   
@@ -150,7 +151,6 @@ const Sidebar = () => {
 
   return (
     <div className="w-1/4 flex justify-start">
-
     
     <div className=".no-scrollbar box-border flex justify-start justify-items-start	 items-center w-full flex-col max-h-fit min-h-[135vh] ">
       {/* Specialized Nav */}
@@ -272,7 +272,7 @@ const Sidebar = () => {
       {/* Results  */}
       <div className="w-full">
         <p className="px-10 mb-3">Results</p>
-          <div className=" min-h-fit">
+        <div className={`min-h-fit ${isLoading ? 'backdrop-blur-sm' : ''}`}>
             {searchResults.length > 0 ? (
               
               <Slider ref={sliderRef} {...settings}>

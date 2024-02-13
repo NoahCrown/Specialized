@@ -7,13 +7,14 @@ import { toast } from 'react-toastify';
 function PromptInput({ prompt, id }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState(prompt);
-  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode, setDataLoaderInferredAge, setDataLoaderInferredLangProf, setDataLoaderInferredLoc,
+  const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode,
     setAgePromptInputs,
     setLanguagePromptInputs,
     setLocationPromptInputs,
     agePrompts,
     languagePrompts,
-    locationPrompts,  } = useCandidate();
+    locationPrompts,
+    setDataLoader  } = useCandidate();
 
   console.log(prompt)
  
@@ -21,13 +22,7 @@ function PromptInput({ prompt, id }) {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
     toast.success(`Inferring ${data.dataToInfer}, please wait.`)
-    if (dataToInfer === 'age'){
-      setDataLoaderInferredAge(true)
-    } else if(dataToInfer === "languageSkills"){
-      setDataLoaderInferredLangProf(true)
-    } else if(dataToInfer === "location"){
-      setDataLoaderInferredLoc(true)
-    }
+    setDataLoader(true)
     
 
     // Make a POST request to your Flask backend using Axios
@@ -41,16 +36,16 @@ function PromptInput({ prompt, id }) {
       // Handle the response from your Flask backend here
       if (response.data && dataToInfer === "age"){
         setInfered(response.data)
-        setDataLoaderInferredAge(false)
+        setDataLoader(false)
         toast.success('Successfully inferred Age Data.')
       }else if (response.data && dataToInfer === "languageSkills"){
         setInferedLang(response.data)
-        setDataLoaderInferredLangProf(false)
+        setDataLoader(false)
         toast.success('Successfully inferred Language Proficiency Data.')
 
       }else if (response.data && dataToInfer === "location"){
         setInferedLoc(response.data)
-        setDataLoaderInferredLoc(false)
+        setDataLoader(false)
         toast.success('Successfully inferred Location Data.')
 
       }
