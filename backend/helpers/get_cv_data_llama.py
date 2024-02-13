@@ -1,4 +1,5 @@
 import os
+from concurrent.futures import ThreadPoolExecutor
 from langchain_community.llms.deepinfra import DeepInfra
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -142,8 +143,14 @@ def extract_cv(pdf_file):
 
     workhistory_query = init_query_translation + workhistory_query
     workhistory_parser = JsonOutputParser(pydantic_object=CandidateWorkHistory)
-    response_candidate= run_llama_candidate(query,text,candidate_parser)
-    response_workhistory = run_llama_candidate(workhistory_query,summarized_text,workhistory_parser)
-    response = [response_candidate, response_workhistory]
-    print(response)
-    return response
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        future_task1 = executor.submit(run_llama_candidate, query, text, candidate_parser)
+        future_task2 = executor.submit(run_llama_candidate, workhistory_query, summarized_text, workhistory_parser)
+        
+        result_task1 = future_task1.result()
+        result_task2 = future_task2.result()
+        
+        response = [result_task1, result_task2]
+        print(response)
+        return response
