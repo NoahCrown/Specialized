@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useCandidate } from "../context/Context";
-import Loader from "./Loader";
 import axios from "axios";
 import AnalyzerOutput from "./AnalyzerOutput";
 import {toast } from 'react-toastify';
-import ModalLoader from "./ModalLoader";
 
 const Output = () => {
   const {
@@ -14,7 +12,8 @@ const Output = () => {
     setOutput,
     defaultBullhornData,
     setModeOfData,
-    setDataLoader
+    setDataLoader,
+    setLoaderDetails
   } = useCandidate();
 
 
@@ -37,22 +36,20 @@ const Output = () => {
   };
 
   const parseBullhornData = async () => {
+    setLoaderDetails('Parsing')
     setDataLoader(true)
     try {
       toast.success('Parsing bullhorn data.')
 
-      // Send a POST request to the Flask backend
       const response = await axios.post("/extract_bullhorn", {
         candidateId: promptResult[0].id,
       });
       setParsedBullhornData(response.data);
       setDataLoader(false)
-
       toast.success('Successfully parsed bullhorn data.')
     } catch (error) {
-      // Handle errors
-      console.error("Error sending POST request:", error);
       setDataLoader(false)
+      toast.warn('Error: Resume format is not supported')
 
 
     }
@@ -62,7 +59,7 @@ const Output = () => {
     try {
       // Send a POST request to the Flask backend
       const response = await axios.post("/get_pdf", {
-        candidateId: promptResult[0].id,
+        candidateId:  promptResult[0].id || null,
         mode: mode,
       });
       const base64 = response.data.candidateFile;
@@ -70,11 +67,12 @@ const Output = () => {
     } catch (error) {
       // Handle errors
       console.error("Error sending POST request:", error);
+      toast.warn("Error: CV format isn't supported")
     }
   };
 
   return (
-    <div className=" overflow-scroll no-scrollbar w-[37.5%] bg-[#F5F5F5]  flex  p-6 flex-col gap-4 max-h-[140vh]  min-h-[140vh] border-r-2 border-solid border-[#D1D5DB]">
+    <div className=" overflow-scroll no-scrollbar w-[37.5%] bg-[#F5F5F5]  flex  p-6 flex-col gap-4 max-h-[145vh]  min-h-[145vh] border-r-2 border-solid border-[#D1D5DB]">
       <div className="mt-10">
         <div className="flex justify-between mb-5">
           <h1 className="text-3xl font-bold">Output</h1>

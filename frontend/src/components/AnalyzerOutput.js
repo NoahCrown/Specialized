@@ -1,6 +1,5 @@
 import React from "react";
 import { useCandidate } from "../context/Context";
-import Loader from "./Loader";
 
 const AnalyzerOutput = () => {
   const {
@@ -263,7 +262,7 @@ const AnalyzerOutput = () => {
           <span className="text-[#919191] w-3/4 inline-block">
             <ul className="flex gap-x-8 flex-wrap">
               {promptResult[0].properties ? (
-                promptResult[0].properties.specialties[0].data.map(
+                Array.isArray(promptResult[0].properties.specialties?.[0].data) && promptResult[0].properties.specialties?.[0].data.map(
                   (val, index) => (
                     <li className="list-disc" key={index}>
                       {val.name || val}

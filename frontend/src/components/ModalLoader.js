@@ -1,30 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Loader from './Loader';
+import { useCandidate } from "../context/Context";
+
 
 const ModalLoader = () => {
-  const [textIndex, setTextIndex] = useState(0);
-  const texts = [
-    {
-      title: 'Analyzing...',
-      content: "We're currently processing and analyzing the data from a CV to extract relevant information. This step ensures that we provide accurate and valuable insights.",
-    },
-    {
-      title: 'This may take a moment...',
-      content: 'As we analyze the information, we aim for precision to ensure that the data we present is as insightful and relevant as possible.',
-    },
-    {
-      title: 'Thank you for your patience...',
-      content: "We appreciate your patience as we work diligently to provide you with the best possible results. Your understanding and cooperation are greatly valued.",
-    },
-  ];
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIndex(prevIndex => (prevIndex + 1) % texts.length);
-    }, 4000); // Change text every 3 seconds
+  const {loaderContext} = useCandidate()
 
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="absolute flex justify-center items-center w-full  min-h-[145vh] backdrop-blur-sm backdrop-brightness-50	 z-50">
@@ -37,8 +18,18 @@ const ModalLoader = () => {
           className="w-1/3"
         />
       </div>
-          <h2 className='transition ease-in-out delay-150 animate-pulse	 text-center text-[1.75rem]'>{texts[textIndex].title}</h2>
-          <p className=' transition ease-in-out delay-150 animate-pulse   text-[1.10rem] text-center'>{texts[textIndex].content}</p>
+        {loaderContext === 'Inferring' ?
+        <>
+        <h2 className='transition ease-in-out delay-150 animate-pulse	 text-center text-[1.75rem]'>Inferring Missing Data...</h2>
+        <p className=' transition ease-in-out delay-150 animate-pulse   text-[1.10rem] text-center'>We're currently processing and analyzing the data from a CV to extract relevant information. This step ensures that we provide accurate and valuable insights.</p>
+        </>
+         :
+         <>
+        <h2 className='transition ease-in-out delay-150 animate-pulse	 text-center text-[1.75rem]'>Parsing CV Data</h2>
+        <p className=' transition ease-in-out delay-150 animate-pulse   text-[1.10rem] text-center'>We're processing the parsing of your CV data into a usable JSON Format, please be patient with us. We're ensuring we get the best result as possible.</p>
+        </>
+          }
+          
           <Loader />
         </dialog>
       </div>

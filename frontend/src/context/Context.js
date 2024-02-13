@@ -179,6 +179,12 @@ export const CandidateProvider = ({ children }) => {
 
   }
 
+  // Loader Info Context
+  const [loaderContext, setLoaderContext] = useState('')
+  const setLoaderDetails = (data) => {
+    setLoaderContext(data)
+  }
+
   
 
 
@@ -189,7 +195,8 @@ export const CandidateProvider = ({ children }) => {
       setCandidate, 
       promptResult, 
       setPromptResult, 
-      setOutput, 
+      setOutput,
+      searchResults, 
       dataToInfer,  
       setInfered, 
       inferedData, 
@@ -219,7 +226,9 @@ export const CandidateProvider = ({ children }) => {
       parsedData,
       setBHParsedData,
       defaultBullhornData,
-      setDisplayBullhorn}}>
+      setDisplayBullhorn,
+      loaderContext,
+      setLoaderDetails}}>
       {children}
     </Context.Provider>
   );

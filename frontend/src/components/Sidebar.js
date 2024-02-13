@@ -23,12 +23,12 @@ const Sidebar = () => {
     setInferedLoc, 
     setInfered,
     setDataLoader,
-    isLoading
+    setLoaderDetails,
     } =
     useCandidate();
   
   var settings = {
-    infinite: true,
+    infinite: false,
     speed: 700,
     slidesToShow: 3,
     slidesToScroll: 2,
@@ -112,6 +112,7 @@ const Sidebar = () => {
     setInfered(null)
     setInferedLang(null)
     setInferedLoc(null)
+    setLoaderDetails('Parsing')
     setDataLoader(true)
     setModeOfData("CV");
 
@@ -272,7 +273,7 @@ const Sidebar = () => {
       {/* Results  */}
       <div className="w-full">
         <p className="px-10 mb-3">Results</p>
-        <div className={`min-h-fit ${isLoading ? 'backdrop-blur-sm' : ''}`}>
+        <div className='min-h-fit'>
             {searchResults.length > 0 ? (
               
               <Slider ref={sliderRef} {...settings}>
@@ -302,13 +303,13 @@ const Sidebar = () => {
               </Slider>
 
             )}
-            <div className="text-center flex justify-evenly ">
-          <button className="button"  onClick={previous}>
-          <i class="fa-solid fa-arrow-left"></i>
-          </button>
-          <button className="button" onClick={next}>
-          <i class="fa-solid fa-arrow-right"></i>
-          </button>
+            <div className="text-center flex justify-evenly p-2 ">
+                <button className="button"  onClick={previous}>
+                <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button className="button" onClick={next}>
+                <i class="fa-solid fa-arrow-right"></i>
+                </button>
         </div>
           </div>
           

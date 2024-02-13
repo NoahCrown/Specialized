@@ -14,7 +14,8 @@ function PromptInput({ prompt, id }) {
     agePrompts,
     languagePrompts,
     locationPrompts,
-    setDataLoader  } = useCandidate();
+    setDataLoader,
+    setLoaderDetails  } = useCandidate();
 
   console.log(prompt)
  
@@ -22,6 +23,8 @@ function PromptInput({ prompt, id }) {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
     console.log(data)
     toast.success(`Inferring ${data.dataToInfer}, please wait.`)
+    setLoaderDetails('Inferring')
+
     setDataLoader(true)
     
 
@@ -55,6 +58,8 @@ function PromptInput({ prompt, id }) {
       console.error('Error:', error);
       if (error.response) {
         toast.warn('Failed to infer data, please try again later.')
+        setDataLoader(false)
+
         // T
       } 
     });

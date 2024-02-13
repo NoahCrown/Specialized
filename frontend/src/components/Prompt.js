@@ -112,7 +112,7 @@ const Prompt = () => {
   };
 
   return (
-    <div className="bg-[#F5F5F5] p-6 flex flex-col justify-start w-[37.5%] gap-6 no-scrollbar overflow-scroll max-h-[140vh]  min-h-[140vh] ">
+    <div className="bg-[#F5F5F5] p-6 flex flex-col justify-start w-[37.5%] gap-6 no-scrollbar overflow-scroll max-h-[145vh]  min-h-[145vh] ">
       <div className="mt-10 flex flex-col gap-6">
         <div className="flex justify-between gap-5 items-center">
           <h1 className="text-3xl font-bold">Prompt</h1>
