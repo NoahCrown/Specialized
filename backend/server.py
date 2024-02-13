@@ -46,10 +46,20 @@ def get_candidate():
         search_candidate_workhistory_by_id_url=f'query/CandidateWorkHistory?BhRestToken={access_token}&fields=id,candidate,startDate,endDate,companyName,title,isLastJob,comments,jobOrder&where=candidate.id={candidate_id}'
         
         candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
+        if candidate_workhistory.status_code == 401:
+            error = candidate_workhistory.json()
+            raise Exception(error["message"])
+        else:
+            pass
         candidate_workhistory = candidate_workhistory.json()
         candidate_workhistory = candidate_workhistory['data']
 
         candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
+        if candidate_data.status_code == 401:
+            error = candidate_data.json()
+            raise Exception(error["message"])
+        else:
+            pass
         candidate_data = candidate_data.json()
         candidate_data = candidate_data['data'][0]
 
@@ -57,7 +67,10 @@ def get_candidate():
         return candidate_data
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
     
 @app.route('/search_name', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
@@ -68,11 +81,19 @@ def search_candidate():
         access_token = bullhorn_auth_helper.get_rest_token()
         search_candidate_by_name_url = f'search/JobSubmission?BhRestToken={access_token}&fields=id,status,dateAdded,candidate,jobOrder&query=candidate.name:{candidate_name}&sort=candidate.name'
         candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_name_url)
+        if candidate_data.status_code == 401:
+            error = candidate_data.json()
+            raise Exception(error["message"])
+        else:
+            pass
         candidate_data = candidate_data.json()
         candidate_data = candidate_data['data']
         return candidate_data
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/get_pdf', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
@@ -85,11 +106,21 @@ def get_candidate_pdf():
             access_token = bullhorn_auth_helper.get_rest_token()
             search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
             file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
+            if file_id.status_code == 401:
+                error = file_id.json()
+                raise Exception(error["message"])
+            else:
+                pass
             file_id = file_id.json()
             file_id = file_id['data'][0]['id']
 
             get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
             candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
+            if candidate_file.status_code == 401:
+                error = candidate_file.json()
+                raise Exception(error["message"])
+            else:
+                pass
             candidate_file = candidate_file.json()
             candidate_file = candidate_file['File']['fileContent']
         else:
@@ -98,7 +129,10 @@ def get_candidate_pdf():
 
         return jsonify({"candidateFile": candidate_file})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
     
 @app.route('/extract_bullhorn', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
@@ -109,11 +143,21 @@ def extract_bullhorn_pdf():
         access_token = bullhorn_auth_helper.get_rest_token()
         search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
         file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
+        if file_id.status_code == 401:
+            error = file_id.json()
+            raise Exception(error["message"])
+        else:
+            pass
         file_id = file_id.json()
         file_id = file_id['data'][0]['id']
 
         get_candidate_file_url = f"file/Candidate/{candidate_id}/{file_id}?BhRestToken={access_token}"
         candidate_file = requests.get(SPECIALIZED_URL + get_candidate_file_url)
+        if candidate_file.status_code == 401:
+            error = candidate_file.json()
+            raise Exception(error["message"])
+        else:
+            pass
         candidate_file = candidate_file.json()
         candidate_file = candidate_file['File']['fileContent']
 
@@ -132,7 +176,10 @@ def extract_bullhorn_pdf():
         
         return extracted_data
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/get_prompt/<int:version_number>', methods = ['POST'])
 def send_base_prompt(version_number):
@@ -204,10 +251,20 @@ def get_custom_prompt():
         search_candidate_workhistory_by_id_url=f'query/CandidateWorkHistory?BhRestToken={access_token}&fields=id,candidate,startDate,endDate,companyName,title,isLastJob,comments,jobOrder&where=candidate.id={candidate_id}'
         if mode == "bullhorn":
             candidate_data = requests.get(SPECIALIZED_URL+search_candidate_by_id_url)
+            if candidate_data.status_code == 401:
+                error = candidate_data.json()
+                raise Exception(error["message"])
+            else:
+                pass
             candidate_data = candidate_data.json()
             candidate_data = candidate_data['data'][0]
             if (infer_data == "age" and candidate_data["dateOfBirth"] is None) or (infer_data == "location" and mode == "bullhorn"):
                 candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
+                if candidate_workhistory.status_code == 401:
+                    error = candidate_workhistory.json()
+                    raise Exception(error["message"])
+                else:
+                    pass
                 candidate_workhistory = candidate_workhistory.json()
                 candidate_workhistory = candidate_workhistory['data']
                 candidate_data = [candidate_data, candidate_workhistory]
@@ -230,7 +287,10 @@ def get_custom_prompt():
                 response = summarize_data(candidate_data, custom_prompt, infer_data)
         return response
     except Exception as e:
-        return jsonify({"error": str(e)}), 500 
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/process_data', methods=['GET'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
@@ -240,12 +300,20 @@ def handle_api_data():
         get_job_submission_url = f'query/JobSubmission?BhRestToken={access_token}&fields=id,status,candidate,jobOrder&where=isDeleted=false&sort=candidate.name&start=1&count=500'
 
         response = requests.get(SPECIALIZED_URL+get_job_submission_url)
+        if response.status_code == 401:
+            error = response.json()
+            raise Exception(error["message"])
+        else:
+            pass
         response = response.json()
         response = response['data']
         return response
 
-    except requests.RequestException as e:
-        return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        if "Bad 'BhRestToken' or timed-out." in str(e):
+            raise Exception(str(e))
+        else:
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/upload', methods=['POST'])   
 def upload_file():

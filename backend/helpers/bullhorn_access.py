@@ -53,14 +53,14 @@ def on_401_error(callback_function):
             try:
                 result = func(*args, **kwargs)
                 return result
-            except requests.RequestException as e:
-                if hasattr(e, 'response') and e.response.status_code == 401:
+            except Exception as e:
+                if "Bad 'BhRestToken' or timed-out." in str(e):
                     # Handle 401 error, maybe refresh token or take other actions
                     print("401 error occurred! Attempting to refresh Bullhorn access token.")
                     # Call the Bullhorn authentication callback function to refresh the token
                     access_token = callback_function()
                     # Retry the original function call with the new access token
-                    return func(access_token, *args, **kwargs)
+                    return func(*args, **kwargs)
                 else:
                     # Re-raise the exception if it's not a 401 error
                     raise e
