@@ -2,6 +2,7 @@ import os
 import json
 from langchain_community.llms.deepinfra import DeepInfra
 from langchain.prompts import PromptTemplate
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import LLMChain
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field, EmailStr
@@ -26,7 +27,7 @@ class AgeInference(BaseModel):
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
 
 class LocationInference(BaseModel):
-    Location: str = Field(..., description="Inferred location of the candidate")
+    Location: str = Field(..., description="Inferred current city and country of the candidate")
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the location, 1 being the lowest and 5 the highest")
 
 def language_skill(candidate_data, custom_prompt, parser = LanguageProficiency):
@@ -52,19 +53,31 @@ def language_skill(candidate_data, custom_prompt, parser = LanguageProficiency):
     {format_instructions}
 
     Answer:
+    {response}
     [/INST]
     
 """
     query = load_data
-    language_parser = JsonOutputParser(pydantic_object=parser)
-    prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data"],partial_variables={"format_instructions": language_parser.get_format_instructions()})
-    params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt}
-    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
-    llm.model_kwargs = {
-        "temperature": 0
-    }
-    llm_chain = prompt | llm | language_parser
-    response = llm_chain.invoke(params)
+    candidate_data= str(candidate_data)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=3000,
+        chunk_overlap=20,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    data_list = text_splitter.split_text(candidate_data)
+    response = ""
+    for data in data_list:
+        response = str(response)
+        language_parser = JsonOutputParser(pydantic_object=parser)
+        prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data","response"],partial_variables={"format_instructions": language_parser.get_format_instructions()})
+        params = {"candidate_data":data, "custom_prompt": custom_prompt, "response": response}
+        llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
+        llm.model_kwargs = {
+            "temperature": 0
+        }
+        llm_chain = prompt | llm | language_parser
+        response = llm_chain.invoke(params)
     return response
 
 def infer_age(candidate_data, custom_prompt, current_date, parser = AgeInference):
@@ -94,19 +107,31 @@ def infer_age(candidate_data, custom_prompt, current_date, parser = AgeInference
     {format_instructions}
 
     Answer:
+    {response}
     [/INST]
 
     """
     query = load_data
-    age_parser = JsonOutputParser(pydantic_object=parser)
-    prompt = PromptTemplate(template=query, input_variables=["candidate_data", "custom_prompt", "current_date"], partial_variables={"format_instructions": age_parser.get_format_instructions()})
-    params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
-    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
-    llm.model_kwargs = {
-        "temperature": 0,
-    }
-    llm_chain = prompt | llm | age_parser
-    response = llm_chain.invoke(params)
+    candidate_data= str(candidate_data)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=3000,
+        chunk_overlap=20,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    data_list = text_splitter.split_text(candidate_data)
+    response = ""
+    for data in data_list:
+        response = str(response)
+        age_parser = JsonOutputParser(pydantic_object=parser)
+        prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data","current_date","response"],partial_variables={"format_instructions": age_parser.get_format_instructions()})
+        params = {"candidate_data":data, "custom_prompt": custom_prompt, "current_date": current_date,"response": response}
+        llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
+        llm.model_kwargs = {
+            "temperature": 0
+        }
+        llm_chain = prompt | llm | age_parser
+        response = llm_chain.invoke(params)
     return response
     
 def infer_location(candidate_data, custom_prompt, current_date, parser = LocationInference):
@@ -135,17 +160,29 @@ def infer_location(candidate_data, custom_prompt, current_date, parser = Locatio
     {format_instructions}
 
     Answer:
+    {response}
     [/INST]
 
     """
     query = load_data
-    location_parser = JsonOutputParser(pydantic_object=parser)
-    prompt = PromptTemplate(template=query, input_variables=["candidate_data","custom_prompt", "current_date"], partial_variables={"format_instructions": location_parser.get_format_instructions()})
-    params = {"candidate_data":candidate_data, "custom_prompt": custom_prompt, "current_date": current_date}
-    llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=False)
-    llm.model_kwargs = {
-        "temperature": 0
-    }
-    llm_chain = prompt | llm | location_parser
-    response = llm_chain.invoke(params)
+    candidate_data= str(candidate_data)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=3000,
+        chunk_overlap=20,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    data_list = text_splitter.split_text(candidate_data)
+    response = ""
+    for data in data_list:
+        response = str(response)
+        location_parser = JsonOutputParser(pydantic_object=parser)
+        prompt = PromptTemplate(template=query, input_variables=["custom_prompt","candidate_data","current_date","response"],partial_variables={"format_instructions": location_parser.get_format_instructions()})
+        params = {"candidate_data":data, "custom_prompt": custom_prompt, "current_date": current_date,"response": response}
+        llm = DeepInfra(model_id = "meta-llama/Llama-2-70b-chat-hf", verbose=True)
+        llm.model_kwargs = {
+            "temperature": 0
+        }
+        llm_chain = prompt | llm | location_parser
+        response = llm_chain.invoke(params)
     return response
