@@ -11,13 +11,15 @@ from dotenv import load_dotenv
 
 class EnglishProficiency(BaseModel):
     Language: Literal["English"] = Field(default="English", description="The language is English.")
-    enProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="Inferred proficiency of the candidate in English.")
+    enProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="The candidate's inferred ability to understand and use English.")
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
+    explanation: str = Field(..., description="Explanation about the inference on the language skill")
 
 class JapaneseProficiency(BaseModel):
     Language: Literal["Japanese"] = Field(default="Japanese", description="The language is Japanese.")
-    jpProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="Inferred proficiency of the candidate in Japanese.")
+    jpProficiency: Literal['None', 'Basic', 'Conversational', 'Business', 'Fluent', 'Native'] = Field(..., description="The candidate's inferred ability to understand and use Japanese, 'None' being the lowest proficiency.")
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
+    explanation: str = Field(..., description="Explanation about the inference on the language skill")
 
 class LanguageProficiency(BaseModel):
     languageSkills: List[Union[EnglishProficiency, JapaneseProficiency]] = Field(..., description="Inferred proficiency of the candidate in English and Japanese")
@@ -25,10 +27,12 @@ class LanguageProficiency(BaseModel):
 class AgeInference(BaseModel):
     Age: int = Field(..., description="Inferred age of the candidate")
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the data, 1 being the lowest and 5 the highest")
+    explanation: str = Field(..., description="Explanation about the inference on the age of the candidate")
 
 class LocationInference(BaseModel):
     Location: str = Field(..., description="Inferred current city and country of the candidate")
     confidence: int = Field(..., ge=1, le=5, description="AI's confidence in inferring the location, 1 being the lowest and 5 the highest")
+    explanation: str = Field(..., description="Explanation about the inference on the current location of the candidate")
 
 def language_skill(candidate_data, custom_prompt, parser = LanguageProficiency):
     load_dotenv()

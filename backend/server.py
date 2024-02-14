@@ -102,7 +102,7 @@ def get_candidate_pdf():
         received_data= request.json
         candidate_id = received_data['candidateId']
         mode = received_data['mode']
-        if mode == "bullhorn":
+        if mode == "bullhorn" or mode == "CV_bullhorn":
             access_token = bullhorn_auth_helper.get_rest_token()
             search_candidate_file_by_id_url = f"entity/Candidate/{candidate_id}/fileAttachments?BhRestToken={access_token}&fields=id"
             file_id = requests.get(SPECIALIZED_URL+search_candidate_file_by_id_url)
