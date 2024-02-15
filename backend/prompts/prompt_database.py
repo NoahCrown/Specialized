@@ -61,31 +61,32 @@ class LoadPrompts:
         self.column_name = column_name
         self.default_columns = ['age', 'languageSkills', 'location']
     
-    def get_max_version_number_for_column(self, cursor, column_name):
-        query = f"SELECT MAX(version_number) FROM item_versions WHERE {column_name} IS NOT NULL"
+    def get_all_version_numbers_for_column(self, cursor, column_name):
+        query = f"SELECT DISTINCT version_number FROM item_versions WHERE {column_name} IS NOT NULL ORDER BY version_number"
         cursor.execute(query)
-        max_version = cursor.fetchone()[0]
-        return max_version if max_version is not None else 0
+        # Fetch all results instead of just one
+        versions = cursor.fetchall()
+        version_numbers = [version[0] for version in versions]
+        return version_numbers
 
     def load_prompts(self):
         # Connect to the SQLite database
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
 
-        max_versions = {}
+        version_numbers = {}
 
         if self.column_name:
-            max_version = self.get_max_version_number_for_column(cursor, self.column_name)
-            max_versions[self.column_name] = max_version
+            versions = self.get_all_version_numbers_for_column(cursor, self.column_name)
+            version_numbers[self.column_name] = versions
         else:
-            # Get max version number for the predefined set of columns
             for column_name in self.default_columns:
-                max_version = self.get_max_version_number_for_column(cursor, column_name)
-                max_versions[column_name] = max_version
+                versions = self.get_all_version_numbers_for_column(cursor, column_name)
+                version_numbers[column_name] = versions
 
         conn.close()
 
-        return max_versions
+        return version_numbers
 
 # USED FOR SAVING NEW PROMPTS
 class SavePrompts:
