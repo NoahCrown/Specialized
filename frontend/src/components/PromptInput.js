@@ -4,7 +4,7 @@ import { useCandidate } from '../context/Context';
 import { toast } from 'react-toastify';
 
 
-function PromptInput({ prompt, id }) {
+function PromptInput({ prompt, id, onDelete }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState(prompt);
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode,
@@ -141,7 +141,7 @@ function PromptInput({ prompt, id }) {
 
         <div className='flex items-center justify-between px-4'>
           <p onClick={savePrompt} className='underline font-bold hover:cursor-pointer'>Save</p>
-          <button onClick={deletePrompt}>
+          <button onClick={onDelete || deletePrompt}>
             <i class="fa-solid fa-trash"></i>
           </button>
           <button
