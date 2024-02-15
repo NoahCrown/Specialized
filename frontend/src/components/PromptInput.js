@@ -18,6 +18,7 @@ function PromptInput({ prompt, id, onDelete }) {
     setLoaderDetails  } = useCandidate();
 
   console.log(prompt)
+  console.log(id)
  
   const handleSubmitPropmpt = async() => {
     const data = {response: responseText, candidateId:candidateId, dataToInfer: dataToInfer, mode:mode }
@@ -87,10 +88,8 @@ function PromptInput({ prompt, id, onDelete }) {
       const response = await axios.post(`/delete_prompt/${id}`, data);
       console.log('Prompt deleted successfully:', response.data);
   
-      // Assuming 'id' is the index of the prompt you want to delete
       const promptIndexToDelete = id;
   
-      // Update the respective state array (agePrompts, languagePrompts, or locationPrompts)
       if (dataToInfer === 'age') {
         setAgePromptInputs(agePrompts.filter((_, index) => index !== promptIndexToDelete));
       } else if (dataToInfer === 'languageSkills') {
@@ -103,7 +102,6 @@ function PromptInput({ prompt, id, onDelete }) {
     } catch (error) {
       console.error('Error deleting prompt:', error);
       toast.error('Failed to delete prompt.');
-      // Handle the error appropriately
     }
   };
   

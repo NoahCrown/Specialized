@@ -53,7 +53,7 @@ const Prompt = () => {
                 const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                 return (
                   <PromptInput
-                    id={i}
+                    id={i + 1}
                     key={`age${i + 1}`}
                     prompt={dataPrompt}
                   />
@@ -69,8 +69,8 @@ const Prompt = () => {
                   const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                   return (
                     <PromptInput
-                      id={i}
-                      key={`age${i + 1}`}
+                      id={i + 1}
+                      key={`lang${i + 1}`}
                       prompt={dataPrompt}
                     />
                   );
@@ -84,8 +84,8 @@ const Prompt = () => {
                 const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                 return (
                   <PromptInput
-                    id={i}
-                    key={`age${i + 1}`}
+                    id={i + 1}
+                    key={`loc${i + 1}`}
                     prompt={dataPrompt}
                   />
                 );

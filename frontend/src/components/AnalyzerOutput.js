@@ -8,10 +8,16 @@ const AnalyzerOutput = () => {
     inferedLangProficiency,
     inferedLocation,
     epochToDateString,
+    mode
   } = useCandidate();
+
+  console.log(inferedData)
+  console.log(inferedLangProficiency)
+  console.log(inferedLocation)
   return (
     <>
       <p className="text-[#919191] ">Resume information</p>
+      <p className="text-[#919191] text-[.75rem]">{mode === "CV" || mode === "CV_bullhorn" ? 'Parsed with Offshorly parser' : 'Parsed with Bullhorn'}</p>
       {/* Personal Information  */}
       <div className="text-black border-solid border-b-2 border-[#E7E7E7] w-full py-2">
         <p className="text-black py-2 font-semibold">Personal Information</p>
@@ -297,7 +303,7 @@ const AnalyzerOutput = () => {
         <div className="flex flex-wrap">
           <p className="w-1/4 inline-block align-top">Comments:</p>
           <span className="text-[#919191] w-3/4 inline-block">
-            {/* {promptResult.comments || "N/A"} */}
+            {promptResult[0]?.properties?.comments ? promptResult[0].properties?.comments : promptResult[0]?.comments  || "N/A"}
           </span>
         </div>
       </div>

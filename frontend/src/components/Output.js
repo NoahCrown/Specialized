@@ -97,7 +97,7 @@ const Output = () => {
               className="border border-[#ababab] border-dashed text-[#ababab] bg-[#F5F5F5] w-1/4 rounded-md px-[.8rem] py-[.4rem] hover:border-black hover:text-black hover:cursor-pointer"
               onClick={switchData}
             >
-              Toggle Data
+              Switch Parser
             </button>
           )}
           <button
