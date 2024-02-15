@@ -12,24 +12,16 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def read_item(data, version_number = None):
+def read_item(data, version_number):
     conn = get_db_connection()
-    if version_number is None:
-        query = f'SELECT {data} FROM items WHERE id = 1 LIMIT 1'
-        item = conn.execute(query).fetchone()
-        conn.close()
-        if item is not None:
-            readable_string = ', '.join(map(str, item))
-        else:
-            return "No data found"
+
+    query = f'SELECT {data} FROM item_versions WHERE version_number = ? AND {data} IS NOT NULL ORDER BY id LIMIT 1'
+    item = conn.execute(query,(version_number,)).fetchone()
+    conn.close()
+    if item is not None:
+        readable_string = str(item[0])
     else:
-        query = f'SELECT {data} FROM item_versions WHERE version_number = {version_number} LIMIT 1'
-        item = conn.execute(query).fetchone()
-        conn.close()
-        if item is not None:
-            readable_string = ', '.join(map(str, item))
-        else:
-            return "No data found"
+        return "No data found"
     return readable_string
 
 # USED TO DELETE A VERSION FROM DATABASE
