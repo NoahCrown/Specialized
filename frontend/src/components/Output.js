@@ -21,6 +21,7 @@ const Output = () => {
 
   const [parsedBullhornData, setParsedBullhornData] = useState(null);
   const [showParsedData, setShowParsedData] = useState(false);
+  const [candidateId, setCandidateId] = useState(null)
   console.log(parsedBullhornData)
   console.log(promptResult)
 
@@ -30,7 +31,7 @@ const Output = () => {
     setShowParsedData(!showParsedData);
     if (showParsedData){
       setOutput(parsedBullhornData)
-      setModeOfData('CV')
+      setModeOfData('CV_bullhorn')
     }else{
       setOutput(defaultBullhornData)
       setModeOfData('bullhorn')
@@ -50,6 +51,7 @@ const Output = () => {
       setParsedBullhornData(response.data);
       setDataLoader(false)
       setThisNewData(false)
+      setCandidateId(promptResult[0].id)
       toast.success('Successfully parsed bullhorn data.')
     } catch (error) {
       setDataLoader(false)
@@ -60,10 +62,12 @@ const Output = () => {
   };
 
   const handleShowPDF = async () => {
+    console.log(mode)
+    console.log(promptResult[0].id)
     try {
       // Send a POST request to the Flask backend
       const response = await axios.post("/get_pdf", {
-        candidateId:  promptResult[0].id || null,
+        candidateId:  promptResult[0].id || candidateId || null,
         mode: mode,
       });
       const base64 = response.data.candidateFile;
@@ -88,7 +92,7 @@ const Output = () => {
               <i className="fa-solid fa-code"></i> Parse
             </button>
           ) : (
-          !isNewData  && 
+          !isNewData &&  (mode === 'bullhorn' || mode === 'CV_bullhorn') &&
             <button
               className="border border-[#ababab] border-dashed text-[#ababab] bg-[#F5F5F5] w-1/4 rounded-md px-[.8rem] py-[.4rem] hover:border-black hover:text-black hover:cursor-pointer"
               onClick={switchData}

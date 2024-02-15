@@ -53,7 +53,7 @@ const Prompt = () => {
                 const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                 return (
                   <PromptInput
-                    id={`age${i + 1}`}
+                    id={i}
                     key={`age${i + 1}`}
                     prompt={dataPrompt}
                   />
@@ -69,7 +69,7 @@ const Prompt = () => {
                   const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                   return (
                     <PromptInput
-                      id={`age${i + 1}`}
+                      id={i}
                       key={`age${i + 1}`}
                       prompt={dataPrompt}
                     />
@@ -84,7 +84,7 @@ const Prompt = () => {
                 const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
                 return (
                   <PromptInput
-                    id={`age${i + 1}`}
+                    id={i}
                     key={`age${i + 1}`}
                     prompt={dataPrompt}
                   />
@@ -104,11 +104,25 @@ const Prompt = () => {
 
   const addPromptInput = () => {
     if (dataToInfer === "age") {
-      setUnsavedAgePrompts([...unsavedAgePrompts, <PromptInput />]);
+      const newIndex = unsavedAgePrompts.length;
+      setUnsavedAgePrompts([...unsavedAgePrompts, <PromptInput key={newIndex} index={newIndex} onDelete={deleteUnsavedPrompt} />]);
     } else if (dataToInfer === "languageSkills") {
-      setUnsavedLangPrompts([...unsavedLangPrompts, <PromptInput />]);
-    } else if (dataToInfer === "location")
-      setUnsavedLocPrompts([...unsavedLocPrompts, <PromptInput />]);
+      const newIndex = unsavedLangPrompts.length;
+      setUnsavedLangPrompts([...unsavedLangPrompts, <PromptInput key={newIndex} index={newIndex} onDelete={deleteUnsavedPrompt} />]);
+    } else if (dataToInfer === "location") {
+      const newIndex = unsavedLocPrompts.length;
+      setUnsavedLocPrompts([...unsavedLocPrompts, <PromptInput key={newIndex} index={newIndex} onDelete={deleteUnsavedPrompt} />]);
+    }
+  };
+
+  const deleteUnsavedPrompt = (index) => {
+    if (dataToInfer === "age") {
+      setUnsavedAgePrompts(unsavedAgePrompts.filter((_, i) => i !== index));
+    } else if (dataToInfer === "languageSkills") {
+      setUnsavedLangPrompts(unsavedLangPrompts.filter((_, i) => i !== index));
+    } else if (dataToInfer === "location") {
+      setUnsavedLocPrompts(unsavedLocPrompts.filter((_, i) => i !== index));
+    }
   };
 
   return (
