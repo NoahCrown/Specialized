@@ -108,7 +108,7 @@ const Prompt = () => {
     
 
     loadPromptData();
-  }, [dataToInfer]);
+  }, [dataToInfer,]);
 
   const addPromptInput = () => {
     if (dataToInfer === "age") {
