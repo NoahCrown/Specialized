@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {toast } from 'react-toastify';
 import { useCandidate } from '../context/Context';
 const PDFInfo = ({id, first_name, last_name, position, active}) => {
   const { setCandidate,setOutput, setInferedLang, setInfered, setModeOfData, setInferedLoc, setDataLoader, setDisplayBullhorn, isNewData, setThisNewData } = useCandidate();
@@ -30,6 +31,8 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
     } catch (error) {
       // Handle errors
       console.error('Error sending POST request:', error);
+      setDataLoader(false)
+      toast.warn('Error: Data unavailable, please try again.')
     }
   };
 
