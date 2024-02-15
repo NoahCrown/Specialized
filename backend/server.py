@@ -258,7 +258,7 @@ def get_custom_prompt():
                 pass
             candidate_data = candidate_data.json()
             candidate_data = candidate_data['data'][0]
-            if (infer_data == "age" and candidate_data["dateOfBirth"] is None) or (infer_data == "location" and mode == "bullhorn"):
+            if (infer_data == "age" and candidate_data["dateOfBirth"] is None) or (infer_data == "location" and mode == "bullhorn") or (infer_data == "languageSkills"):
                 candidate_workhistory = requests.get(SPECIALIZED_URL+search_candidate_workhistory_by_id_url)
                 if candidate_workhistory.status_code == 401:
                     error = candidate_workhistory.json()
@@ -270,8 +270,6 @@ def get_custom_prompt():
                 candidate_data = [candidate_data, candidate_workhistory]
                 response = summarize_data(candidate_data, custom_prompt, infer_data)
 
-            elif infer_data == "languageSkills":
-                response = summarize_data(candidate_data, custom_prompt, infer_data)
             elif infer_data == "age" and candidate_data["dateOfBirth"] is not None:
                 response = summarize_data(candidate_data, custom_prompt, infer_data)
         else:
