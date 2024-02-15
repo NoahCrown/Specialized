@@ -146,7 +146,7 @@ def extract_cv(pdf_file):
     query = init_query_translation + candidate_query
     candidate_parser = JsonOutputParser(pydantic_object=Candidate)
 
-    # summarized_text = get_workhistory_from_text(text)
+    summarized_text = get_workhistory_from_text(text)
 
     workhistory_query = """
         <<SYS>>
@@ -171,7 +171,7 @@ def extract_cv(pdf_file):
 
     with ThreadPoolExecutor(max_workers=2) as executor:
         future_task1 = executor.submit(run_llama_candidate, query, text, candidate_parser)
-        future_task2 = executor.submit(run_llama_candidate, workhistory_query, text, workhistory_parser)
+        future_task2 = executor.submit(run_llama_candidate, workhistory_query, summarized_text, workhistory_parser)
         
         result_task1 = future_task1.result()
         result_task2 = future_task2.result()
