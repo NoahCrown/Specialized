@@ -72,6 +72,7 @@ function PromptInput({ prompt, id, onDelete, label }) {
     try {
       const data = { response: responseText, dataToInfer: dataToInfer };
       const response = await axios.post('/save_prompt', data);
+      console.log(responseText)
       console.log('Prompt saved successfully:', response.data);
       toast.success('Prompt successfully saved.')
 
