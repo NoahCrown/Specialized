@@ -44,60 +44,65 @@ const Prompt = () => {
         const response = await axios.post("/load_prompt", {
           dataToInfer: null,
         });
-
+    
         if (response.data) {
           await setSavedPromptsData(response.data);
-          if (dataToInfer === "age") {
-            const agePromptsArray = await Promise.all(
-              Array.from({ length: savedPrompts["age"] }, async (_, i) => {
-                const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
-                return (
-                  <PromptInput
-                    id={i + 1}
-                    key={`age${i + 1}`}
-                    prompt={dataPrompt}
-                  />
-                );
-              })
-            );
-            setAgePromptInputs(agePromptsArray);
-          } else if (dataToInfer === "languageSkills") {
-            const langPromptsArray = await Promise.all(
-              Array.from(
-                { length: savedPrompts["languageSkills"] },
-                async (_, i) => {
-                  const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
-                  return (
-                    <PromptInput
-                      id={i + 1}
-                      key={`lang${i + 1}`}
-                      prompt={dataPrompt}
-                    />
-                  );
-                }
-              )
-            );
-            setLanguagePromptInputs(langPromptsArray);
-          } else if (dataToInfer === "location") {
-            const locPromptsArray = await Promise.all(
-              Array.from({ length: savedPrompts["location"] }, async (_, i) => {
-                const dataPrompt = await loadSavedPrompts(dataToInfer, i + 1);
-                return (
-                  <PromptInput
-                    id={i + 1}
-                    key={`loc${i + 1}`}
-                    prompt={dataPrompt}
-                  />
-                );
-              })
-            );
-            setLocationPromptInputs(locPromptsArray);
-          }
+          const { age, languageSkills, location } = response.data;
+    
+          const agePromptsArray = await Promise.all(
+            age.map(async (id) => {
+              console.log(id)
+              const dataPrompt = await loadSavedPrompts("age", id);
+              return (
+                <PromptInput
+                  id={id}
+                  key={`age${id}`}
+                  prompt={dataPrompt}
+                  label={id}
+                />
+              );
+            })
+          );
+          setAgePromptInputs(agePromptsArray);
+    
+          const langPromptsArray = await Promise.all(
+            languageSkills.map(async (id) => {
+              console.log(id)
+              const dataPrompt = await loadSavedPrompts("languageSkills", id);
+              return (
+                <PromptInput
+                  id={id}
+                  key={`lang${id}`}
+                  prompt={dataPrompt}
+                  label={id}
+                />
+              );
+            })
+          );
+          setLanguagePromptInputs(langPromptsArray);
+    
+          const locPromptsArray = await Promise.all(
+            location.map(async (id) => {
+              console.log(id)
+
+              const dataPrompt = await loadSavedPrompts("location", id);
+              return (
+                <PromptInput
+                  id={id}
+                  key={`loc${id}`}
+                  prompt={dataPrompt}
+                  label={id}
+                />
+              );
+            })
+          );
+          setLocationPromptInputs(locPromptsArray);
         }
       } catch (error) {
         console.error("Error sending POST request:", error);
       }
     };
+    
 
     loadPromptData();
   }, [dataToInfer]);

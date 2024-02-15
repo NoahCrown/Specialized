@@ -4,7 +4,7 @@ import { useCandidate } from '../context/Context';
 import { toast } from 'react-toastify';
 
 
-function PromptInput({ prompt, id, onDelete }) {
+function PromptInput({ prompt, id, onDelete, label }) {
   const [isTextboxVisible, setTextboxVisible] = useState(false);
   const [responseText, setResponseText] = useState(prompt);
   const { candidateId, dataToInfer, setInfered, setInferedLang, setInferedLoc, mode,
@@ -74,6 +74,7 @@ function PromptInput({ prompt, id, onDelete }) {
       const response = await axios.post('/save_prompt', data);
       console.log('Prompt saved successfully:', response.data);
       toast.success('Prompt successfully saved.')
+
           
     } catch (error) {
       console.error('Error saving prompt:', error);
@@ -120,7 +121,7 @@ function PromptInput({ prompt, id, onDelete }) {
         <div className='rounded-full bg-[#CECECE] w-[8%] flex justify-center items-start p-2 '>
           <img src={require('../img/pdf_icon.png')} alt='pdf-icon' className='w-[60%]'/>
         </div>
-        <input className='focus:outline-none' placeholder={`Enter name`} />
+        <input className='focus:outline-none' placeholder={`Version ${label}`} />
         {isTextboxVisible ? (
           <i className="fa-solid fa-minus"></i>
         ) : (
