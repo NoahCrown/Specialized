@@ -12,7 +12,7 @@ const PDFInfo = ({id, first_name, last_name, position, active}) => {
     
     try {
       // Send a POST request to the Flask backend
-      const response = await axios.post('/get_candidate', {
+      const response = await axios.post('/api/get_candidate', {
         candidateId: id, 
       });
       setDataLoader(false)

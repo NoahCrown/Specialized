@@ -30,7 +30,7 @@ const Prompt = () => {
   useEffect(() => {
     const loadSavedPrompts = async (dataInfer, i) => {
       try {
-        const response = await axios.post(`/get_prompt/${i}`, {
+        const response = await axios.post(`/api/get_prompt/${i}`, {
           dataToInfer: dataInfer,
         });
         console.log(response.data.prompt)
@@ -43,7 +43,7 @@ const Prompt = () => {
 
     const loadPromptData = async () => {
       try {
-        const response = await axios.post("/load_prompt", {
+        const response = await axios.post("/api/load_prompt", {
           dataToInfer: null,
         });
     

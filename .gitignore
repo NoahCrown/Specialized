@@ -4,6 +4,7 @@ backend/venv
 venv/
 flask_session
 .vscode
+config.js
 
 node_modules/
 backend/helpers/__pycache__

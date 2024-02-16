@@ -7,6 +7,7 @@ import axios from 'axios'
 import { useCandidate } from './context/Context';
 import { ToastContainer } from 'react-toastify';
 import ModalLoader from "./components/ModalLoader";
+import { API_URL } from "./config";
 
 
 
@@ -17,7 +18,7 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/process_data');
+        const response = await axios.get(`${API_URL}/process_data`);
         setAllData(response.data);
         console.log(response.data);
       } catch (error) {

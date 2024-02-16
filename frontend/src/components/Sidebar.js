@@ -72,7 +72,7 @@ const Sidebar = () => {
   const handleSearch = () => {
     // Make a POST request to the API using Axios
     axios
-      .post("/search_name", { name: inputValue })
+      .post("/api/search_name", { name: inputValue })
       .then((response) => {
         // Handle the successful response
         setSearchResults(response.data);
@@ -127,7 +127,7 @@ const Sidebar = () => {
 
     // Replace 'YOUR_UPLOAD_URL' with your actual server endpoint
     await axios
-      .post("/upload", pdfData)
+      .post("/api/upload", pdfData)
 
       .then((response) => {
         // Handle the response from the server

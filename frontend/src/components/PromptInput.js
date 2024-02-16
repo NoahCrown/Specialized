@@ -31,7 +31,7 @@ function PromptInput({ prompt, id, onDelete, label }) {
 
     // Make a POST request to your Flask backend using Axios
     await axios
-    .post('/prompt_input', data, {
+    .post('/api/prompt_input', data, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -71,7 +71,7 @@ function PromptInput({ prompt, id, onDelete, label }) {
   const savePrompt = async () => {
     try {
       const data = { response: responseText, dataToInfer: dataToInfer };
-      const response = await axios.post('/save_prompt', data);
+      const response = await axios.post('/api/save_prompt', data);
       console.log(responseText)
       console.log('Prompt saved successfully:', response.data);
       toast.success('Prompt successfully saved.')
@@ -87,7 +87,7 @@ function PromptInput({ prompt, id, onDelete, label }) {
   const deletePrompt = async () => {
     try {
       const data = { dataToInfer: dataToInfer };
-      const response = await axios.post(`/delete_prompt/${id}`, data);
+      const response = await axios.post(`/api/delete_prompt/${id}`, data);
       console.log('Prompt deleted successfully:', response.data);
   
       const promptIndexToDelete = id;

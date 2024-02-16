@@ -35,7 +35,7 @@ SPECIALIZED_URL = os.getenv('SPECIALIZED_REST_URL')
 bullhorn_auth_helper = BullhornAuthHelper(CLIENT_ID, CLIENT_SECRET)
 bullhorn_auth_helper.authenticate(USERNAME, PASSWORD)
 
-@app.route('/get_candidate', methods=['POST'])
+@app.route('/api/get_candidate', methods=['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_candidate():
     try:
@@ -72,7 +72,7 @@ def get_candidate():
         else:
             return jsonify({"error": str(e)}), 500
     
-@app.route('/search_name', methods = ['POST'])
+@app.route('/api/search_name', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def search_candidate():
     try:
@@ -95,7 +95,7 @@ def search_candidate():
         else:
             return jsonify({"error": str(e)}), 500
 
-@app.route('/get_pdf', methods = ['POST'])
+@app.route('/api/get_pdf', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_candidate_pdf():
     try:
@@ -134,7 +134,7 @@ def get_candidate_pdf():
         else:
             return jsonify({"error": str(e)}), 500
     
-@app.route('/extract_bullhorn', methods = ['POST'])
+@app.route('/api/extract_bullhorn', methods = ['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def extract_bullhorn_pdf():
     try:
@@ -181,7 +181,7 @@ def extract_bullhorn_pdf():
         else:
             return jsonify({"error": str(e)}), 500
 
-@app.route('/get_prompt/<int:version_number>', methods = ['POST'])
+@app.route('/api/get_prompt/<int:version_number>', methods = ['POST'])
 def send_base_prompt(version_number):
     try:
         received_type = request.json
@@ -200,7 +200,7 @@ def send_base_prompt(version_number):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/load_prompt', methods = ['POST'])
+@app.route('/api/load_prompt', methods = ['POST'])
 def get_prompt_count():
     try:
         received_type = request.json
@@ -212,7 +212,7 @@ def get_prompt_count():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/save_prompt', methods = ['POST'])
+@app.route('/api/save_prompt', methods = ['POST'])
 def save_prompt_on_db():
     try:
         received_type = request.json
@@ -225,7 +225,7 @@ def save_prompt_on_db():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/delete_prompt/<int:version_number>', methods = ['POST'])
+@app.route('/api/delete_prompt/<int:version_number>', methods = ['POST'])
 def delete_prompt_on_db(version_number):
     try:
         received_type = request.json
@@ -237,7 +237,7 @@ def delete_prompt_on_db(version_number):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/prompt_input', methods=['POST'])
+@app.route('/api/prompt_input', methods=['POST'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def get_custom_prompt():
     try:
@@ -290,7 +290,7 @@ def get_custom_prompt():
         else:
             return jsonify({"error": str(e)}), 500
 
-@app.route('/process_data', methods=['GET'])
+@app.route('/api/process_data', methods=['GET'])
 @on_401_error(lambda: bullhorn_auth_helper.authenticate(USERNAME, PASSWORD))
 def handle_api_data():
     try:
@@ -313,7 +313,7 @@ def handle_api_data():
         else:
             return jsonify({"error": str(e)}), 500
 
-@app.route('/upload', methods=['POST'])   
+@app.route('/api/upload', methods=['POST'])   
 def upload_file():
     if 'pdfFile' not in request.files:
         return jsonify({'error': 'No file part'}), 400

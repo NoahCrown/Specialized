@@ -45,7 +45,7 @@ const Output = () => {
     try {
       toast.success('Parsing bullhorn data.')
 
-      const response = await axios.post("/extract_bullhorn", {
+      const response = await axios.post("/api/extract_bullhorn", {
         candidateId: promptResult[0].id,
       });
       setParsedBullhornData(response.data);
@@ -66,7 +66,7 @@ const Output = () => {
     console.log(promptResult[0].id)
     try {
       // Send a POST request to the Flask backend
-      const response = await axios.post("/get_pdf", {
+      const response = await axios.post("/api/get_pdf", {
         candidateId:  promptResult[0].id || candidateId || null,
         mode: mode,
       });
